@@ -6,12 +6,14 @@ import {
   deleteConversation,
   addMessage,
   listMessages,
+  updateMessageEmotion,
   getUserProfile,
   clearUserProfile,
 } from './db'
 import { streamChat } from './ai'
 import { loadSettings, saveSettings } from './settings'
 import { extractAndUpdateProfile } from './memory'
+import { detectEmotion } from './emotion'
 
 const activeAbortControllers = new Map<number, AbortController>()
 
@@ -95,13 +97,19 @@ export function registerIpcHandlers(): void {
 
     win?.webContents.send('chat:done', { conversationId })
 
-    // Background memory extraction — fire and forget
+    // Background tasks — fire and forget
     const fullHistory = [
       ...history,
       { role: 'user' as const, content },
       { role: 'assistant' as const, content: fullReply },
     ]
     extractAndUpdateProfile(fullHistory, settings).catch(() => {})
+
+    detectEmotion(content, settings).then((emotion) => {
+      if (!emotion) return
+      updateMessageEmotion(userMsg.id, emotion)
+      win?.webContents.send('emotion:update', { messageId: userMsg.id, emotion })
+    }).catch(() => {})
 
     return { userMessageId: userMsg.id, assistantMessageId: assistantMsg.id }
   })

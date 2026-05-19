@@ -11,6 +11,45 @@ export type AiSettings = {
 
 export type ChatMessage = { role: 'user' | 'assistant'; content: string }
 
+// Shared non-streaming single-turn helper (used by memory & emotion modules)
+export async function callSimple(settings: AiSettings, prompt: string): Promise<string> {
+  try {
+    if (settings.provider === 'openai') {
+      const res = await fetch('https://api.openai.com/v1/chat/completions', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${settings.apiKey}` },
+        body: JSON.stringify({
+          model: 'gpt-4o-mini',
+          max_tokens: 512,
+          messages: [{ role: 'user', content: prompt }],
+        }),
+      })
+      if (!res.ok) return ''
+      const json = await res.json()
+      return json.choices?.[0]?.message?.content ?? ''
+    } else {
+      const res = await fetch('https://api.anthropic.com/v1/messages', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'x-api-key': settings.apiKey,
+          'anthropic-version': '2023-06-01',
+        },
+        body: JSON.stringify({
+          model: 'claude-haiku-4-5-20251001',
+          max_tokens: 512,
+          messages: [{ role: 'user', content: prompt }],
+        }),
+      })
+      if (!res.ok) return ''
+      const json = await res.json()
+      return json.content?.[0]?.text ?? ''
+    }
+  } catch {
+    return ''
+  }
+}
+
 const DEFAULT_SYSTEM = `你是一个温暖、善解人意的情感陪伴伙伴。你会认真倾听用户的感受，给予关怀和支持，帮助他们疏解情绪、找到内心平静。
 你的说话风格亲切自然，像一个真正的朋友，而不是生硬的机器人。你不会给出千篇一律的建议，而是根据用户的具体情况给出有温度的回应。`
 

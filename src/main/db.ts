@@ -15,6 +15,7 @@ export type MessageRow = {
   role: 'user' | 'assistant'
   content: string
   created_at: string
+  emotion?: string
 }
 
 export type UserProfile = {
@@ -114,6 +115,13 @@ export function addMessage(
   )
 
   return msg
+}
+
+export function updateMessageEmotion(id: number, emotion: string): void {
+  store.set(
+    'messages',
+    store.get('messages', []).map((m) => (m.id === id ? { ...m, emotion } : m)),
+  )
 }
 
 export function listMessages(conversationId: number): MessageRow[] {

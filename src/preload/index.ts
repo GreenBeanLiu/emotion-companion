@@ -53,6 +53,11 @@ const api = {
       ipcRenderer.on('chat:done', handler)
       return () => ipcRenderer.off('chat:done', handler)
     },
+    onEmotionUpdate: (cb: (data: { messageId: number; emotion: string }) => void) => {
+      const handler = (_e: Electron.IpcRendererEvent, data: unknown) => cb(data as never)
+      ipcRenderer.on('emotion:update', handler)
+      return () => ipcRenderer.off('emotion:update', handler)
+    },
   },
 }
 

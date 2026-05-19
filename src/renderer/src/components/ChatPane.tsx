@@ -2,6 +2,16 @@ import { useEffect, useRef, useState, useCallback } from 'react'
 import { api, type ConversationRow, type MessageRow } from '../lib/api'
 import type { Character } from '../lib/characters'
 
+const EMOTION_META: Record<string, { emoji: string; color: string }> = {
+  开心: { emoji: '😊', color: '#4ade80' },
+  平静: { emoji: '😌', color: '#60a5fa' },
+  焦虑: { emoji: '😰', color: '#fb923c' },
+  悲伤: { emoji: '😢', color: '#818cf8' },
+  愤怒: { emoji: '😤', color: '#f87171' },
+  疲惫: { emoji: '😩', color: '#94a3b8' },
+  孤独: { emoji: '🥺', color: '#c084fc' },
+}
+
 type StreamingMsg = { role: 'assistant'; content: string; streaming: true }
 type DisplayMsg = MessageRow | StreamingMsg
 
@@ -33,6 +43,16 @@ export default function ChatPane({ conversation, character, onConversationCreate
       setMessages(msgs)
     })
   }, [conversation?.id])
+
+  // Subscribe to emotion updates
+  useEffect(() => {
+    const off = api.chat.onEmotionUpdate(({ messageId, emotion }) => {
+      setMessages((prev) =>
+        prev.map((m) => ('id' in m && m.id === messageId ? { ...m, emotion } : m)),
+      )
+    })
+    return off
+  }, [])
 
   // Subscribe to streaming chunks
   useEffect(() => {
@@ -227,18 +247,28 @@ function Avatar({ role, character }: { role: 'user' | 'assistant'; character: Ch
 function MessageBubble({ msg, character }: { msg: DisplayMsg; character: Character }) {
   const isUser = msg.role === 'user'
   const isStreaming = 'streaming' in msg
+  const emotion = !isStreaming && isUser ? (msg as MessageRow).emotion : undefined
+  const emotionMeta = emotion ? EMOTION_META[emotion] : undefined
 
   return (
     <div className={`flex gap-3 ${isUser ? 'flex-row-reverse' : ''}`}>
       <Avatar role={msg.role} character={character} />
-      <div
-        className={`max-w-[72%] rounded-2xl px-4 py-2.5 text-[13px] leading-6 whitespace-pre-wrap break-words ${
-          isUser
-            ? 'bg-[#2d2459] border border-[#a78bfa]/20 text-[#e8e6f0] rounded-tr-sm'
-            : 'bg-[#1c1b28] border border-[#2e2c42] text-[#d4d0e8] rounded-tl-sm'
-        } ${isStreaming ? 'after:content-["▋"] after:animate-pulse after:ml-0.5 after:text-[#a78bfa]' : ''}`}
-      >
-        {msg.content}
+      <div className={`flex flex-col gap-1 max-w-[72%] ${isUser ? 'items-end' : 'items-start'}`}>
+        <div
+          className={`rounded-2xl px-4 py-2.5 text-[13px] leading-6 whitespace-pre-wrap break-words ${
+            isUser
+              ? 'bg-[#2d2459] border border-[#a78bfa]/20 text-[#e8e6f0] rounded-tr-sm'
+              : 'bg-[#1c1b28] border border-[#2e2c42] text-[#d4d0e8] rounded-tl-sm'
+          } ${isStreaming ? 'after:content-["▋"] after:animate-pulse after:ml-0.5 after:text-[#a78bfa]' : ''}`}
+        >
+          {msg.content}
+        </div>
+        {emotionMeta && (
+          <span style={{ color: emotionMeta.color }} className="text-[11px] flex items-center gap-1 opacity-70">
+            <span>{emotionMeta.emoji}</span>
+            <span>{emotion}</span>
+          </span>
+        )}
       </div>
     </div>
   )

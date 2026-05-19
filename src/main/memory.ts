@@ -1,20 +1,18 @@
-import type { AiSettings, ChatMessage } from './ai'
+import { callSimple, type AiSettings, type ChatMessage } from './ai'
 import { getUserProfile, saveUserProfile } from './db'
 
-// Called after every assistant reply; runs in background, never throws.
 export async function extractAndUpdateProfile(
   messages: ChatMessage[],
   settings: AiSettings,
 ): Promise<void> {
-  const userTurns = messages.filter((m) => m.role === 'user')
-  if (userTurns.length === 0) return
+  if (messages.filter((m) => m.role === 'user').length === 0) return
 
   const existing = getUserProfile()?.summary ?? '（暂无记录）'
   const dialog = messages
     .map((m) => `${m.role === 'user' ? '用户' : 'AI'}：${m.content}`)
     .join('\n')
 
-  const extractPrompt = `你是一个记忆助手，负责维护用户的个人档案。
+  const prompt = `你是一个记忆助手，负责维护用户的个人档案。
 
 当前档案：
 ${existing}
@@ -30,56 +28,8 @@ ${dialog}
 - 若本次对话没有新信息，直接返回原档案内容，不做修改
 - 不要输出任何解释，只输出档案内容`
 
-  try {
-    const updated = await callSimple(settings, extractPrompt)
-    if (updated.trim()) {
-      saveUserProfile({ summary: updated.trim(), updatedAt: new Date().toISOString() })
-    }
-  } catch {
-    // best-effort, never surface errors to user
+  const updated = await callSimple(settings, prompt)
+  if (updated.trim()) {
+    saveUserProfile({ summary: updated.trim(), updatedAt: new Date().toISOString() })
   }
-}
-
-async function callSimple(settings: AiSettings, prompt: string): Promise<string> {
-  if (settings.provider === 'openai') {
-    return callOpenAISimple(settings, prompt)
-  }
-  return callClaudeSimple(settings, prompt)
-}
-
-async function callClaudeSimple(settings: AiSettings, prompt: string): Promise<string> {
-  const res = await fetch('https://api.anthropic.com/v1/messages', {
-    method: 'POST',
-    headers: {
-      'Content-Type': 'application/json',
-      'x-api-key': settings.apiKey,
-      'anthropic-version': '2023-06-01',
-    },
-    body: JSON.stringify({
-      model: settings.model || 'claude-haiku-4-5-20251001',
-      max_tokens: 512,
-      messages: [{ role: 'user', content: prompt }],
-    }),
-  })
-  if (!res.ok) return ''
-  const json = await res.json()
-  return json.content?.[0]?.text ?? ''
-}
-
-async function callOpenAISimple(settings: AiSettings, prompt: string): Promise<string> {
-  const res = await fetch('https://api.openai.com/v1/chat/completions', {
-    method: 'POST',
-    headers: {
-      'Content-Type': 'application/json',
-      Authorization: `Bearer ${settings.apiKey}`,
-    },
-    body: JSON.stringify({
-      model: settings.model || 'gpt-4o-mini',
-      messages: [{ role: 'user', content: prompt }],
-      max_tokens: 512,
-    }),
-  })
-  if (!res.ok) return ''
-  const json = await res.json()
-  return json.choices?.[0]?.message?.content ?? ''
 }

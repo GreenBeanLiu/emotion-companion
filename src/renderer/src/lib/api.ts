@@ -47,6 +47,7 @@ declare global {
         abort: (conversationId: number) => Promise<{ ok: boolean }>
         onChunk: (cb: (data: { conversationId: number; chunk: string }) => void) => () => void
         onDone: (cb: (data: { conversationId: number }) => void) => () => void
+        onEmotionUpdate: (cb: (data: { messageId: number; emotion: string }) => void) => () => void
       }
     }
   }
@@ -66,6 +67,7 @@ export type MessageRow = {
   role: 'user' | 'assistant'
   content: string
   created_at: string
+  emotion?: string
 }
 
 export const api = window.api
