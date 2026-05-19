@@ -7,9 +7,10 @@ type SettingsData = {
   provider: AiProvider
   apiKey: string
   model: string
-  characterId: string       // which character preset is active
-  systemPrompt: string      // resolved prompt written by renderer on character select
-  customSystemPrompt: string // raw custom text for 'custom' character
+  characterId: string
+  systemPrompt: string
+  customSystemPrompt: string
+  tikhubKey: string
 }
 
 const DEFAULTS: SettingsData = {
@@ -19,6 +20,7 @@ const DEFAULTS: SettingsData = {
   characterId: 'doraemon',
   systemPrompt: '',
   customSystemPrompt: '',
+  tikhubKey: '',
 }
 
 function settingsPath(): string {
@@ -60,6 +62,7 @@ export function loadSettings(): SettingsData {
     characterId: (raw.characterId as string) ?? DEFAULTS.characterId,
     systemPrompt: (raw.systemPrompt as string) ?? DEFAULTS.systemPrompt,
     customSystemPrompt: (raw.customSystemPrompt as string) ?? DEFAULTS.customSystemPrompt,
+    tikhubKey: (raw.tikhubKey as string) ?? DEFAULTS.tikhubKey,
   }
 }
 
@@ -79,6 +82,7 @@ export function saveSettings(settings: SettingsData): void {
   raw.characterId = settings.characterId
   raw.systemPrompt = settings.systemPrompt
   raw.customSystemPrompt = settings.customSystemPrompt
+  raw.tikhubKey = settings.tikhubKey
 
   writeRaw(raw)
 }

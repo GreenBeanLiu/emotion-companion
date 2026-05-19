@@ -5,6 +5,7 @@ type Settings = {
   provider: 'claude' | 'openai'
   apiKey: string
   model: string
+  tikhubKey: string
 }
 
 const MODEL_OPTIONS = {
@@ -25,6 +26,7 @@ export default function SettingsModal({ onClose }: { onClose: () => void }) {
     provider: 'claude',
     apiKey: '',
     model: '',
+    tikhubKey: '',
   })
   const [saving, setSaving] = useState(false)
   const [saved, setSaved] = useState(false)
@@ -133,6 +135,21 @@ export default function SettingsModal({ onClose }: { onClose: () => void }) {
                 <option key={m.value} value={m.value}>{m.label}</option>
               ))}
             </select>
+          </div>
+
+          {/* TikHub Key */}
+          <div className="flex flex-col gap-2">
+            <label className="text-[12px] font-medium text-[#9b97b4]">
+              TikHub API Key
+              <span className="ml-1 text-[#5e5b78] font-normal">（B站视频推荐，选填）</span>
+            </label>
+            <input
+              type="password"
+              value={settings.tikhubKey}
+              onChange={(e) => patch({ tikhubKey: e.target.value })}
+              placeholder="填入后，负面情绪时自动推荐B站视频"
+              className="bg-[#12111a] border border-[#2e2c42] rounded-lg px-3 py-2 text-[13px] text-[#e8e6f0] placeholder:text-[#3a3852] outline-none focus:border-[#a78bfa]/40 transition-colors"
+            />
           </div>
 
           {/* Character note */}

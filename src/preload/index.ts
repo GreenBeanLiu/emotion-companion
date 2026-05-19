@@ -58,6 +58,15 @@ const api = {
       ipcRenderer.on('emotion:update', handler)
       return () => ipcRenderer.off('emotion:update', handler)
     },
+    onBilibiliResults: (cb: (data: {
+      messageId: number
+      keyword: string
+      videos: { bvid: string; title: string; cover: string; author: string; play: number; duration: string }[]
+    }) => void) => {
+      const handler = (_e: Electron.IpcRendererEvent, data: unknown) => cb(data as never)
+      ipcRenderer.on('bilibili:results', handler)
+      return () => ipcRenderer.off('bilibili:results', handler)
+    },
   },
 }
 

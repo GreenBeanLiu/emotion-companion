@@ -15,6 +15,7 @@ declare global {
           characterId: string
           systemPrompt: string
           customSystemPrompt: string
+          tikhubKey: string
         }>
         save: (s: {
           provider: 'claude' | 'openai'
@@ -23,6 +24,7 @@ declare global {
           characterId: string
           systemPrompt: string
           customSystemPrompt: string
+          tikhubKey: string
         }) => Promise<{ ok: boolean }>
       }
       conv: {
@@ -48,6 +50,11 @@ declare global {
         onChunk: (cb: (data: { conversationId: number; chunk: string }) => void) => () => void
         onDone: (cb: (data: { conversationId: number }) => void) => () => void
         onEmotionUpdate: (cb: (data: { messageId: number; emotion: string }) => void) => () => void
+        onBilibiliResults: (cb: (data: {
+          messageId: number
+          keyword: string
+          videos: BilibiliVideo[]
+        }) => void) => () => void
       }
     }
   }
@@ -59,6 +66,15 @@ export type ConversationRow = {
   created_at: string
   updated_at: string
   message_count?: number
+}
+
+export type BilibiliVideo = {
+  bvid: string
+  title: string
+  cover: string
+  author: string
+  play: number
+  duration: string
 }
 
 export type MessageRow = {

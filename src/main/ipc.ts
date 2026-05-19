@@ -14,6 +14,7 @@ import { streamChat } from './ai'
 import { loadSettings, saveSettings } from './settings'
 import { extractAndUpdateProfile } from './memory'
 import { detectEmotion } from './emotion'
+import { shouldRecommend, generateKeyword, searchVideos } from './bilibili'
 
 const activeAbortControllers = new Map<number, AbortController>()
 
@@ -105,10 +106,19 @@ export function registerIpcHandlers(): void {
     ]
     extractAndUpdateProfile(fullHistory, settings).catch(() => {})
 
-    detectEmotion(content, settings).then((emotion) => {
+    detectEmotion(content, settings).then(async (emotion) => {
       if (!emotion) return
       updateMessageEmotion(userMsg.id, emotion)
       win?.webContents.send('emotion:update', { messageId: userMsg.id, emotion })
+
+      // B站 recommendation for negative emotions
+      if (shouldRecommend(emotion) && settings.tikhubKey) {
+        const keyword = await generateKeyword(fullHistory, emotion, settings)
+        const videos = await searchVideos(keyword, settings.tikhubKey)
+        if (videos.length > 0) {
+          win?.webContents.send('bilibili:results', { messageId: userMsg.id, keyword, videos })
+        }
+      }
     }).catch(() => {})
 
     return { userMessageId: userMsg.id, assistantMessageId: assistantMsg.id }

@@ -1,5 +1,5 @@
 import { useEffect, useRef, useState, useCallback } from 'react'
-import { api, type ConversationRow, type MessageRow } from '../lib/api'
+import { api, type ConversationRow, type MessageRow, type BilibiliVideo } from '../lib/api'
 import type { Character } from '../lib/characters'
 
 const EMOTION_META: Record<string, { emoji: string; color: string }> = {
@@ -27,6 +27,7 @@ export default function ChatPane({ conversation, character, onConversationCreate
   const [input, setInput] = useState('')
   const [sending, setSending] = useState(false)
   const [error, setError] = useState<string | null>(null)
+  const [recommendations, setRecommendations] = useState<Map<number, { keyword: string; videos: BilibiliVideo[] }>>(new Map())
   const bottomRef = useRef<HTMLDivElement>(null)
   const inputRef = useRef<HTMLTextAreaElement>(null)
   const convIdRef = useRef<number | null>(null)
@@ -35,6 +36,7 @@ export default function ChatPane({ conversation, character, onConversationCreate
   useEffect(() => {
     if (!conversation) {
       setMessages([])
+      setRecommendations(new Map())
       convIdRef.current = null
       return
     }
@@ -50,6 +52,14 @@ export default function ChatPane({ conversation, character, onConversationCreate
       setMessages((prev) =>
         prev.map((m) => ('id' in m && m.id === messageId ? { ...m, emotion } : m)),
       )
+    })
+    return off
+  }, [])
+
+  // Subscribe to B站 video recommendations
+  useEffect(() => {
+    const off = api.chat.onBilibiliResults(({ messageId, keyword, videos }) => {
+      setRecommendations((prev) => new Map(prev).set(messageId, { keyword, videos }))
     })
     return off
   }, [])
@@ -167,9 +177,16 @@ export default function ChatPane({ conversation, character, onConversationCreate
           </div>
         )}
 
-        {messages.map((msg, i) => (
-          <MessageBubble key={'id' in msg ? msg.id : `stream-${i}`} msg={msg} character={character} />
-        ))}
+        {messages.map((msg, i) => {
+          const msgId = 'id' in msg ? msg.id : undefined
+          const rec = msgId ? recommendations.get(msgId) : undefined
+          return (
+            <div key={msgId ?? `stream-${i}`}>
+              <MessageBubble msg={msg} character={character} />
+              {rec && <VideoStrip keyword={rec.keyword} videos={rec.videos} />}
+            </div>
+          )
+        })}
 
         {sending && !messages.some((m) => 'streaming' in m) && (
           <div className="flex gap-3">
@@ -269,6 +286,50 @@ function MessageBubble({ msg, character }: { msg: DisplayMsg; character: Charact
             <span>{emotion}</span>
           </span>
         )}
+      </div>
+    </div>
+  )
+}
+
+function VideoStrip({ keyword, videos }: { keyword: string; videos: BilibiliVideo[] }) {
+  function openVideo(bvid: string) {
+    // Use Electron shell to open in default browser
+    window.open(`https://www.bilibili.com/video/${bvid}`, '_blank')
+  }
+
+  function formatPlay(n: number): string {
+    if (n >= 10000) return `${(n / 10000).toFixed(1)}万`
+    return String(n)
+  }
+
+  return (
+    <div className="mt-2 ml-9">
+      <p className="text-[11px] text-[#5e5b78] mb-2">
+        💡 为你找了一些 <span className="text-[#a78bfa]">{keyword}</span> 的视频
+      </p>
+      <div className="flex gap-2 overflow-x-auto pb-1">
+        {videos.map((v) => (
+          <button
+            key={v.bvid}
+            onClick={() => openVideo(v.bvid)}
+            className="shrink-0 w-40 text-left rounded-xl overflow-hidden border border-[#2e2c42] bg-[#1c1b28] hover:border-[#a78bfa]/40 hover:bg-[#252336] transition-all"
+          >
+            {v.cover ? (
+              <img src={v.cover} alt={v.title} className="w-full h-[90px] object-cover" />
+            ) : (
+              <div className="w-full h-[90px] bg-[#16151f] flex items-center justify-center text-[#3a3852] text-[11px]">
+                暂无封面
+              </div>
+            )}
+            <div className="px-2 py-1.5">
+              <p className="text-[11px] text-[#d4d0e8] leading-4 line-clamp-2">{v.title}</p>
+              <p className="text-[10px] text-[#5e5b78] mt-1 flex items-center justify-between">
+                <span className="truncate max-w-[70%]">{v.author}</span>
+                <span>{formatPlay(v.play)}播放</span>
+              </p>
+            </div>
+          </button>
+        ))}
       </div>
     </div>
   )
