@@ -29,10 +29,18 @@ export default function SettingsModal({ onClose }: { onClose: () => void }) {
   const [saving, setSaving] = useState(false)
   const [saved, setSaved] = useState(false)
   const [showKey, setShowKey] = useState(false)
+  const [profile, setProfile] = useState<{ summary: string; updatedAt: string } | null>(null)
+  const [showProfile, setShowProfile] = useState(false)
 
   useEffect(() => {
     api.settings.load().then(setSettings)
+    api.memory.get().then(setProfile)
   }, [])
+
+  async function handleClearMemory() {
+    await api.memory.clear()
+    setProfile(null)
+  }
 
   async function handleSave() {
     setSaving(true)
@@ -136,6 +144,51 @@ export default function SettingsModal({ onClose }: { onClose: () => void }) {
                 在顶部标题栏点击角色名称，可切换或自定义角色人设。
               </p>
             </div>
+          </div>
+
+          {/* Memory */}
+          <div className="rounded-lg border border-[#2e2c42] bg-[#12111a] px-4 py-3">
+            <div className="flex items-center justify-between">
+              <div className="flex items-center gap-2">
+                <span className="text-[16px]">🧠</span>
+                <p className="text-[12px] font-medium text-[#9b97b4]">长期记忆</p>
+                {profile ? (
+                  <span className="text-[10px] px-2 py-0.5 rounded-full bg-[#a78bfa]/15 text-[#a78bfa] border border-[#a78bfa]/25">
+                    已记录
+                  </span>
+                ) : (
+                  <span className="text-[10px] text-[#3a3852]">暂无</span>
+                )}
+              </div>
+              <div className="flex items-center gap-2">
+                {profile && (
+                  <>
+                    <button
+                      onClick={() => setShowProfile((v) => !v)}
+                      className="text-[11px] text-[#5e5b78] hover:text-[#9b97b4] transition-colors"
+                    >
+                      {showProfile ? '收起' : '查看'}
+                    </button>
+                    <button
+                      onClick={handleClearMemory}
+                      className="text-[11px] text-red-500/60 hover:text-red-400 transition-colors"
+                    >
+                      清除
+                    </button>
+                  </>
+                )}
+              </div>
+            </div>
+            {!profile && (
+              <p className="text-[11px] text-[#3a3852] mt-1.5 leading-5">
+                聊天过程中会自动提炼你提到的信息，下次对话时角色会记得你。
+              </p>
+            )}
+            {profile && showProfile && (
+              <pre className="mt-2.5 text-[11px] text-[#7b78a0] leading-6 whitespace-pre-wrap font-sans">
+                {profile.summary}
+              </pre>
+            )}
           </div>
         </div>
 

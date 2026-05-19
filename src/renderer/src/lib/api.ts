@@ -34,6 +34,10 @@ declare global {
       msg: {
         list: (conversationId: number) => Promise<MessageRow[]>
       }
+      memory: {
+        get: () => Promise<{ summary: string; updatedAt: string } | null>
+        clear: () => Promise<{ ok: boolean }>
+      }
       chat: {
         send: (payload: {
           conversationId: number

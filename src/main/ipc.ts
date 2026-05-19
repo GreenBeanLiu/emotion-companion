@@ -6,9 +6,12 @@ import {
   deleteConversation,
   addMessage,
   listMessages,
+  getUserProfile,
+  clearUserProfile,
 } from './db'
 import { streamChat } from './ai'
 import { loadSettings, saveSettings } from './settings'
+import { extractAndUpdateProfile } from './memory'
 
 const activeAbortControllers = new Map<number, AbortController>()
 
@@ -17,6 +20,13 @@ export function registerIpcHandlers(): void {
   ipcMain.handle('settings:load', () => loadSettings())
   ipcMain.handle('settings:save', (_e, settings) => {
     saveSettings(settings)
+    return { ok: true }
+  })
+
+  // ── Memory ───────────────────────────────────────────────────────
+  ipcMain.handle('memory:get', () => getUserProfile())
+  ipcMain.handle('memory:clear', () => {
+    clearUserProfile()
     return { ok: true }
   })
 
@@ -46,6 +56,12 @@ export function registerIpcHandlers(): void {
 
     if (!settings.apiKey) {
       return { error: '请先在设置中填写 API Key' }
+    }
+
+    // Inject long-term memory into system prompt
+    const profile = getUserProfile()
+    if (profile?.summary) {
+      settings.systemPrompt = `${settings.systemPrompt}\n\n[关于这位用户的已知信息]\n${profile.summary}`
     }
 
     // Save user message
@@ -78,6 +94,15 @@ export function registerIpcHandlers(): void {
     const assistantMsg = addMessage(conversationId, 'assistant', fullReply)
 
     win?.webContents.send('chat:done', { conversationId })
+
+    // Background memory extraction — fire and forget
+    const fullHistory = [
+      ...history,
+      { role: 'user' as const, content },
+      { role: 'assistant' as const, content: fullReply },
+    ]
+    extractAndUpdateProfile(fullHistory, settings).catch(() => {})
+
     return { userMessageId: userMsg.id, assistantMessageId: assistantMsg.id }
   })
 

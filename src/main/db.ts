@@ -17,10 +17,16 @@ export type MessageRow = {
   created_at: string
 }
 
+export type UserProfile = {
+  summary: string
+  updatedAt: string
+}
+
 type StoreSchema = {
   conversations: ConversationRow[]
   messages: MessageRow[]
   nextId: number
+  userProfile?: UserProfile
 }
 
 const store = new Store<StoreSchema>({
@@ -115,4 +121,18 @@ export function listMessages(conversationId: number): MessageRow[] {
     .get('messages', [])
     .filter((m) => m.conversation_id === conversationId)
     .sort((a, b) => a.created_at.localeCompare(b.created_at))
+}
+
+// ── User profile (long-term memory) ───────────────────────────────
+
+export function getUserProfile(): UserProfile | null {
+  return store.get('userProfile') ?? null
+}
+
+export function saveUserProfile(profile: UserProfile): void {
+  store.set('userProfile', profile)
+}
+
+export function clearUserProfile(): void {
+  store.delete('userProfile')
 }

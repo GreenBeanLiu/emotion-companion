@@ -29,6 +29,12 @@ const api = {
     list: (conversationId: number) => ipcRenderer.invoke('msg:list', conversationId),
   },
 
+  // 长期记忆
+  memory: {
+    get: () => ipcRenderer.invoke('memory:get'),
+    clear: () => ipcRenderer.invoke('memory:clear'),
+  },
+
   // 聊天（流式）
   chat: {
     send: (payload: {
