@@ -7,14 +7,18 @@ type SettingsData = {
   provider: AiProvider
   apiKey: string
   model: string
-  systemPrompt: string
+  characterId: string       // which character preset is active
+  systemPrompt: string      // resolved prompt written by renderer on character select
+  customSystemPrompt: string // raw custom text for 'custom' character
 }
 
 const DEFAULTS: SettingsData = {
   provider: 'claude',
   apiKey: '',
   model: '',
+  characterId: 'doraemon',
   systemPrompt: '',
+  customSystemPrompt: '',
 }
 
 function settingsPath(): string {
@@ -53,7 +57,9 @@ export function loadSettings(): SettingsData {
     provider: (raw.provider as AiProvider) ?? DEFAULTS.provider,
     apiKey,
     model: (raw.model as string) ?? DEFAULTS.model,
+    characterId: (raw.characterId as string) ?? DEFAULTS.characterId,
     systemPrompt: (raw.systemPrompt as string) ?? DEFAULTS.systemPrompt,
+    customSystemPrompt: (raw.customSystemPrompt as string) ?? DEFAULTS.customSystemPrompt,
   }
 }
 
@@ -70,7 +76,9 @@ export function saveSettings(settings: SettingsData): void {
 
   raw.provider = settings.provider
   raw.model = settings.model
+  raw.characterId = settings.characterId
   raw.systemPrompt = settings.systemPrompt
+  raw.customSystemPrompt = settings.customSystemPrompt
 
   writeRaw(raw)
 }

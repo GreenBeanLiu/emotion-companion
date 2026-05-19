@@ -5,7 +5,6 @@ type Settings = {
   provider: 'claude' | 'openai'
   apiKey: string
   model: string
-  systemPrompt: string
 }
 
 const MODEL_OPTIONS = {
@@ -21,15 +20,11 @@ const MODEL_OPTIONS = {
   ],
 }
 
-const DEFAULT_SYSTEM = `你是一个温暖、善解人意的情感陪伴伙伴。你会认真倾听用户的感受，给予关怀和支持，帮助他们疏解情绪、找到内心平静。
-你的说话风格亲切自然，像一个真正的朋友，而不是生硬的机器人。`
-
 export default function SettingsModal({ onClose }: { onClose: () => void }) {
   const [settings, setSettings] = useState<Settings>({
     provider: 'claude',
     apiKey: '',
     model: '',
-    systemPrompt: '',
   })
   const [saving, setSaving] = useState(false)
   const [saved, setSaved] = useState(false)
@@ -132,19 +127,15 @@ export default function SettingsModal({ onClose }: { onClose: () => void }) {
             </select>
           </div>
 
-          {/* System prompt */}
-          <div className="flex flex-col gap-2">
-            <label className="text-[12px] font-medium text-[#9b97b4]">
-              AI 角色设定
-              <span className="ml-1 text-[#5e5b78] font-normal">（可自定义人设）</span>
-            </label>
-            <textarea
-              value={settings.systemPrompt}
-              onChange={(e) => patch({ systemPrompt: e.target.value })}
-              placeholder={DEFAULT_SYSTEM}
-              rows={4}
-              className="bg-[#12111a] border border-[#2e2c42] rounded-lg px-3 py-2 text-[13px] text-[#e8e6f0] placeholder:text-[#3a3852] outline-none focus:border-[#a78bfa]/40 resize-none leading-6 transition-colors"
-            />
+          {/* Character note */}
+          <div className="rounded-lg border border-[#2e2c42] bg-[#12111a] px-4 py-3 flex items-start gap-3">
+            <span className="text-[18px] mt-0.5">🎭</span>
+            <div>
+              <p className="text-[12px] font-medium text-[#9b97b4]">角色设定</p>
+              <p className="text-[12px] text-[#5e5b78] mt-1 leading-5">
+                在顶部标题栏点击角色名称，可切换或自定义角色人设。
+              </p>
+            </div>
           </div>
         </div>
 

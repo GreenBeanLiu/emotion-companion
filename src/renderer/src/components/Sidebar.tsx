@@ -1,14 +1,16 @@
 import { useEffect, useState } from 'react'
 import { api, type ConversationRow } from '../lib/api'
+import type { Character } from '../lib/characters'
 
 type Props = {
   activeId: number | null
   refreshKey: number
   onSelect: (conv: ConversationRow) => void
   onNew: () => void
+  character: Character
 }
 
-export default function Sidebar({ activeId, refreshKey, onSelect, onNew }: Props) {
+export default function Sidebar({ activeId, refreshKey, onSelect, onNew, character }: Props) {
   const [convs, setConvs] = useState<ConversationRow[]>([])
   const [menuId, setMenuId] = useState<number | null>(null)
 

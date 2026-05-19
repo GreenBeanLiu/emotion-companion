@@ -1,18 +1,18 @@
 import { useEffect, useRef, useState, useCallback } from 'react'
 import { api, type ConversationRow, type MessageRow } from '../lib/api'
+import type { Character } from '../lib/characters'
 
 type StreamingMsg = { role: 'assistant'; content: string; streaming: true }
 type DisplayMsg = MessageRow | StreamingMsg
 
 type Props = {
   conversation: ConversationRow | null
+  character: Character
   onConversationCreated: (conv: ConversationRow) => void
   onConversationUpdated: () => void
 }
 
-const WELCOME = `你好 🌸 很高兴认识你。不管你今天心情如何，我都在这里陪着你。有什么想说的吗？`
-
-export default function ChatPane({ conversation, onConversationCreated, onConversationUpdated }: Props) {
+export default function ChatPane({ conversation, character, onConversationCreated, onConversationUpdated }: Props) {
   const [messages, setMessages] = useState<DisplayMsg[]>([])
   const [input, setInput] = useState('')
   const [sending, setSending] = useState(false)
@@ -119,30 +119,45 @@ export default function ChatPane({ conversation, onConversationCreated, onConver
       <div className="flex-1 overflow-y-auto px-6 py-4 flex flex-col gap-4">
         {isEmpty && (
           <div className="flex-1 flex flex-col items-center justify-center gap-4 text-center">
-            <div className="w-14 h-14 rounded-full bg-gradient-to-br from-[#a78bfa] to-[#f472b6] opacity-80 flex items-center justify-center">
-              <span className="text-2xl">🌸</span>
+            <div style={{
+              width: 64, height: 64, borderRadius: '50%',
+              background: `linear-gradient(135deg, ${character.bgGradient[0]}, ${character.color}60)`,
+              border: `2px solid ${character.color}40`,
+              display: 'flex', alignItems: 'center', justifyContent: 'center',
+              fontSize: 30,
+            }}>
+              {character.emoji}
             </div>
             <div>
-              <p className="text-[15px] font-medium text-[#e8e6f0]">情感陪伴</p>
-              <p className="text-[13px] text-[#5e5b78] mt-1">随时倾听，温暖陪伴</p>
+              <p className="text-[16px] font-semibold text-[#e8e6f0]">{character.name}</p>
+              <p className="text-[12px] mt-1" style={{ color: character.color + 'cc' }}>
+                {character.title}
+              </p>
             </div>
-            <div className="max-w-sm rounded-2xl bg-[#1c1b28] border border-[#2e2c42] px-5 py-4 text-[13px] text-[#9b97b4] leading-6">
-              {WELCOME}
+            <div className="flex gap-2">
+              {character.tags.map((tag) => (
+                <span key={tag} style={{
+                  fontSize: 11, padding: '3px 10px', borderRadius: 20,
+                  background: `${character.color}15`,
+                  color: character.color,
+                  border: `1px solid ${character.color}30`,
+                }}>{tag}</span>
+              ))}
             </div>
           </div>
         )}
 
         {messages.map((msg, i) => (
-          <MessageBubble key={'id' in msg ? msg.id : `stream-${i}`} msg={msg} />
+          <MessageBubble key={'id' in msg ? msg.id : `stream-${i}`} msg={msg} character={character} />
         ))}
 
         {sending && !messages.some((m) => 'streaming' in m) && (
           <div className="flex gap-3">
-            <Avatar role="assistant" />
+            <Avatar role="assistant" character={character} />
             <div className="flex items-center gap-1.5 px-4 py-3 rounded-2xl bg-[#1c1b28] border border-[#2e2c42]">
-              <span className="w-1.5 h-1.5 rounded-full bg-[#a78bfa] animate-bounce" style={{ animationDelay: '0ms' }} />
-              <span className="w-1.5 h-1.5 rounded-full bg-[#a78bfa] animate-bounce" style={{ animationDelay: '120ms' }} />
-              <span className="w-1.5 h-1.5 rounded-full bg-[#a78bfa] animate-bounce" style={{ animationDelay: '240ms' }} />
+              <span className="w-1.5 h-1.5 rounded-full animate-bounce" style={{ backgroundColor: character.color, animationDelay: '0ms' }} />
+              <span className="w-1.5 h-1.5 rounded-full animate-bounce" style={{ backgroundColor: character.color, animationDelay: '120ms' }} />
+              <span className="w-1.5 h-1.5 rounded-full animate-bounce" style={{ backgroundColor: character.color, animationDelay: '240ms' }} />
             </div>
           </div>
         )}
@@ -187,26 +202,35 @@ export default function ChatPane({ conversation, onConversationCreated, onConver
   )
 }
 
-function Avatar({ role }: { role: 'user' | 'assistant' }) {
+function Avatar({ role, character }: { role: 'user' | 'assistant'; character: Character }) {
   if (role === 'assistant') {
     return (
-      <div className="w-7 h-7 rounded-full bg-gradient-to-br from-[#a78bfa] to-[#f472b6] shrink-0 flex items-center justify-center text-[11px] mt-0.5">
-        🌸
+      <div style={{
+        width: 28, height: 28, borderRadius: '50%', flexShrink: 0, marginTop: 2,
+        background: `linear-gradient(135deg, ${character.bgGradient[0]}, ${character.color}60)`,
+        border: `1px solid ${character.color}30`,
+        display: 'flex', alignItems: 'center', justifyContent: 'center',
+        fontSize: 14,
+      }}>
+        {character.emoji}
       </div>
     )
   }
   return (
-    <div className="w-7 h-7 rounded-full bg-[#2d2459] border border-[#a78bfa]/30 shrink-0 mt-0.5" />
+    <div style={{
+      width: 28, height: 28, borderRadius: '50%', flexShrink: 0, marginTop: 2,
+      background: '#2d2459', border: '1px solid rgba(167,139,250,0.3)',
+    }} />
   )
 }
 
-function MessageBubble({ msg }: { msg: DisplayMsg }) {
+function MessageBubble({ msg, character }: { msg: DisplayMsg; character: Character }) {
   const isUser = msg.role === 'user'
   const isStreaming = 'streaming' in msg
 
   return (
     <div className={`flex gap-3 ${isUser ? 'flex-row-reverse' : ''}`}>
-      <Avatar role={msg.role} />
+      <Avatar role={msg.role} character={character} />
       <div
         className={`max-w-[72%] rounded-2xl px-4 py-2.5 text-[13px] leading-6 whitespace-pre-wrap break-words ${
           isUser

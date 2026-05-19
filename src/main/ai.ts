@@ -6,7 +6,7 @@ export type AiSettings = {
   provider: AiProvider
   apiKey: string
   model: string
-  systemPrompt: string
+  systemPrompt: string   // resolved system prompt (character prompt or custom)
 }
 
 export type ChatMessage = { role: 'user' | 'assistant'; content: string }

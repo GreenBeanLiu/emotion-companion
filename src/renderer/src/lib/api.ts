@@ -12,13 +12,17 @@ declare global {
           provider: 'claude' | 'openai'
           apiKey: string
           model: string
+          characterId: string
           systemPrompt: string
+          customSystemPrompt: string
         }>
         save: (s: {
           provider: 'claude' | 'openai'
           apiKey: string
           model: string
+          characterId: string
           systemPrompt: string
+          customSystemPrompt: string
         }) => Promise<{ ok: boolean }>
       }
       conv: {
