@@ -1,0 +1,61 @@
+import { contextBridge, ipcRenderer } from 'electron'
+import { electronAPI } from '@electron-toolkit/preload'
+
+// 暴露给渲染层的 API（通过 contextBridge 隔离，安全）
+const api = {
+  // 窗口控制
+  win: {
+    minimize: () => ipcRenderer.send('win:minimize'),
+    maximize: () => ipcRenderer.send('win:maximize'),
+    close: () => ipcRenderer.send('win:close'),
+  },
+
+  // 设置
+  settings: {
+    load: () => ipcRenderer.invoke('settings:load'),
+    save: (s: unknown) => ipcRenderer.invoke('settings:save', s),
+  },
+
+  // 对话列表
+  conv: {
+    list: () => ipcRenderer.invoke('conv:list'),
+    create: (title?: string) => ipcRenderer.invoke('conv:create', title),
+    rename: (id: number, title: string) => ipcRenderer.invoke('conv:rename', id, title),
+    delete: (id: number) => ipcRenderer.invoke('conv:delete', id),
+  },
+
+  // 消息
+  msg: {
+    list: (conversationId: number) => ipcRenderer.invoke('msg:list', conversationId),
+  },
+
+  // 聊天（流式）
+  chat: {
+    send: (payload: {
+      conversationId: number
+      content: string
+      history: { role: 'user' | 'assistant'; content: string }[]
+    }) => ipcRenderer.invoke('chat:send', payload),
+    abort: (conversationId: number) => ipcRenderer.invoke('chat:abort', conversationId),
+    onChunk: (cb: (data: { conversationId: number; chunk: string }) => void) => {
+      const handler = (_e: Electron.IpcRendererEvent, data: unknown) => cb(data as never)
+      ipcRenderer.on('chat:chunk', handler)
+      return () => ipcRenderer.off('chat:chunk', handler)
+    },
+    onDone: (cb: (data: { conversationId: number }) => void) => {
+      const handler = (_e: Electron.IpcRendererEvent, data: unknown) => cb(data as never)
+      ipcRenderer.on('chat:done', handler)
+      return () => ipcRenderer.off('chat:done', handler)
+    },
+  },
+}
+
+if (process.contextIsolated) {
+  contextBridge.exposeInMainWorld('electron', electronAPI)
+  contextBridge.exposeInMainWorld('api', api)
+} else {
+  // @ts-ignore
+  window.electron = electronAPI
+  // @ts-ignore
+  window.api = api
+}

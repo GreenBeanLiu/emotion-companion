@@ -1,0 +1,58 @@
+@import "tailwindcss";
+
+@theme {
+  --color-surface: #12111a;
+  --color-surface-2: #1c1b28;
+  --color-surface-3: #252336;
+  --color-border: #2e2c42;
+  --color-border-soft: #1f1e2e;
+  --color-text: #e8e6f0;
+  --color-text-soft: #9b97b4;
+  --color-text-muted: #5e5b78;
+  --color-accent: #a78bfa;
+  --color-accent-2: #f472b6;
+  --color-user-bubble: #2d2459;
+  --color-ai-bubble: #1c1b28;
+}
+
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+html, body, #root {
+  height: 100%;
+  overflow: hidden;
+}
+
+body {
+  background: var(--color-surface);
+  color: var(--color-text);
+  font-family: -apple-system, "PingFang SC", "Microsoft YaHei", "Segoe UI", sans-serif;
+  font-size: 14px;
+  -webkit-font-smoothing: antialiased;
+}
+
+/* 自定义滚动条 */
+::-webkit-scrollbar {
+  width: 4px;
+}
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+::-webkit-scrollbar-thumb {
+  background: var(--color-border);
+  border-radius: 2px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: var(--color-text-muted);
+}
+
+/* 拖拽区域 */
+.drag-region {
+  -webkit-app-region: drag;
+}
+.no-drag {
+  -webkit-app-region: no-drag;
+}

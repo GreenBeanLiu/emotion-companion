@@ -1,0 +1,63 @@
+// Type-safe wrapper around window.api (exposed by preload)
+declare global {
+  interface Window {
+    api: {
+      win: {
+        minimize: () => void
+        maximize: () => void
+        close: () => void
+      }
+      settings: {
+        load: () => Promise<{
+          provider: 'claude' | 'openai'
+          apiKey: string
+          model: string
+          systemPrompt: string
+        }>
+        save: (s: {
+          provider: 'claude' | 'openai'
+          apiKey: string
+          model: string
+          systemPrompt: string
+        }) => Promise<{ ok: boolean }>
+      }
+      conv: {
+        list: () => Promise<ConversationRow[]>
+        create: (title?: string) => Promise<ConversationRow>
+        rename: (id: number, title: string) => Promise<{ ok: boolean }>
+        delete: (id: number) => Promise<{ ok: boolean }>
+      }
+      msg: {
+        list: (conversationId: number) => Promise<MessageRow[]>
+      }
+      chat: {
+        send: (payload: {
+          conversationId: number
+          content: string
+          history: { role: 'user' | 'assistant'; content: string }[]
+        }) => Promise<{ userMessageId?: number; assistantMessageId?: number; error?: string; aborted?: boolean }>
+        abort: (conversationId: number) => Promise<{ ok: boolean }>
+        onChunk: (cb: (data: { conversationId: number; chunk: string }) => void) => () => void
+        onDone: (cb: (data: { conversationId: number }) => void) => () => void
+      }
+    }
+  }
+}
+
+export type ConversationRow = {
+  id: number
+  title: string
+  created_at: string
+  updated_at: string
+  message_count?: number
+}
+
+export type MessageRow = {
+  id: number
+  conversation_id: number
+  role: 'user' | 'assistant'
+  content: string
+  created_at: string
+}
+
+export const api = window.api
