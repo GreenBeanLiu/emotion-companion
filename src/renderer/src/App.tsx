@@ -27,17 +27,15 @@ export default function App() {
 
   return (
     <div style={{ display: 'flex', flexDirection: 'column', height: '100%', background: '#12111a' }}>
-      <TitleBar
-        character={character}
-        onSettings={() => setShowSettings(true)}
-        onChangeCharacter={() => setShowCharacterPicker(true)}
-      />
+      <TitleBar />
       <div style={{ display: 'flex', flex: 1, minHeight: 0 }}>
         <Sidebar
           activeId={activeConv?.id ?? null}
           refreshKey={sidebarRefreshKey}
           onSelect={setActiveConv}
           onNew={() => setActiveConv(null)}
+          onSettings={() => setShowSettings(true)}
+          onChangeCharacter={() => setShowCharacterPicker(true)}
           character={character}
         />
         <ChatPane

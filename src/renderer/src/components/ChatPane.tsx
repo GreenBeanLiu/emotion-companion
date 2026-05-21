@@ -144,36 +144,39 @@ export default function ChatPane({ conversation, character, onConversationCreate
   const isEmpty = messages.length === 0
 
   return (
-    <div className="flex-1 flex flex-col min-w-0 bg-[#12111a]">
+    <div className="flex-1 flex flex-col min-w-0" style={{ background: '#12111a' }}>
       {/* Messages area */}
-      <div className="flex-1 overflow-y-auto px-6 py-4 flex flex-col gap-4">
+      <div className="flex-1 overflow-y-auto px-6 py-6 flex flex-col gap-5">
         {isEmpty && (
-          <div className="flex-1 flex flex-col items-center justify-center gap-4 text-center">
+          <div className="flex-1 flex flex-col items-center justify-center gap-5 text-center">
             <div style={{
-              width: 64, height: 64, borderRadius: '50%',
-              background: `linear-gradient(135deg, ${character.bgGradient[0]}, ${character.color}60)`,
-              border: `2px solid ${character.color}40`,
+              width: 80, height: 80, borderRadius: 24,
+              background: `linear-gradient(135deg, ${character.bgGradient[0]}, ${character.color}80)`,
+              border: `1px solid ${character.color}40`,
+              boxShadow: `0 8px 32px ${character.color}30`,
               display: 'flex', alignItems: 'center', justifyContent: 'center',
-              fontSize: 30,
+              fontSize: 38,
             }}>
               {character.emoji}
             </div>
             <div>
-              <p className="text-[16px] font-semibold text-[#e8e6f0]">{character.name}</p>
-              <p className="text-[12px] mt-1" style={{ color: character.color + 'cc' }}>
+              <p style={{ fontSize: 18, fontWeight: 700, color: '#e8e6f0', marginBottom: 6 }}>{character.name}</p>
+              <p style={{ fontSize: 13, color: character.color + 'bb', lineHeight: 1.5 }}>
                 {character.title}
               </p>
             </div>
-            <div className="flex gap-2">
+            <div className="flex gap-2 flex-wrap justify-center">
               {character.tags.map((tag) => (
                 <span key={tag} style={{
-                  fontSize: 11, padding: '3px 10px', borderRadius: 20,
-                  background: `${character.color}15`,
+                  fontSize: 12, padding: '4px 12px', borderRadius: 20,
+                  background: `${character.color}18`,
                   color: character.color,
-                  border: `1px solid ${character.color}30`,
+                  border: `1px solid ${character.color}35`,
+                  fontWeight: 500,
                 }}>{tag}</span>
               ))}
             </div>
+            <p style={{ fontSize: 12, color: '#3a3852', marginTop: 4 }}>发条消息开始聊天吧</p>
           </div>
         )}
 
@@ -209,8 +212,16 @@ export default function ChatPane({ conversation, character, onConversationCreate
       </div>
 
       {/* Input area */}
-      <div className="border-t border-[#1f1e2e] px-4 py-3">
-        <div className="flex items-end gap-2 rounded-2xl border border-[#2e2c42] bg-[#1c1b28] px-4 py-2.5 focus-within:border-[#a78bfa]/40 transition-colors">
+      <div style={{ borderTop: '1px solid #1a1927', padding: '14px 20px 16px' }}>
+        <div style={{
+          display: 'flex', alignItems: 'flex-end', gap: 10,
+          borderRadius: 16, border: '1px solid #252336',
+          background: '#1a1929', padding: '10px 14px',
+          transition: 'border-color 0.15s',
+        }}
+          onFocus={(e) => (e.currentTarget.style.borderColor = 'rgba(167,139,250,0.4)')}
+          onBlur={(e) => (e.currentTarget.style.borderColor = '#252336')}
+        >
           <textarea
             ref={inputRef}
             value={input}
@@ -218,14 +229,23 @@ export default function ChatPane({ conversation, character, onConversationCreate
             onKeyDown={handleKeyDown}
             placeholder="说说你的心情…"
             rows={1}
-            className="flex-1 resize-none bg-transparent text-[13px] text-[#e8e6f0] placeholder:text-[#5e5b78] outline-none leading-6 max-h-32 overflow-y-auto"
             style={{ fieldSizing: 'content' } as React.CSSProperties}
+            className="flex-1 resize-none bg-transparent text-[14px] text-[#e8e6f0] placeholder:text-[#4a4768] outline-none leading-6 max-h-36 overflow-y-auto"
             disabled={sending}
           />
           <button
             onClick={sendMessage}
             disabled={!input.trim() || sending}
-            className="w-8 h-8 rounded-xl flex items-center justify-center bg-gradient-to-br from-[#a78bfa] to-[#f472b6] text-white disabled:opacity-30 disabled:cursor-not-allowed hover:opacity-90 transition-opacity shrink-0"
+            style={{
+              width: 34, height: 34, borderRadius: 10, border: 'none', flexShrink: 0,
+              background: input.trim() && !sending
+                ? 'linear-gradient(135deg, #a78bfa, #f472b6)'
+                : '#252336',
+              color: input.trim() && !sending ? 'white' : '#4a4768',
+              cursor: input.trim() && !sending ? 'pointer' : 'not-allowed',
+              display: 'flex', alignItems: 'center', justifyContent: 'center',
+              transition: 'all 0.15s',
+            }}
           >
             <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5">
               <line x1="22" y1="2" x2="11" y2="13" />
@@ -233,7 +253,9 @@ export default function ChatPane({ conversation, character, onConversationCreate
             </svg>
           </button>
         </div>
-        <p className="text-center text-[11px] text-[#3a3852] mt-2">Enter 发送 · Shift+Enter 换行</p>
+        <p style={{ textAlign: 'center', fontSize: 11, color: '#2e2c42', marginTop: 8 }}>
+          Enter 发送 · Shift+Enter 换行
+        </p>
       </div>
     </div>
   )
@@ -271,12 +293,14 @@ function MessageBubble({ msg, character }: { msg: DisplayMsg; character: Charact
     <div className={`flex gap-3 ${isUser ? 'flex-row-reverse' : ''}`}>
       <Avatar role={msg.role} character={character} />
       <div className={`flex flex-col gap-1 max-w-[72%] ${isUser ? 'items-end' : 'items-start'}`}>
-        <div
-          className={`rounded-2xl px-4 py-2.5 text-[13px] leading-6 whitespace-pre-wrap break-words ${
-            isUser
-              ? 'bg-[#2d2459] border border-[#a78bfa]/20 text-[#e8e6f0] rounded-tr-sm'
-              : 'bg-[#1c1b28] border border-[#2e2c42] text-[#d4d0e8] rounded-tl-sm'
-          } ${isStreaming ? 'after:content-["▋"] after:animate-pulse after:ml-0.5 after:text-[#a78bfa]' : ''}`}
+        <div style={{
+          padding: '10px 16px', borderRadius: 16, fontSize: 14, lineHeight: 1.65,
+          whiteSpace: 'pre-wrap', wordBreak: 'break-words', maxWidth: '100%',
+          ...(isUser
+            ? { background: 'linear-gradient(135deg, #2d2459, #251d4a)', border: '1px solid rgba(167,139,250,0.2)', color: '#ede9f8', borderTopRightRadius: 4 }
+            : { background: '#1c1b28', border: '1px solid #252336', color: '#d4d0e8', borderTopLeftRadius: 4 }
+          ),
+        }} className={isStreaming ? 'after:content-["▋"] after:animate-pulse after:ml-0.5 after:text-[#a78bfa]' : ''}
         >
           {msg.content}
         </div>
