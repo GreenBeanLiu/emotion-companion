@@ -18,7 +18,7 @@ export default function TitleBar() {
           background: 'linear-gradient(135deg, #a78bfa, #f472b6)',
           flexShrink: 0,
         }} />
-        <span style={{ fontSize: 13, fontWeight: 600, color: '#6b6890', letterSpacing: '0.03em' }}>
+        <span style={{ fontSize: 13, fontWeight: 600, color: '#c4c0d8', letterSpacing: '0.04em' }}>
           情感陪伴
         </span>
       </div>

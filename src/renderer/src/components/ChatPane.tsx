@@ -1,5 +1,5 @@
 import { useEffect, useRef, useState, useCallback } from 'react'
-import { SendHorizontal } from 'lucide-react'
+import { SendHorizontal, User } from 'lucide-react'
 import { api, type ConversationRow, type MessageRow, type BilibiliVideo } from '../lib/api'
 import type { Character } from '../lib/characters'
 import { cn } from '@/lib/utils'
@@ -144,25 +144,33 @@ export default function ChatPane({ conversation, character, onConversationCreate
       {/* Messages */}
       <div className="flex-1 overflow-y-auto px-5 py-6 flex flex-col gap-4">
         {isEmpty && (
-          <div className="flex-1 flex flex-col items-center justify-center gap-6 text-center min-h-full">
+          <div className="flex-1 flex flex-col items-center justify-center gap-5 text-center min-h-full relative">
+            {/* ambient glow */}
+            <div style={{
+              position: 'absolute', inset: 0, pointerEvents: 'none',
+              background: `radial-gradient(ellipse 60% 50% at 50% 45%, ${character.color}10 0%, transparent 70%)`,
+            }} />
+
             <div
-              className="flex items-center justify-center text-4xl"
+              className="flex items-center justify-center text-4xl relative"
               style={{
                 width: 88, height: 88, borderRadius: 28,
                 background: `linear-gradient(135deg, ${character.bgGradient[0]}, ${character.color}60)`,
                 border: `1px solid ${character.color}30`,
-                boxShadow: `0 12px 40px ${character.color}20`,
+                boxShadow: `0 0 0 8px ${character.color}08, 0 12px 40px ${character.color}25`,
               }}
             >
               {character.emoji}
             </div>
-            <div className="flex flex-col gap-1.5">
-              <p className="text-lg font-bold" style={{ color: '#e8e6f0' }}>{character.name}</p>
+
+            <div className="flex flex-col gap-1.5 relative">
+              <p className="text-[17px] font-bold" style={{ color: '#e8e6f0' }}>{character.name}</p>
               <p className="text-sm leading-relaxed" style={{ color: character.color + 'aa' }}>
                 {character.title}
               </p>
             </div>
-            <div className="flex gap-2 flex-wrap justify-center max-w-xs">
+
+            <div className="flex gap-2 flex-wrap justify-center max-w-xs relative">
               {character.tags.map((tag) => (
                 <span
                   key={tag}
@@ -177,7 +185,30 @@ export default function ChatPane({ conversation, character, onConversationCreate
                 </span>
               ))}
             </div>
-            <p className="text-xs" style={{ color: '#3a3852' }}>发条消息开始聊天吧</p>
+
+            {/* starter prompts */}
+            <div className="flex flex-col gap-1.5 w-full max-w-[260px] relative">
+              {['今天心情有点低落…', '最近压力好大', '想分享一件开心的事', '感觉很孤独'].map((s) => (
+                <button
+                  key={s}
+                  onClick={() => { setInput(s); inputRef.current?.focus() }}
+                  className="text-left text-xs px-4 py-2.5 rounded-xl transition-all"
+                  style={{ background: 'rgba(255,255,255,0.03)', border: '1px solid #252336', color: '#6b6890' }}
+                  onMouseEnter={(e) => {
+                    e.currentTarget.style.borderColor = `${character.color}40`
+                    e.currentTarget.style.color = '#9b97b4'
+                    e.currentTarget.style.background = `${character.color}08`
+                  }}
+                  onMouseLeave={(e) => {
+                    e.currentTarget.style.borderColor = '#252336'
+                    e.currentTarget.style.color = '#6b6890'
+                    e.currentTarget.style.background = 'rgba(255,255,255,0.03)'
+                  }}
+                >
+                  {s}
+                </button>
+              ))}
+            </div>
           </div>
         )}
 
@@ -276,13 +307,15 @@ function CharAvatar({ character }: { character: Character }) {
 function UserAvatar() {
   return (
     <div
-      className="shrink-0 mt-0.5"
+      className="shrink-0 mt-0.5 flex items-center justify-center"
       style={{
         width: 28, height: 28, borderRadius: '50%',
-        background: '#2d2459',
-        border: '1px solid rgba(167,139,250,0.25)',
+        background: 'linear-gradient(135deg, #2d2459 0%, #4a3580 100%)',
+        border: '1px solid rgba(167,139,250,0.3)',
       }}
-    />
+    >
+      <User size={12} color="#c4b5fd" strokeWidth={2.5} />
+    </div>
   )
 }
 
@@ -296,6 +329,11 @@ function MessageBubble({ msg, character }: { msg: DisplayMsg; character: Charact
     <div className={cn('flex gap-3 items-start', isUser && 'flex-row-reverse')}>
       {isUser ? <UserAvatar /> : <CharAvatar character={character} />}
       <div className={cn('flex flex-col gap-1 max-w-[72%]', isUser ? 'items-end' : 'items-start')}>
+        {!isUser && (
+          <span className="text-[11px] font-medium px-0.5 mb-0.5" style={{ color: character.color + 'bb' }}>
+            {character.emoji} {character.name}
+          </span>
+        )}
         <div
           className={cn(
             'px-4 py-2.5 text-sm leading-relaxed whitespace-pre-wrap break-words',

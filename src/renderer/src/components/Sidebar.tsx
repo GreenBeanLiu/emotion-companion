@@ -67,7 +67,7 @@ export default function Sidebar({ activeId, refreshKey, onSelect, onNew, onSetti
       {/* Conversation list */}
       <ScrollArea className="flex-1 px-2 py-2">
         {convs.length > 0 && (
-          <p className="text-[10px] font-semibold uppercase tracking-widest px-3 py-1.5" style={{ color: '#3a3852' }}>
+          <p className="text-[10px] font-semibold uppercase tracking-widest px-3 py-1.5" style={{ color: '#5e5b78' }}>
             历史对话
           </p>
         )}
