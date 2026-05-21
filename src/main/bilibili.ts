@@ -3,20 +3,18 @@ import { callSimple, type AiSettings, type ChatMessage } from './ai'
 export type BilibiliVideo = {
   bvid: string
   title: string
-  cover: string   // thumbnail URL (may start with //)
+  cover: string
   author: string
   play: number
   duration: string
 }
 
-// Emotions that warrant video recommendations
 const RECOMMEND_EMOTIONS = new Set(['焦虑', '悲伤', '疲惫', '孤独', '愤怒'])
 
 export function shouldRecommend(emotion: string): boolean {
   return RECOMMEND_EMOTIONS.has(emotion)
 }
 
-// Ask AI to generate a B站 search keyword based on conversation context
 export async function generateKeyword(
   messages: ChatMessage[],
   emotion: string,
@@ -35,39 +33,38 @@ export async function generateKeyword(
 ${recentDialog}`
 
   const keyword = await callSimple(aiSettings, prompt)
-  return keyword.trim() || (emotion === '焦虑' ? '解压放松' : '治愈系视频')
+  return keyword.trim() || '解压放松'
 }
 
-// Search B站 videos via TikHub aggregator API
 export async function searchVideos(
   keyword: string,
   tikhubKey: string,
 ): Promise<BilibiliVideo[]> {
-  const url = `https://api.tikhub.io/api/v1/bilibili/web/fetch_search_result?keyword=${encodeURIComponent(keyword)}&search_type=video&order_type=totalrank&page=1`
+  const url =
+    `https://api.tikhub.io/api/v1/bilibili/web/fetch_general_search` +
+    `?keyword=${encodeURIComponent(keyword)}&order=totalrank&page=1&page_size=5`
 
   const res = await fetch(url, {
     headers: {
       Authorization: `Bearer ${tikhubKey}`,
-      'Content-Type': 'application/json',
+      'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36',
     },
   })
 
   if (!res.ok) return []
 
   const json = await res.json()
-
-  // TikHub wraps results in data.result[]
-  const items: Record<string, unknown>[] = json?.data?.result ?? []
+  const items: Record<string, unknown>[] = json?.data?.data?.result ?? []
 
   return items
-    .filter((item) => item.bvid || item.aid)
+    .filter((item) => item.type === 'video' && item.bvid)
     .slice(0, 3)
     .map((item) => ({
-      bvid: String(item.bvid ?? item.aid ?? ''),
-      title: String(item.title ?? '').replace(/<[^>]+>/g, ''),  // strip html tags
-      cover: normalizeCover(String(item.pic ?? item.cover ?? '')),
-      author: String(item.author ?? item.uploader ?? ''),
-      play: Number(item.play ?? item.view ?? 0),
+      bvid: String(item.bvid),
+      title: String(item.title ?? '').replace(/<[^>]+>/g, ''),
+      cover: normalizeCover(String(item.pic ?? '')),
+      author: String(item.author ?? ''),
+      play: Number(item.play ?? 0),
       duration: String(item.duration ?? ''),
     }))
 }
