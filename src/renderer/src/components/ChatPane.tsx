@@ -134,6 +134,13 @@ export default function ChatPane({ conversation, character, onConversationCreate
 
   return (
     <div className="flex-1 flex flex-col min-w-0" style={{ background: '#12111a' }}>
+      {/* Error toast */}
+      {error && (
+        <div className="shrink-0 mx-4 mt-3 rounded-xl px-4 py-2.5 text-xs flex items-center gap-2" style={{ background: 'rgba(248,113,113,0.1)', border: '1px solid rgba(248,113,113,0.25)', color: '#f87171' }}>
+          <span className="flex-1">{error}</span>
+          <button onClick={() => setError(null)} className="opacity-60 hover:opacity-100 shrink-0">✕</button>
+        </div>
+      )}
       {/* Messages */}
       <div className="flex-1 overflow-y-auto px-5 py-6 flex flex-col gap-4">
         {isEmpty && (
@@ -200,12 +207,6 @@ export default function ChatPane({ conversation, character, onConversationCreate
                 />
               ))}
             </div>
-          </div>
-        )}
-
-        {error && (
-          <div className="mx-auto max-w-sm rounded-xl px-4 py-2.5 text-xs" style={{ background: 'rgba(248,113,113,0.08)', border: '1px solid rgba(248,113,113,0.2)', color: '#f87171' }}>
-            {error}
           </div>
         )}
 
