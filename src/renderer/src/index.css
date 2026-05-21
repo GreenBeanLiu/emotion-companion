@@ -1,18 +1,58 @@
 @import "tailwindcss";
 
 @theme {
+  --color-background: #0d0c15;
   --color-surface: #12111a;
   --color-surface-2: #1c1b28;
   --color-surface-3: #252336;
-  --color-border: #2e2c42;
-  --color-border-soft: #1f1e2e;
+  --color-border: #2a2840;
+  --color-border-soft: #1a1927;
   --color-text: #e8e6f0;
   --color-text-soft: #9b97b4;
   --color-text-muted: #5e5b78;
   --color-accent: #a78bfa;
   --color-accent-2: #f472b6;
   --color-user-bubble: #2d2459;
-  --color-ai-bubble: #1c1b28;
+
+  /* shadcn color tokens → tailwind classes */
+  --color-card: #1a1928;
+  --color-popover: #1a1928;
+  --color-primary: #a78bfa;
+  --color-primary-foreground: #0d0c15;
+  --color-secondary: #252336;
+  --color-secondary-foreground: #c4c0d8;
+  --color-muted: #1a1928;
+  --color-muted-foreground: #6b6890;
+  --color-destructive: #f87171;
+  --color-ring: #a78bfa;
+  --radius-sm: 8px;
+  --radius-md: 12px;
+  --radius-lg: 16px;
+  --radius-xl: 20px;
+}
+
+/* shadcn CSS variables */
+:root {
+  --background: 244 14% 8%;
+  --foreground: 244 16% 92%;
+  --card: 244 16% 12%;
+  --card-foreground: 244 16% 92%;
+  --popover: 244 16% 12%;
+  --popover-foreground: 244 16% 92%;
+  --primary: 258 89% 76%;
+  --primary-foreground: 244 14% 8%;
+  --secondary: 244 16% 18%;
+  --secondary-foreground: 244 16% 78%;
+  --muted: 244 16% 14%;
+  --muted-foreground: 244 12% 52%;
+  --accent: 244 16% 20%;
+  --accent-foreground: 244 16% 92%;
+  --destructive: 0 72% 71%;
+  --destructive-foreground: 0 0% 100%;
+  --border: 244 16% 20%;
+  --input: 244 16% 16%;
+  --ring: 258 89% 76%;
+  --radius: 0.75rem;
 }
 
 * {
@@ -27,32 +67,17 @@ html, body, #root {
 }
 
 body {
-  background: var(--color-surface);
+  background: var(--color-background);
   color: var(--color-text);
   font-family: -apple-system, "PingFang SC", "Microsoft YaHei", "Segoe UI", sans-serif;
   font-size: 14px;
   -webkit-font-smoothing: antialiased;
 }
 
-/* 自定义滚动条 */
-::-webkit-scrollbar {
-  width: 4px;
-}
-::-webkit-scrollbar-track {
-  background: transparent;
-}
-::-webkit-scrollbar-thumb {
-  background: var(--color-border);
-  border-radius: 2px;
-}
-::-webkit-scrollbar-thumb:hover {
-  background: var(--color-text-muted);
-}
+::-webkit-scrollbar { width: 4px; }
+::-webkit-scrollbar-track { background: transparent; }
+::-webkit-scrollbar-thumb { background: #2a2840; border-radius: 2px; }
+::-webkit-scrollbar-thumb:hover { background: #5e5b78; }
 
-/* 拖拽区域 */
-.drag-region {
-  -webkit-app-region: drag;
-}
-.no-drag {
-  -webkit-app-region: no-drag;
-}
+.drag-region { -webkit-app-region: drag; }
+.no-drag { -webkit-app-region: no-drag; }

@@ -1,6 +1,8 @@
 import { useEffect, useRef, useState, useCallback } from 'react'
+import { SendHorizontal } from 'lucide-react'
 import { api, type ConversationRow, type MessageRow, type BilibiliVideo } from '../lib/api'
 import type { Character } from '../lib/characters'
+import { cn } from '@/lib/utils'
 
 const EMOTION_META: Record<string, { emoji: string; color: string }> = {
   开心: { emoji: '😊', color: '#4ade80' },
@@ -32,7 +34,6 @@ export default function ChatPane({ conversation, character, onConversationCreate
   const inputRef = useRef<HTMLTextAreaElement>(null)
   const convIdRef = useRef<number | null>(null)
 
-  // Load messages when conversation changes
   useEffect(() => {
     if (!conversation) {
       setMessages([])
@@ -41,12 +42,9 @@ export default function ChatPane({ conversation, character, onConversationCreate
       return
     }
     convIdRef.current = conversation.id
-    api.msg.list(conversation.id).then((msgs) => {
-      setMessages(msgs)
-    })
+    api.msg.list(conversation.id).then(setMessages)
   }, [conversation?.id])
 
-  // Subscribe to emotion updates
   useEffect(() => {
     const off = api.chat.onEmotionUpdate(({ messageId, emotion }) => {
       setMessages((prev) =>
@@ -56,7 +54,6 @@ export default function ChatPane({ conversation, character, onConversationCreate
     return off
   }, [])
 
-  // Subscribe to B站 video recommendations
   useEffect(() => {
     const off = api.chat.onBilibiliResults(({ messageId, keyword, videos }) => {
       setRecommendations((prev) => new Map(prev).set(messageId, { keyword, videos }))
@@ -64,7 +61,6 @@ export default function ChatPane({ conversation, character, onConversationCreate
     return off
   }, [])
 
-  // Subscribe to streaming chunks
   useEffect(() => {
     const offChunk = api.chat.onChunk(({ conversationId, chunk }) => {
       if (conversationId !== convIdRef.current) return
@@ -81,13 +77,9 @@ export default function ChatPane({ conversation, character, onConversationCreate
       setSending(false)
       onConversationUpdated()
     })
-    return () => {
-      offChunk()
-      offDone()
-    }
+    return () => { offChunk(); offDone() }
   }, [onConversationUpdated])
 
-  // Scroll to bottom on new messages
   useEffect(() => {
     bottomRef.current?.scrollIntoView({ behavior: 'smooth' })
   }, [messages])
@@ -102,7 +94,6 @@ export default function ChatPane({ conversation, character, onConversationCreate
 
     let convId = conversation?.id ?? null
 
-    // Auto-create conversation on first message
     if (!convId) {
       const newConv = await api.conv.create(text.slice(0, 20))
       convId = newConv.id
@@ -110,7 +101,6 @@ export default function ChatPane({ conversation, character, onConversationCreate
       onConversationCreated(newConv)
     }
 
-    // Optimistically add user message
     const optimisticUser: DisplayMsg = {
       id: -Date.now(),
       conversation_id: convId,
@@ -131,7 +121,6 @@ export default function ChatPane({ conversation, character, onConversationCreate
       setError(result.error)
       setSending(false)
     }
-    // streaming chunks/done events handle the rest
   }, [input, sending, conversation, messages, onConversationCreated])
 
   function handleKeyDown(e: React.KeyboardEvent<HTMLTextAreaElement>) {
@@ -145,38 +134,43 @@ export default function ChatPane({ conversation, character, onConversationCreate
 
   return (
     <div className="flex-1 flex flex-col min-w-0" style={{ background: '#12111a' }}>
-      {/* Messages area */}
-      <div className="flex-1 overflow-y-auto px-6 py-6 flex flex-col gap-5">
+      {/* Messages */}
+      <div className="flex-1 overflow-y-auto px-5 py-6 flex flex-col gap-4">
         {isEmpty && (
-          <div className="flex-1 flex flex-col items-center justify-center gap-5 text-center">
-            <div style={{
-              width: 80, height: 80, borderRadius: 24,
-              background: `linear-gradient(135deg, ${character.bgGradient[0]}, ${character.color}80)`,
-              border: `1px solid ${character.color}40`,
-              boxShadow: `0 8px 32px ${character.color}30`,
-              display: 'flex', alignItems: 'center', justifyContent: 'center',
-              fontSize: 38,
-            }}>
+          <div className="flex-1 flex flex-col items-center justify-center gap-6 text-center min-h-full">
+            <div
+              className="flex items-center justify-center text-4xl"
+              style={{
+                width: 88, height: 88, borderRadius: 28,
+                background: `linear-gradient(135deg, ${character.bgGradient[0]}, ${character.color}60)`,
+                border: `1px solid ${character.color}30`,
+                boxShadow: `0 12px 40px ${character.color}20`,
+              }}
+            >
               {character.emoji}
             </div>
-            <div>
-              <p style={{ fontSize: 18, fontWeight: 700, color: '#e8e6f0', marginBottom: 6 }}>{character.name}</p>
-              <p style={{ fontSize: 13, color: character.color + 'bb', lineHeight: 1.5 }}>
+            <div className="flex flex-col gap-1.5">
+              <p className="text-lg font-bold" style={{ color: '#e8e6f0' }}>{character.name}</p>
+              <p className="text-sm leading-relaxed" style={{ color: character.color + 'aa' }}>
                 {character.title}
               </p>
             </div>
-            <div className="flex gap-2 flex-wrap justify-center">
+            <div className="flex gap-2 flex-wrap justify-center max-w-xs">
               {character.tags.map((tag) => (
-                <span key={tag} style={{
-                  fontSize: 12, padding: '4px 12px', borderRadius: 20,
-                  background: `${character.color}18`,
-                  color: character.color,
-                  border: `1px solid ${character.color}35`,
-                  fontWeight: 500,
-                }}>{tag}</span>
+                <span
+                  key={tag}
+                  className="text-xs px-3 py-1 rounded-full font-medium"
+                  style={{
+                    background: `${character.color}15`,
+                    color: character.color,
+                    border: `1px solid ${character.color}30`,
+                  }}
+                >
+                  {tag}
+                </span>
               ))}
             </div>
-            <p style={{ fontSize: 12, color: '#3a3852', marginTop: 4 }}>发条消息开始聊天吧</p>
+            <p className="text-xs" style={{ color: '#3a3852' }}>发条消息开始聊天吧</p>
           </div>
         )}
 
@@ -192,18 +186,25 @@ export default function ChatPane({ conversation, character, onConversationCreate
         })}
 
         {sending && !messages.some((m) => 'streaming' in m) && (
-          <div className="flex gap-3">
-            <Avatar role="assistant" character={character} />
-            <div className="flex items-center gap-1.5 px-4 py-3 rounded-2xl bg-[#1c1b28] border border-[#2e2c42]">
-              <span className="w-1.5 h-1.5 rounded-full animate-bounce" style={{ backgroundColor: character.color, animationDelay: '0ms' }} />
-              <span className="w-1.5 h-1.5 rounded-full animate-bounce" style={{ backgroundColor: character.color, animationDelay: '120ms' }} />
-              <span className="w-1.5 h-1.5 rounded-full animate-bounce" style={{ backgroundColor: character.color, animationDelay: '240ms' }} />
+          <div className="flex gap-3 items-start">
+            <CharAvatar character={character} />
+            <div
+              className="flex items-center gap-1.5 px-4 py-3 rounded-2xl"
+              style={{ background: '#1c1b28', border: '1px solid #2e2c42', borderTopLeftRadius: 4 }}
+            >
+              {[0, 120, 240].map((delay) => (
+                <span
+                  key={delay}
+                  className="w-1.5 h-1.5 rounded-full animate-bounce"
+                  style={{ backgroundColor: character.color, animationDelay: `${delay}ms` }}
+                />
+              ))}
             </div>
           </div>
         )}
 
         {error && (
-          <div className="mx-auto max-w-sm rounded-xl border border-red-900/40 bg-red-950/30 px-4 py-2.5 text-[12px] text-red-400">
+          <div className="mx-auto max-w-sm rounded-xl px-4 py-2.5 text-xs" style={{ background: 'rgba(248,113,113,0.08)', border: '1px solid rgba(248,113,113,0.2)', color: '#f87171' }}>
             {error}
           </div>
         )}
@@ -211,16 +212,13 @@ export default function ChatPane({ conversation, character, onConversationCreate
         <div ref={bottomRef} />
       </div>
 
-      {/* Input area */}
-      <div style={{ borderTop: '1px solid #1a1927', padding: '14px 20px 16px' }}>
-        <div style={{
-          display: 'flex', alignItems: 'flex-end', gap: 10,
-          borderRadius: 16, border: '1px solid #252336',
-          background: '#1a1929', padding: '10px 14px',
-          transition: 'border-color 0.15s',
-        }}
-          onFocus={(e) => (e.currentTarget.style.borderColor = 'rgba(167,139,250,0.4)')}
-          onBlur={(e) => (e.currentTarget.style.borderColor = '#252336')}
+      {/* Input */}
+      <div className="shrink-0 px-4 pb-4 pt-3" style={{ borderTop: '1px solid #1a1927' }}>
+        <div
+          className="flex items-end gap-2 rounded-2xl px-4 py-3 transition-all"
+          style={{ background: '#1a1929', border: '1px solid #252336' }}
+          onFocusCapture={(e) => (e.currentTarget.style.borderColor = 'rgba(167,139,250,0.35)')}
+          onBlurCapture={(e) => (e.currentTarget.style.borderColor = '#252336')}
         >
           <textarea
             ref={inputRef}
@@ -230,30 +228,28 @@ export default function ChatPane({ conversation, character, onConversationCreate
             placeholder="说说你的心情…"
             rows={1}
             style={{ fieldSizing: 'content' } as React.CSSProperties}
-            className="flex-1 resize-none bg-transparent text-[14px] text-[#e8e6f0] placeholder:text-[#4a4768] outline-none leading-6 max-h-36 overflow-y-auto"
+            className="flex-1 resize-none bg-transparent text-sm text-[#e8e6f0] placeholder:text-[#4a4768] outline-none leading-6 max-h-36 overflow-y-auto"
             disabled={sending}
           />
           <button
             onClick={sendMessage}
             disabled={!input.trim() || sending}
+            className={cn(
+              'shrink-0 w-8 h-8 rounded-xl flex items-center justify-center transition-all',
+              input.trim() && !sending
+                ? 'text-white'
+                : 'text-[#4a4768] cursor-not-allowed',
+            )}
             style={{
-              width: 34, height: 34, borderRadius: 10, border: 'none', flexShrink: 0,
               background: input.trim() && !sending
-                ? 'linear-gradient(135deg, #a78bfa, #f472b6)'
+                ? `linear-gradient(135deg, #a78bfa, #f472b6)`
                 : '#252336',
-              color: input.trim() && !sending ? 'white' : '#4a4768',
-              cursor: input.trim() && !sending ? 'pointer' : 'not-allowed',
-              display: 'flex', alignItems: 'center', justifyContent: 'center',
-              transition: 'all 0.15s',
             }}
           >
-            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5">
-              <line x1="22" y1="2" x2="11" y2="13" />
-              <polygon points="22 2 15 22 11 13 2 9 22 2" />
-            </svg>
+            <SendHorizontal size={14} />
           </button>
         </div>
-        <p style={{ textAlign: 'center', fontSize: 11, color: '#2e2c42', marginTop: 8 }}>
+        <p className="text-center text-[11px] mt-2" style={{ color: '#2e2c42' }}>
           Enter 发送 · Shift+Enter 换行
         </p>
       </div>
@@ -261,25 +257,31 @@ export default function ChatPane({ conversation, character, onConversationCreate
   )
 }
 
-function Avatar({ role, character }: { role: 'user' | 'assistant'; character: Character }) {
-  if (role === 'assistant') {
-    return (
-      <div style={{
-        width: 28, height: 28, borderRadius: '50%', flexShrink: 0, marginTop: 2,
-        background: `linear-gradient(135deg, ${character.bgGradient[0]}, ${character.color}60)`,
-        border: `1px solid ${character.color}30`,
-        display: 'flex', alignItems: 'center', justifyContent: 'center',
-        fontSize: 14,
-      }}>
-        {character.emoji}
-      </div>
-    )
-  }
+function CharAvatar({ character }: { character: Character }) {
   return (
-    <div style={{
-      width: 28, height: 28, borderRadius: '50%', flexShrink: 0, marginTop: 2,
-      background: '#2d2459', border: '1px solid rgba(167,139,250,0.3)',
-    }} />
+    <div
+      className="shrink-0 flex items-center justify-center text-sm mt-0.5"
+      style={{
+        width: 28, height: 28, borderRadius: '50%',
+        background: `linear-gradient(135deg, ${character.bgGradient[0]}, ${character.color}50)`,
+        border: `1px solid ${character.color}25`,
+      }}
+    >
+      {character.emoji}
+    </div>
+  )
+}
+
+function UserAvatar() {
+  return (
+    <div
+      className="shrink-0 mt-0.5"
+      style={{
+        width: 28, height: 28, borderRadius: '50%',
+        background: '#2d2459',
+        border: '1px solid rgba(167,139,250,0.25)',
+      }}
+    />
   )
 }
 
@@ -290,22 +292,38 @@ function MessageBubble({ msg, character }: { msg: DisplayMsg; character: Charact
   const emotionMeta = emotion ? EMOTION_META[emotion] : undefined
 
   return (
-    <div className={`flex gap-3 ${isUser ? 'flex-row-reverse' : ''}`}>
-      <Avatar role={msg.role} character={character} />
-      <div className={`flex flex-col gap-1 max-w-[72%] ${isUser ? 'items-end' : 'items-start'}`}>
-        <div style={{
-          padding: '10px 16px', borderRadius: 16, fontSize: 14, lineHeight: 1.65,
-          whiteSpace: 'pre-wrap', wordBreak: 'break-words', maxWidth: '100%',
-          ...(isUser
-            ? { background: 'linear-gradient(135deg, #2d2459, #251d4a)', border: '1px solid rgba(167,139,250,0.2)', color: '#ede9f8', borderTopRightRadius: 4 }
-            : { background: '#1c1b28', border: '1px solid #252336', color: '#d4d0e8', borderTopLeftRadius: 4 }
-          ),
-        }} className={isStreaming ? 'after:content-["▋"] after:animate-pulse after:ml-0.5 after:text-[#a78bfa]' : ''}
+    <div className={cn('flex gap-3 items-start', isUser && 'flex-row-reverse')}>
+      {isUser ? <UserAvatar /> : <CharAvatar character={character} />}
+      <div className={cn('flex flex-col gap-1 max-w-[72%]', isUser ? 'items-end' : 'items-start')}>
+        <div
+          className={cn(
+            'px-4 py-2.5 text-sm leading-relaxed whitespace-pre-wrap break-words',
+            isStreaming && 'after:content-["▋"] after:animate-pulse after:ml-0.5 after:text-[#a78bfa]',
+          )}
+          style={{
+            borderRadius: 16,
+            ...(isUser
+              ? {
+                  background: 'linear-gradient(135deg, #2d2459, #251d4a)',
+                  border: '1px solid rgba(167,139,250,0.18)',
+                  color: '#ede9f8',
+                  borderTopRightRadius: 4,
+                }
+              : {
+                  background: '#1c1b28',
+                  border: '1px solid #252336',
+                  color: '#d4d0e8',
+                  borderTopLeftRadius: 4,
+                }),
+          }}
         >
           {msg.content}
         </div>
         {emotionMeta && (
-          <span style={{ color: emotionMeta.color }} className="text-[11px] flex items-center gap-1 opacity-70">
+          <span
+            className="flex items-center gap-1 text-[11px] opacity-60"
+            style={{ color: emotionMeta.color }}
+          >
             <span>{emotionMeta.emoji}</span>
             <span>{emotion}</span>
           </span>
@@ -316,38 +334,37 @@ function MessageBubble({ msg, character }: { msg: DisplayMsg; character: Charact
 }
 
 function VideoStrip({ keyword, videos }: { keyword: string; videos: BilibiliVideo[] }) {
-  function openVideo(bvid: string) {
-    // Use Electron shell to open in default browser
-    window.open(`https://www.bilibili.com/video/${bvid}`, '_blank')
-  }
-
   function formatPlay(n: number): string {
-    if (n >= 10000) return `${(n / 10000).toFixed(1)}万`
-    return String(n)
+    return n >= 10000 ? `${(n / 10000).toFixed(1)}万` : String(n)
   }
 
   return (
     <div className="mt-2 ml-9">
-      <p className="text-[11px] text-[#5e5b78] mb-2">
-        💡 为你找了一些 <span className="text-[#a78bfa]">{keyword}</span> 的视频
+      <p className="text-[11px] mb-2" style={{ color: '#5e5b78' }}>
+        💡 为你找了一些{' '}
+        <span style={{ color: '#a78bfa' }}>{keyword}</span>
+        {' '}的视频
       </p>
       <div className="flex gap-2 overflow-x-auto pb-1">
         {videos.map((v) => (
           <button
             key={v.bvid}
-            onClick={() => openVideo(v.bvid)}
-            className="shrink-0 w-40 text-left rounded-xl overflow-hidden border border-[#2e2c42] bg-[#1c1b28] hover:border-[#a78bfa]/40 hover:bg-[#252336] transition-all"
+            onClick={() => window.open(`https://www.bilibili.com/video/${v.bvid}`, '_blank')}
+            className="shrink-0 w-40 text-left rounded-xl overflow-hidden transition-all"
+            style={{ border: '1px solid #2e2c42', background: '#1c1b28' }}
+            onMouseEnter={(e) => { e.currentTarget.style.borderColor = 'rgba(167,139,250,0.35)'; e.currentTarget.style.background = '#252336' }}
+            onMouseLeave={(e) => { e.currentTarget.style.borderColor = '#2e2c42'; e.currentTarget.style.background = '#1c1b28' }}
           >
             {v.cover ? (
               <img src={v.cover} alt={v.title} className="w-full h-[90px] object-cover" />
             ) : (
-              <div className="w-full h-[90px] bg-[#16151f] flex items-center justify-center text-[#3a3852] text-[11px]">
+              <div className="w-full h-[90px] flex items-center justify-center text-[11px]" style={{ background: '#16151f', color: '#3a3852' }}>
                 暂无封面
               </div>
             )}
             <div className="px-2 py-1.5">
-              <p className="text-[11px] text-[#d4d0e8] leading-4 line-clamp-2">{v.title}</p>
-              <p className="text-[10px] text-[#5e5b78] mt-1 flex items-center justify-between">
+              <p className="text-[11px] leading-4 line-clamp-2" style={{ color: '#d4d0e8' }}>{v.title}</p>
+              <p className="text-[10px] mt-1 flex items-center justify-between" style={{ color: '#5e5b78' }}>
                 <span className="truncate max-w-[70%]">{v.author}</span>
                 <span>{formatPlay(v.play)}播放</span>
               </p>

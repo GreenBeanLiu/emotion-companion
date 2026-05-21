@@ -1,5 +1,15 @@
 import { useEffect, useState } from 'react'
+import { Eye, EyeOff, Brain, Palette } from 'lucide-react'
 import { api } from '../lib/api'
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+} from '@/components/ui/dialog'
+import { Input } from '@/components/ui/input'
+import { Button } from '@/components/ui/button'
+import { cn } from '@/lib/utils'
 
 type Settings = {
   provider: 'claude' | 'openai'
@@ -22,12 +32,7 @@ const MODEL_OPTIONS = {
 }
 
 export default function SettingsModal({ onClose }: { onClose: () => void }) {
-  const [settings, setSettings] = useState<Settings>({
-    provider: 'claude',
-    apiKey: '',
-    model: '',
-    tikhubKey: '',
-  })
+  const [settings, setSettings] = useState<Settings>({ provider: 'claude', apiKey: '', model: '', tikhubKey: '' })
   const [saving, setSaving] = useState(false)
   const [saved, setSaved] = useState(false)
   const [showKey, setShowKey] = useState(false)
@@ -59,39 +64,33 @@ export default function SettingsModal({ onClose }: { onClose: () => void }) {
   const models = MODEL_OPTIONS[settings.provider]
 
   return (
-    <div
-      className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 backdrop-blur-sm"
-      onClick={(e) => e.target === e.currentTarget && onClose()}
-    >
-      <div className="w-full max-w-lg bg-[#1c1b28] border border-[#2e2c42] rounded-2xl shadow-2xl overflow-hidden">
-        {/* Header */}
-        <div className="flex items-center justify-between px-5 py-4 border-b border-[#2e2c42]">
-          <h2 className="text-[14px] font-semibold text-[#e8e6f0]">设置</h2>
-          <button
-            onClick={onClose}
-            className="w-7 h-7 flex items-center justify-center rounded-lg text-[#5e5b78] hover:text-[#9b97b4] hover:bg-[#252336] transition-colors"
-          >
-            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-              <line x1="18" y1="6" x2="6" y2="18" /><line x1="6" y1="6" x2="18" y2="18" />
-            </svg>
-          </button>
-        </div>
+    <Dialog open onOpenChange={(open) => { if (!open) onClose() }}>
+      <DialogContent
+        className="max-w-lg p-0 gap-0 overflow-hidden"
+        style={{ background: '#1c1b28', border: '1px solid #2e2c42' }}
+      >
+        <DialogHeader className="px-6 pt-5 pb-4" style={{ borderBottom: '1px solid #2e2c42' }}>
+          <DialogTitle className="text-sm font-semibold" style={{ color: '#e8e6f0' }}>设置</DialogTitle>
+        </DialogHeader>
 
-        {/* Body */}
-        <div className="px-5 py-5 flex flex-col gap-5">
+        <div className="px-6 py-5 flex flex-col gap-5 overflow-y-auto max-h-[70vh]">
           {/* Provider */}
           <div className="flex flex-col gap-2">
-            <label className="text-[12px] font-medium text-[#9b97b4]">AI 提供商</label>
+            <Label>AI 提供商</Label>
             <div className="flex gap-2">
               {(['claude', 'openai'] as const).map((p) => (
                 <button
                   key={p}
                   onClick={() => patch({ provider: p, model: '' })}
-                  className={`flex-1 py-2 rounded-lg text-[13px] font-medium border transition-all ${
+                  className={cn(
+                    'flex-1 py-2 rounded-xl text-[13px] font-medium border transition-all',
                     settings.provider === p
-                      ? 'border-[#a78bfa]/60 bg-[#a78bfa]/10 text-[#a78bfa]'
-                      : 'border-[#2e2c42] text-[#5e5b78] hover:border-[#3e3c52] hover:text-[#9b97b4]'
-                  }`}
+                      ? 'border-[#a78bfa]/50 bg-[#a78bfa]/10 text-[#a78bfa]'
+                      : 'text-[#5e5b78] hover:text-[#9b97b4]',
+                  )}
+                  style={{
+                    borderColor: settings.provider === p ? undefined : '#2e2c42',
+                  }}
                 >
                   {p === 'claude' ? 'Claude (Anthropic)' : 'OpenAI'}
                 </button>
@@ -101,34 +100,40 @@ export default function SettingsModal({ onClose }: { onClose: () => void }) {
 
           {/* API Key */}
           <div className="flex flex-col gap-2">
-            <label className="text-[12px] font-medium text-[#9b97b4]">
-              API Key
-              <span className="ml-1 text-[#5e5b78] font-normal">（本地加密存储，不上传）</span>
-            </label>
+            <Label hint="本地加密存储，不上传">API Key</Label>
             <div className="flex gap-2">
-              <input
+              <Input
                 type={showKey ? 'text' : 'password'}
                 value={settings.apiKey}
                 onChange={(e) => patch({ apiKey: e.target.value })}
                 placeholder={settings.provider === 'claude' ? 'sk-ant-...' : 'sk-...'}
-                className="flex-1 bg-[#12111a] border border-[#2e2c42] rounded-lg px-3 py-2 text-[13px] text-[#e8e6f0] placeholder:text-[#3a3852] outline-none focus:border-[#a78bfa]/40 transition-colors"
+                className="flex-1 h-9 text-[13px] bg-[#12111a] border-[#2e2c42] focus-visible:ring-[#a78bfa]/30 focus-visible:border-[#a78bfa]/40 text-[#e8e6f0] placeholder:text-[#3a3852]"
               />
               <button
                 onClick={() => setShowKey((v) => !v)}
-                className="px-3 rounded-lg border border-[#2e2c42] text-[#5e5b78] hover:text-[#9b97b4] hover:border-[#3e3c52] text-[12px] transition-colors"
+                className="px-3 h-9 rounded-lg border text-[12px] transition-colors flex items-center gap-1.5"
+                style={{ borderColor: '#2e2c42', color: '#5e5b78', background: '#12111a' }}
+                onMouseEnter={(e) => { e.currentTarget.style.color = '#9b97b4' }}
+                onMouseLeave={(e) => { e.currentTarget.style.color = '#5e5b78' }}
               >
-                {showKey ? '隐藏' : '显示'}
+                {showKey ? <EyeOff size={12} /> : <Eye size={12} />}
+                <span>{showKey ? '隐藏' : '显示'}</span>
               </button>
             </div>
           </div>
 
           {/* Model */}
           <div className="flex flex-col gap-2">
-            <label className="text-[12px] font-medium text-[#9b97b4]">模型</label>
+            <Label>模型</Label>
             <select
               value={settings.model}
               onChange={(e) => patch({ model: e.target.value })}
-              className="bg-[#12111a] border border-[#2e2c42] rounded-lg px-3 py-2 text-[13px] text-[#e8e6f0] outline-none focus:border-[#a78bfa]/40 transition-colors"
+              className="h-9 rounded-lg border px-3 text-[13px] outline-none transition-colors appearance-none"
+              style={{
+                background: '#12111a',
+                borderColor: '#2e2c42',
+                color: settings.model ? '#e8e6f0' : '#5e5b78',
+              }}
             >
               <option value="">默认推荐</option>
               {models.map((m) => (
@@ -139,70 +144,65 @@ export default function SettingsModal({ onClose }: { onClose: () => void }) {
 
           {/* TikHub Key */}
           <div className="flex flex-col gap-2">
-            <label className="text-[12px] font-medium text-[#9b97b4]">
-              TikHub API Key
-              <span className="ml-1 text-[#5e5b78] font-normal">（B站视频推荐，选填）</span>
-            </label>
-            <input
+            <Label hint="B站视频推荐，选填">TikHub API Key</Label>
+            <Input
               type="password"
               value={settings.tikhubKey}
               onChange={(e) => patch({ tikhubKey: e.target.value })}
               placeholder="填入后，负面情绪时自动推荐B站视频"
-              className="bg-[#12111a] border border-[#2e2c42] rounded-lg px-3 py-2 text-[13px] text-[#e8e6f0] placeholder:text-[#3a3852] outline-none focus:border-[#a78bfa]/40 transition-colors"
+              className="h-9 text-[13px] bg-[#12111a] border-[#2e2c42] focus-visible:ring-[#a78bfa]/30 focus-visible:border-[#a78bfa]/40 text-[#e8e6f0] placeholder:text-[#3a3852]"
             />
           </div>
 
           {/* Character note */}
-          <div className="rounded-lg border border-[#2e2c42] bg-[#12111a] px-4 py-3 flex items-start gap-3">
-            <span className="text-[18px] mt-0.5">🎭</span>
-            <div>
-              <p className="text-[12px] font-medium text-[#9b97b4]">角色设定</p>
-              <p className="text-[12px] text-[#5e5b78] mt-1 leading-5">
-                在顶部标题栏点击角色名称，可切换或自定义角色人设。
-              </p>
-            </div>
-          </div>
+          <InfoCard icon={<Palette size={15} style={{ color: '#a78bfa' }} />} title="角色设定">
+            在侧边栏底部点击角色名称，可切换或自定义角色人设。
+          </InfoCard>
 
           {/* Memory */}
-          <div className="rounded-lg border border-[#2e2c42] bg-[#12111a] px-4 py-3">
+          <div className="rounded-xl p-4" style={{ background: '#12111a', border: '1px solid #2e2c42' }}>
             <div className="flex items-center justify-between">
               <div className="flex items-center gap-2">
-                <span className="text-[16px]">🧠</span>
-                <p className="text-[12px] font-medium text-[#9b97b4]">长期记忆</p>
+                <Brain size={15} style={{ color: '#a78bfa' }} />
+                <span className="text-[12px] font-medium" style={{ color: '#9b97b4' }}>长期记忆</span>
                 {profile ? (
-                  <span className="text-[10px] px-2 py-0.5 rounded-full bg-[#a78bfa]/15 text-[#a78bfa] border border-[#a78bfa]/25">
+                  <span className="text-[10px] px-2 py-0.5 rounded-full" style={{ background: 'rgba(167,139,250,0.15)', color: '#a78bfa', border: '1px solid rgba(167,139,250,0.25)' }}>
                     已记录
                   </span>
                 ) : (
-                  <span className="text-[10px] text-[#3a3852]">暂无</span>
+                  <span className="text-[11px]" style={{ color: '#3a3852' }}>暂无</span>
                 )}
               </div>
-              <div className="flex items-center gap-2">
-                {profile && (
-                  <>
-                    <button
-                      onClick={() => setShowProfile((v) => !v)}
-                      className="text-[11px] text-[#5e5b78] hover:text-[#9b97b4] transition-colors"
-                    >
-                      {showProfile ? '收起' : '查看'}
-                    </button>
-                    <button
-                      onClick={handleClearMemory}
-                      className="text-[11px] text-red-500/60 hover:text-red-400 transition-colors"
-                    >
-                      清除
-                    </button>
-                  </>
-                )}
-              </div>
+              {profile && (
+                <div className="flex items-center gap-3">
+                  <button
+                    onClick={() => setShowProfile((v) => !v)}
+                    className="text-[11px] transition-colors"
+                    style={{ color: '#5e5b78' }}
+                    onMouseEnter={(e) => { e.currentTarget.style.color = '#9b97b4' }}
+                    onMouseLeave={(e) => { e.currentTarget.style.color = '#5e5b78' }}
+                  >
+                    {showProfile ? '收起' : '查看'}
+                  </button>
+                  <button
+                    onClick={handleClearMemory}
+                    className="text-[11px] transition-colors"
+                    style={{ color: 'rgba(248,113,113,0.6)' }}
+                    onMouseEnter={(e) => { e.currentTarget.style.color = '#f87171' }}
+                    onMouseLeave={(e) => { e.currentTarget.style.color = 'rgba(248,113,113,0.6)' }}
+                  >
+                    清除
+                  </button>
+                </div>
+              )}
             </div>
             {!profile && (
-              <p className="text-[11px] text-[#3a3852] mt-1.5 leading-5">
+              <p className="text-[11px] mt-2 leading-relaxed" style={{ color: '#3a3852' }}>
                 聊天过程中会自动提炼你提到的信息，下次对话时角色会记得你。
               </p>
             )}
             {profile && showProfile && (
-              <pre className="mt-2.5 text-[11px] text-[#7b78a0] leading-6 whitespace-pre-wrap font-sans">
+              <pre className="mt-3 text-[11px] leading-6 whitespace-pre-wrap font-sans" style={{ color: '#7b78a0' }}>
                 {profile.summary}
               </pre>
             )}
@@ -210,21 +210,47 @@ export default function SettingsModal({ onClose }: { onClose: () => void }) {
         </div>
 
         {/* Footer */}
-        <div className="flex items-center justify-end gap-3 px-5 py-4 border-t border-[#2e2c42]">
-          <button
+        <div className="flex items-center justify-end gap-2 px-6 py-4" style={{ borderTop: '1px solid #2e2c42' }}>
+          <Button
+            variant="ghost"
             onClick={onClose}
-            className="px-4 py-2 rounded-lg text-[13px] text-[#9b97b4] hover:text-[#e8e6f0] transition-colors"
+            className="text-[13px] h-9 px-4"
+            style={{ color: '#9b97b4' }}
           >
             取消
-          </button>
+          </Button>
           <button
             onClick={handleSave}
             disabled={saving}
-            className="px-5 py-2 rounded-lg text-[13px] font-medium bg-gradient-to-r from-[#a78bfa] to-[#f472b6] text-white hover:opacity-90 disabled:opacity-50 transition-opacity"
+            className="h-9 px-5 rounded-xl text-[13px] font-semibold text-white transition-opacity disabled:opacity-50"
+            style={{ background: 'linear-gradient(135deg, #a78bfa, #f472b6)' }}
+            onMouseEnter={(e) => { e.currentTarget.style.opacity = '0.85' }}
+            onMouseLeave={(e) => { e.currentTarget.style.opacity = '1' }}
           >
             {saved ? '已保存 ✓' : saving ? '保存中…' : '保存设置'}
           </button>
         </div>
+      </DialogContent>
+    </Dialog>
+  )
+}
+
+function Label({ children, hint }: { children: React.ReactNode; hint?: string }) {
+  return (
+    <label className="text-[12px] font-medium flex items-center gap-1.5" style={{ color: '#9b97b4' }}>
+      {children}
+      {hint && <span className="font-normal" style={{ color: '#4a4768' }}>({hint})</span>}
+    </label>
+  )
+}
+
+function InfoCard({ icon, title, children }: { icon: React.ReactNode; title: string; children: React.ReactNode }) {
+  return (
+    <div className="rounded-xl p-4 flex items-start gap-3" style={{ background: '#12111a', border: '1px solid #2e2c42' }}>
+      <div className="mt-0.5">{icon}</div>
+      <div>
+        <p className="text-[12px] font-medium" style={{ color: '#9b97b4' }}>{title}</p>
+        <p className="text-[12px] mt-1 leading-relaxed" style={{ color: '#4a4768' }}>{children}</p>
       </div>
     </div>
   )
