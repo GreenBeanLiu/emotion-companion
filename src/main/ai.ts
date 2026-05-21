@@ -6,6 +6,7 @@ export type AiSettings = {
   provider: AiProvider
   apiKey: string
   model: string
+  baseUrl: string        // custom base URL for OpenAI-compatible APIs (e.g. DeepSeek)
   systemPrompt: string   // resolved system prompt (character prompt or custom)
 }
 
@@ -15,7 +16,8 @@ export type ChatMessage = { role: 'user' | 'assistant'; content: string }
 export async function callSimple(settings: AiSettings, prompt: string): Promise<string> {
   try {
     if (settings.provider === 'openai') {
-      const res = await fetch('https://api.openai.com/v1/chat/completions', {
+      const base = (settings.baseUrl || 'https://api.openai.com').replace(/\/$/, '')
+      const res = await fetch(`${base}/v1/chat/completions`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${settings.apiKey}` },
         body: JSON.stringify({
@@ -114,7 +116,8 @@ async function callOpenAI(
   onChunk: (text: string) => void,
   signal: AbortSignal
 ): Promise<string> {
-  const response = await fetch('https://api.openai.com/v1/chat/completions', {
+  const base = (settings.baseUrl || 'https://api.openai.com').replace(/\/$/, '')
+  const response = await fetch(`${base}/v1/chat/completions`, {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json',

@@ -7,6 +7,7 @@ type SettingsData = {
   provider: AiProvider
   apiKey: string
   model: string
+  baseUrl: string
   characterId: string
   systemPrompt: string
   customSystemPrompt: string
@@ -17,6 +18,7 @@ const DEFAULTS: SettingsData = {
   provider: 'claude',
   apiKey: '',
   model: '',
+  baseUrl: '',
   characterId: 'doraemon',
   systemPrompt: '',
   customSystemPrompt: '',
@@ -59,6 +61,7 @@ export function loadSettings(): SettingsData {
     provider: (raw.provider as AiProvider) ?? DEFAULTS.provider,
     apiKey,
     model: (raw.model as string) ?? DEFAULTS.model,
+    baseUrl: (raw.baseUrl as string) ?? DEFAULTS.baseUrl,
     characterId: (raw.characterId as string) ?? DEFAULTS.characterId,
     systemPrompt: (raw.systemPrompt as string) ?? DEFAULTS.systemPrompt,
     customSystemPrompt: (raw.customSystemPrompt as string) ?? DEFAULTS.customSystemPrompt,
@@ -79,6 +82,7 @@ export function saveSettings(settings: SettingsData): void {
 
   raw.provider = settings.provider
   raw.model = settings.model
+  raw.baseUrl = settings.baseUrl
   raw.characterId = settings.characterId
   raw.systemPrompt = settings.systemPrompt
   raw.customSystemPrompt = settings.customSystemPrompt

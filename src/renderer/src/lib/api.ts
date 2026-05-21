@@ -12,6 +12,7 @@ declare global {
           provider: 'claude' | 'openai'
           apiKey: string
           model: string
+          baseUrl: string
           characterId: string
           systemPrompt: string
           customSystemPrompt: string
@@ -21,6 +22,7 @@ declare global {
           provider: 'claude' | 'openai'
           apiKey: string
           model: string
+          baseUrl: string
           characterId: string
           systemPrompt: string
           customSystemPrompt: string
