@@ -68,6 +68,20 @@ const api = {
       return () => ipcRenderer.off('bilibili:results', handler)
     },
   },
+
+  update: {
+    onAvailable: (cb: (data: { version: string }) => void) => {
+      const handler = (_e: Electron.IpcRendererEvent, data: unknown) => cb(data as never)
+      ipcRenderer.on('update:available', handler)
+      return () => ipcRenderer.off('update:available', handler)
+    },
+    onDownloaded: (cb: (data: { version: string }) => void) => {
+      const handler = (_e: Electron.IpcRendererEvent, data: unknown) => cb(data as never)
+      ipcRenderer.on('update:downloaded', handler)
+      return () => ipcRenderer.off('update:downloaded', handler)
+    },
+    install: () => ipcRenderer.send('update:install'),
+  },
 }
 
 if (process.contextIsolated) {

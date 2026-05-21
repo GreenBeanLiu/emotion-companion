@@ -1,7 +1,28 @@
 import { app, shell, BrowserWindow, ipcMain } from 'electron'
 import { join } from 'path'
 import { electronApp, optimizer, is } from '@electron-toolkit/utils'
+import { autoUpdater } from 'electron-updater'
 import { registerIpcHandlers } from './ipc'
+
+function setupAutoUpdater(win: BrowserWindow): void {
+  autoUpdater.autoDownload = true
+  autoUpdater.autoInstallOnAppQuit = true
+
+  autoUpdater.on('update-available', (info) => {
+    win.webContents.send('update:available', { version: info.version })
+  })
+
+  autoUpdater.on('update-downloaded', (info) => {
+    win.webContents.send('update:downloaded', { version: info.version })
+  })
+
+  ipcMain.on('update:install', () => {
+    autoUpdater.quitAndInstall()
+  })
+
+  // 启动后 3 秒再检查，避免影响启动速度
+  setTimeout(() => autoUpdater.checkForUpdates(), 3000)
+}
 
 function createWindow(): void {
   const mainWindow = new BrowserWindow({
@@ -10,7 +31,7 @@ function createWindow(): void {
     minWidth: 680,
     minHeight: 520,
     show: false,
-    frame: false,        // 自定义标题栏
+    frame: false,
     titleBarStyle: 'hidden',
     backgroundColor: '#12111a',
     webPreferences: {
@@ -27,7 +48,6 @@ function createWindow(): void {
     return { action: 'deny' }
   })
 
-  // IPC: 窗口控制
   ipcMain.on('win:minimize', () => mainWindow.minimize())
   ipcMain.on('win:maximize', () => {
     mainWindow.isMaximized() ? mainWindow.unmaximize() : mainWindow.maximize()
@@ -38,6 +58,7 @@ function createWindow(): void {
     mainWindow.loadURL(process.env['ELECTRON_RENDERER_URL'])
   } else {
     mainWindow.loadFile(join(__dirname, '../renderer/index.html'))
+    setupAutoUpdater(mainWindow)
   }
 }
 

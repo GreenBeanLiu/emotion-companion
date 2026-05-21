@@ -58,6 +58,11 @@ declare global {
           videos: BilibiliVideo[]
         }) => void) => () => void
       }
+      update: {
+        onAvailable: (cb: (data: { version: string }) => void) => () => void
+        onDownloaded: (cb: (data: { version: string }) => void) => () => void
+        install: () => void
+      }
     }
   }
 }
