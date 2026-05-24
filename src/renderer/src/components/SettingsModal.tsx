@@ -1,15 +1,8 @@
 import { useEffect, useState } from 'react'
-import { Eye, EyeOff, Brain, Palette, ExternalLink } from 'lucide-react'
+import { createStyles } from 'antd-style'
+import { Modal, Input, Select, Button, Segmented, Divider } from 'antd'
+import { Eye, EyeOff, Brain, Palette } from 'lucide-react'
 import { api } from '../lib/api'
-import {
-  Dialog,
-  DialogContent,
-  DialogHeader,
-  DialogTitle,
-} from '@/components/ui/dialog'
-import { Input } from '@/components/ui/input'
-import { Button } from '@/components/ui/button'
-import { cn } from '@/lib/utils'
 
 type Settings = {
   provider: 'claude' | 'openai'
@@ -40,7 +33,189 @@ const BASE_URL_PRESETS = [
   { label: '月之暗面', value: 'https://api.moonshot.cn' },
 ]
 
+/* ─── Styles ─────────────────────────────────────────────────────────────── */
+
+const useStyles = createStyles(({ token, css }) => ({
+  body: css`
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+    max-height: 68vh;
+    overflow-y: auto;
+    padding: 20px 24px;
+  `,
+
+  section: css`
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+  `,
+
+  label: css`
+    font-size: 12px;
+    font-weight: 500;
+    color: ${token.colorTextSecondary};
+    display: flex;
+    align-items: center;
+    gap: 6px;
+  `,
+
+  labelHint: css`
+    font-weight: 400;
+    color: ${token.colorTextQuaternary};
+  `,
+
+  presetRow: css`
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+  `,
+
+  presetBtn: css`
+    padding: 3px 10px;
+    border-radius: ${token.borderRadiusSM}px;
+    font-size: 11px;
+    border: 1px solid ${token.colorBorder};
+    background: transparent;
+    color: ${token.colorTextTertiary};
+    cursor: pointer;
+    transition: all ${token.motionDurationFast};
+    outline: none;
+    font-family: ${token.fontFamily};
+
+    &:hover {
+      border-color: ${token.colorPrimaryBorder};
+      color: ${token.colorTextSecondary};
+    }
+  `,
+
+  presetBtnActive: css`
+    border-color: ${token.colorPrimaryBorder} !important;
+    background: ${token.colorPrimaryBg} !important;
+    color: ${token.colorPrimary} !important;
+  `,
+
+  infoCard: css`
+    border-radius: ${token.borderRadius}px;
+    padding: 14px 16px;
+    display: flex;
+    align-items: flex-start;
+    gap: 10px;
+    background: ${token.colorBgLayout};
+    border: 1px solid ${token.colorBorderSecondary};
+  `,
+
+  infoCardIcon: css`
+    margin-top: 1px;
+    flex-shrink: 0;
+  `,
+
+  infoCardTitle: css`
+    font-size: 12px;
+    font-weight: 500;
+    color: ${token.colorTextSecondary};
+    margin-bottom: 4px;
+  `,
+
+  infoCardText: css`
+    font-size: 12px;
+    line-height: 1.6;
+    color: ${token.colorTextQuaternary};
+  `,
+
+  memoryCard: css`
+    border-radius: ${token.borderRadius}px;
+    padding: 14px 16px;
+    background: ${token.colorBgLayout};
+    border: 1px solid ${token.colorBorderSecondary};
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+  `,
+
+  memoryHeader: css`
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  `,
+
+  memoryLeft: css`
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  `,
+
+  memoryLabel: css`
+    font-size: 12px;
+    font-weight: 500;
+    color: ${token.colorTextSecondary};
+  `,
+
+  memoryBadge: css`
+    font-size: 10px;
+    padding: 1px 8px;
+    border-radius: 20px;
+    background: ${token.colorPrimaryBg};
+    color: ${token.colorPrimary};
+    border: 1px solid ${token.colorPrimaryBorder};
+  `,
+
+  memoryActions: css`
+    display: flex;
+    align-items: center;
+    gap: 12px;
+  `,
+
+  memoryAction: css`
+    font-size: 11px;
+    background: none;
+    border: none;
+    cursor: pointer;
+    color: ${token.colorTextTertiary};
+    transition: color ${token.motionDurationFast};
+    padding: 0;
+    outline: none;
+    font-family: ${token.fontFamily};
+
+    &:hover {
+      color: ${token.colorTextSecondary};
+    }
+  `,
+
+  memoryActionDanger: css`
+    &:hover {
+      color: ${token.colorError} !important;
+    }
+  `,
+
+  memoryEmpty: css`
+    font-size: 11px;
+    line-height: 1.7;
+    color: ${token.colorTextDisabled};
+  `,
+
+  memoryContent: css`
+    font-size: 11px;
+    line-height: 1.7;
+    white-space: pre-wrap;
+    font-family: ${token.fontFamily};
+    color: ${token.colorTextTertiary};
+  `,
+
+  footer: css`
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+    gap: 8px;
+    padding: 16px 24px;
+    border-top: 1px solid ${token.colorBorderSecondary};
+  `,
+}))
+
+/* ─── Component ─────────────────────────────────────────────────────────── */
+
 export default function SettingsModal({ onClose }: { onClose: () => void }) {
+  const { styles, cx } = useStyles()
   const [settings, setSettings] = useState<Settings>({
     provider: 'claude',
     apiKey: '',
@@ -66,7 +241,8 @@ export default function SettingsModal({ onClose }: { onClose: () => void }) {
 
   async function handleSave() {
     setSaving(true)
-    await api.settings.save(settings)
+    const existing = await api.settings.load()
+    await api.settings.save({ ...existing, ...settings })
     setSaving(false)
     setSaved(true)
     setTimeout(() => setSaved(false), 2000)
@@ -76,255 +252,189 @@ export default function SettingsModal({ onClose }: { onClose: () => void }) {
     setSettings((s) => ({ ...s, ...update }))
   }
 
-  const models = MODEL_OPTIONS[settings.provider]
   const isOpenAI = settings.provider === 'openai'
+  const models = MODEL_OPTIONS[settings.provider]
 
   return (
-    <Dialog open onOpenChange={(open) => { if (!open) onClose() }}>
-      <DialogContent
-        className="max-w-lg p-0 gap-0 overflow-hidden"
-        style={{ background: '#1c1b28', border: '1px solid #2e2c42' }}
-      >
-        <DialogHeader className="px-6 pt-5 pb-4" style={{ borderBottom: '1px solid #2e2c42' }}>
-          <DialogTitle className="text-sm font-semibold" style={{ color: '#e8e6f0' }}>设置</DialogTitle>
-        </DialogHeader>
+    <Modal
+      open
+      onCancel={onClose}
+      title="设置"
+      footer={null}
+      width={480}
+      centered
+      styles={{ body: { padding: 0 }, header: { padding: '18px 24px 14px', margin: 0 } }}
+    >
+      <div className={styles.body}>
 
-        <div className="px-6 py-5 flex flex-col gap-5 overflow-y-auto" style={{ maxHeight: '72vh' }}>
+        {/* Provider */}
+        <div className={styles.section}>
+          <span className={styles.label}>AI 提供商</span>
+          <Segmented
+            value={settings.provider}
+            onChange={(v) => patch({ provider: v as 'claude' | 'openai', model: '', baseUrl: '' })}
+            options={[
+              { label: 'Claude (Anthropic)', value: 'claude' },
+              { label: 'OpenAI 兼容', value: 'openai' },
+            ]}
+            block
+          />
+          {isOpenAI && (
+            <p style={{ fontSize: 11, color: '#5e5b78', lineHeight: 1.6, marginTop: 2 }}>
+              支持 OpenAI、DeepSeek、Qwen、月之暗面等兼容 OpenAI 协议的服务
+            </p>
+          )}
+        </div>
 
-          {/* Provider */}
-          <section className="flex flex-col gap-2.5">
-            <FieldLabel>AI 提供商</FieldLabel>
-            <div className="flex gap-2">
-              {(['claude', 'openai'] as const).map((p) => (
+        {/* Base URL (OpenAI only) */}
+        {isOpenAI && (
+          <div className={styles.section}>
+            <span className={styles.label}>
+              API Base URL
+              <span className={styles.labelHint}>（不填则使用 OpenAI 官方）</span>
+            </span>
+            <Input
+              value={settings.baseUrl}
+              onChange={(e) => patch({ baseUrl: e.target.value })}
+              placeholder="https://api.openai.com"
+            />
+            <div className={styles.presetRow}>
+              {BASE_URL_PRESETS.map((p) => (
                 <button
-                  key={p}
-                  onClick={() => patch({ provider: p, model: '', baseUrl: '' })}
-                  className={cn(
-                    'flex-1 py-2 rounded-xl text-[13px] font-medium border transition-all',
-                    settings.provider === p
-                      ? 'border-[#a78bfa]/50 bg-[#a78bfa]/10 text-[#a78bfa]'
-                      : 'text-[#5e5b78] hover:text-[#9b97b4]',
+                  key={p.value}
+                  className={cx(
+                    styles.presetBtn,
+                    settings.baseUrl === p.value && styles.presetBtnActive,
                   )}
-                  style={{ borderColor: settings.provider !== p ? '#2e2c42' : undefined }}
+                  onClick={() => patch({ baseUrl: p.value })}
                 >
-                  {p === 'claude' ? 'Claude (Anthropic)' : 'OpenAI 兼容'}
+                  {p.label}
                 </button>
               ))}
             </div>
-            {isOpenAI && (
-              <p className="text-[11px] leading-5" style={{ color: '#5e5b78' }}>
-                支持 OpenAI、DeepSeek、Qwen、月之暗面等兼容 OpenAI 协议的服务
-              </p>
-            )}
-          </section>
+          </div>
+        )}
 
-          {/* Base URL (OpenAI only) */}
-          {isOpenAI && (
-            <section className="flex flex-col gap-2.5">
-              <FieldLabel hint="不填则使用 OpenAI 官方">API Base URL</FieldLabel>
-              <Input
-                type="text"
-                value={settings.baseUrl}
-                onChange={(e) => patch({ baseUrl: e.target.value })}
-                placeholder="https://api.openai.com"
-                className="h-9 text-[13px] bg-[#12111a] border-[#2e2c42] focus-visible:ring-[#a78bfa]/30 text-[#e8e6f0] placeholder:text-[#3a3852]"
-              />
-              <div className="flex flex-wrap gap-1.5">
-                {BASE_URL_PRESETS.map((preset) => (
-                  <button
-                    key={preset.value}
-                    onClick={() => patch({ baseUrl: preset.value })}
-                    className={cn(
-                      'px-2.5 py-1 rounded-lg text-[11px] border transition-all',
-                      settings.baseUrl === preset.value
-                        ? 'border-[#a78bfa]/40 bg-[#a78bfa]/10 text-[#a78bfa]'
-                        : 'border-[#2e2c42] text-[#5e5b78] hover:border-[#3e3c52] hover:text-[#9b97b4]',
-                    )}
-                  >
-                    {preset.label}
-                  </button>
-                ))}
-              </div>
-            </section>
-          )}
-
-          {/* API Key */}
-          <section className="flex flex-col gap-2.5">
-            <FieldLabel hint="本地加密存储，不上传">API Key</FieldLabel>
-            <div className="flex gap-2">
-              <Input
-                type={showKey ? 'text' : 'password'}
-                value={settings.apiKey}
-                onChange={(e) => patch({ apiKey: e.target.value })}
-                placeholder={settings.provider === 'claude' ? 'sk-ant-...' : 'sk-...'}
-                className="flex-1 h-9 text-[13px] bg-[#12111a] border-[#2e2c42] focus-visible:ring-[#a78bfa]/30 text-[#e8e6f0] placeholder:text-[#3a3852]"
-              />
+        {/* API Key */}
+        <div className={styles.section}>
+          <span className={styles.label}>
+            API Key
+            <span className={styles.labelHint}>（本地加密存储，不上传）</span>
+          </span>
+          <Input
+            type={showKey ? 'text' : 'password'}
+            value={settings.apiKey}
+            onChange={(e) => patch({ apiKey: e.target.value })}
+            placeholder={settings.provider === 'claude' ? 'sk-ant-…' : 'sk-…'}
+            suffix={
               <button
                 onClick={() => setShowKey((v) => !v)}
-                className="px-3 h-9 rounded-lg border text-[12px] flex items-center gap-1.5 transition-colors shrink-0"
-                style={{ borderColor: '#2e2c42', color: '#5e5b78', background: '#12111a' }}
-                onMouseEnter={(e) => { e.currentTarget.style.color = '#9b97b4' }}
-                onMouseLeave={(e) => { e.currentTarget.style.color = '#5e5b78' }}
+                style={{ background: 'none', border: 'none', cursor: 'pointer', display: 'flex', alignItems: 'center', color: '#5e5b78', padding: 0 }}
               >
-                {showKey ? <EyeOff size={12} /> : <Eye size={12} />}
-                <span>{showKey ? '隐藏' : '显示'}</span>
+                {showKey ? <EyeOff size={13} /> : <Eye size={13} />}
               </button>
-            </div>
-          </section>
+            }
+          />
+        </div>
 
-          {/* Model */}
-          <section className="flex flex-col gap-2.5">
-            <FieldLabel>模型</FieldLabel>
-            <div className="flex gap-2">
-              <select
+        {/* Model */}
+        <div className={styles.section}>
+          <span className={styles.label}>模型</span>
+          <div style={{ display: 'flex', gap: 8 }}>
+            <Select
+              style={{ flex: 1 }}
+              value={settings.model || undefined}
+              onChange={(v) => patch({ model: v })}
+              placeholder="默认推荐"
+              options={models.map((m) => ({ label: m.label, value: m.value }))}
+              allowClear
+            />
+            {isOpenAI && (
+              <Input
+                style={{ flex: 1 }}
                 value={settings.model}
                 onChange={(e) => patch({ model: e.target.value })}
-                className="flex-1 h-9 rounded-lg border px-3 text-[13px] outline-none transition-colors appearance-none"
-                style={{
-                  background: '#12111a',
-                  borderColor: '#2e2c42',
-                  color: settings.model ? '#e8e6f0' : '#5e5b78',
-                }}
-              >
-                <option value="">默认推荐</option>
-                {models.map((m) => (
-                  <option key={m.value} value={m.value}>{m.label}</option>
-                ))}
-              </select>
-              {isOpenAI && (
-                <Input
-                  type="text"
-                  value={settings.model}
-                  onChange={(e) => patch({ model: e.target.value })}
-                  placeholder="或直接输入模型名"
-                  className="flex-1 h-9 text-[13px] bg-[#12111a] border-[#2e2c42] focus-visible:ring-[#a78bfa]/30 text-[#e8e6f0] placeholder:text-[#3a3852]"
-                />
-              )}
-            </div>
-          </section>
-
-          {/* TikHub Key */}
-          <section className="flex flex-col gap-2.5">
-            <FieldLabel hint="B站视频推荐，选填">TikHub API Key</FieldLabel>
-            <Input
-              type="password"
-              value={settings.tikhubKey}
-              onChange={(e) => patch({ tikhubKey: e.target.value })}
-              placeholder="填入后，负面情绪时自动推荐B站视频"
-              className="h-9 text-[13px] bg-[#12111a] border-[#2e2c42] focus-visible:ring-[#a78bfa]/30 text-[#e8e6f0] placeholder:text-[#3a3852]"
-            />
-          </section>
-
-          {/* Divider */}
-          <div style={{ height: 1, background: '#2e2c42' }} />
-
-          {/* Character note */}
-          <InfoCard
-            icon={<Palette size={14} style={{ color: '#a78bfa' }} />}
-            title="角色设定"
-          >
-            在侧边栏底部点击角色名称，可切换或自定义角色人设。
-          </InfoCard>
-
-          {/* Memory */}
-          <div className="rounded-xl p-4 flex flex-col gap-2" style={{ background: '#12111a', border: '1px solid #2e2c42' }}>
-            <div className="flex items-center justify-between">
-              <div className="flex items-center gap-2">
-                <Brain size={14} style={{ color: '#a78bfa' }} />
-                <span className="text-[12px] font-medium" style={{ color: '#9b97b4' }}>长期记忆</span>
-                {profile ? (
-                  <span
-                    className="text-[10px] px-2 py-0.5 rounded-full"
-                    style={{ background: 'rgba(167,139,250,0.15)', color: '#a78bfa', border: '1px solid rgba(167,139,250,0.25)' }}
-                  >
-                    已记录
-                  </span>
-                ) : (
-                  <span className="text-[11px]" style={{ color: '#3a3852' }}>暂无</span>
-                )}
-              </div>
-              {profile && (
-                <div className="flex items-center gap-3">
-                  <button
-                    onClick={() => setShowProfile((v) => !v)}
-                    className="text-[11px] transition-colors"
-                    style={{ color: '#5e5b78' }}
-                    onMouseEnter={(e) => { e.currentTarget.style.color = '#9b97b4' }}
-                    onMouseLeave={(e) => { e.currentTarget.style.color = '#5e5b78' }}
-                  >
-                    {showProfile ? '收起' : '查看'}
-                  </button>
-                  <button
-                    onClick={handleClearMemory}
-                    className="text-[11px] transition-colors"
-                    style={{ color: 'rgba(248,113,113,0.6)' }}
-                    onMouseEnter={(e) => { e.currentTarget.style.color = '#f87171' }}
-                    onMouseLeave={(e) => { e.currentTarget.style.color = 'rgba(248,113,113,0.6)' }}
-                  >
-                    清除
-                  </button>
-                </div>
-              )}
-            </div>
-            {!profile && (
-              <p className="text-[11px] leading-relaxed" style={{ color: '#3a3852' }}>
-                聊天过程中会自动提炼你提到的信息，下次对话时角色会记得你。
-              </p>
-            )}
-            {profile && showProfile && (
-              <pre className="mt-1 text-[11px] leading-6 whitespace-pre-wrap font-sans" style={{ color: '#7b78a0' }}>
-                {profile.summary}
-              </pre>
+                placeholder="或直接输入模型名"
+              />
             )}
           </div>
         </div>
 
-        {/* Footer */}
-        <div
-          className="flex items-center justify-end gap-2 px-6 py-4"
-          style={{ borderTop: '1px solid #2e2c42' }}
-        >
-          <Button
-            variant="ghost"
-            onClick={onClose}
-            className="h-9 px-4 text-[13px]"
-            style={{ color: '#9b97b4' }}
-          >
-            取消
-          </Button>
-          <button
-            onClick={handleSave}
-            disabled={saving}
-            className="h-9 px-5 rounded-xl text-[13px] font-semibold text-white transition-opacity disabled:opacity-50 cursor-pointer"
-            style={{ background: 'linear-gradient(135deg, #a78bfa, #f472b6)' }}
-            onMouseEnter={(e) => { e.currentTarget.style.opacity = '0.85' }}
-            onMouseLeave={(e) => { e.currentTarget.style.opacity = '1' }}
-          >
-            {saved ? '已保存 ✓' : saving ? '保存中…' : '保存设置'}
-          </button>
+        {/* TikHub Key */}
+        <div className={styles.section}>
+          <span className={styles.label}>
+            TikHub API Key
+            <span className={styles.labelHint}>（B站视频推荐，选填）</span>
+          </span>
+          <Input.Password
+            value={settings.tikhubKey}
+            onChange={(e) => patch({ tikhubKey: e.target.value })}
+            placeholder="填入后，负面情绪时自动推荐B站视频"
+          />
         </div>
-      </DialogContent>
-    </Dialog>
-  )
-}
 
-function FieldLabel({ children, hint }: { children: React.ReactNode; hint?: string }) {
-  return (
-    <label className="text-[12px] font-medium flex items-center gap-1.5" style={{ color: '#9b97b4' }}>
-      {children}
-      {hint && <span className="font-normal" style={{ color: '#4a4768' }}>（{hint}）</span>}
-    </label>
-  )
-}
+        <Divider style={{ margin: '0' }} />
 
-function InfoCard({ icon, title, children }: { icon: React.ReactNode; title: string; children: React.ReactNode }) {
-  return (
-    <div className="rounded-xl p-4 flex items-start gap-3" style={{ background: '#12111a', border: '1px solid #2e2c42' }}>
-      <div className="mt-0.5 shrink-0">{icon}</div>
-      <div className="flex flex-col gap-1">
-        <p className="text-[12px] font-medium" style={{ color: '#9b97b4' }}>{title}</p>
-        <p className="text-[12px] leading-relaxed" style={{ color: '#4a4768' }}>{children}</p>
+        {/* Character info */}
+        <div className={styles.infoCard}>
+          <div className={styles.infoCardIcon}>
+            <Palette size={14} color="#d48855" />
+          </div>
+          <div>
+            <p className={styles.infoCardTitle}>角色设定</p>
+            <p className={styles.infoCardText}>
+              点击左侧导航栏底部的角色头像，可切换或自定义角色人设。
+            </p>
+          </div>
+        </div>
+
+        {/* Memory */}
+        <div className={styles.memoryCard}>
+          <div className={styles.memoryHeader}>
+            <div className={styles.memoryLeft}>
+              <Brain size={14} color="#d48855" />
+              <span className={styles.memoryLabel}>长期记忆</span>
+              {profile ? (
+                <span className={styles.memoryBadge}>已记录</span>
+              ) : (
+                <span style={{ fontSize: 11, color: '#3a3852' }}>暂无</span>
+              )}
+            </div>
+            {profile && (
+              <div className={styles.memoryActions}>
+                <button
+                  className={styles.memoryAction}
+                  onClick={() => setShowProfile((v) => !v)}
+                >
+                  {showProfile ? '收起' : '查看'}
+                </button>
+                <button
+                  className={cx(styles.memoryAction, styles.memoryActionDanger)}
+                  onClick={handleClearMemory}
+                >
+                  清除
+                </button>
+              </div>
+            )}
+          </div>
+          {!profile && (
+            <p className={styles.memoryEmpty}>
+              聊天过程中会自动提炼你提到的信息，下次对话时角色会记得你。
+            </p>
+          )}
+          {profile && showProfile && (
+            <pre className={styles.memoryContent}>{profile.summary}</pre>
+          )}
+        </div>
       </div>
-    </div>
+
+      {/* Footer */}
+      <div className={styles.footer}>
+        <Button onClick={onClose}>取消</Button>
+        <Button type="primary" loading={saving} onClick={handleSave}>
+          {saved ? '已保存 ✓' : '保存设置'}
+        </Button>
+      </div>
+    </Modal>
   )
 }

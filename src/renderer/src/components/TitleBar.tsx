@@ -1,77 +1,246 @@
+import { createStyles } from 'antd-style'
+import { Tooltip } from 'antd'
 import { api } from '../lib/api'
+import type { Character } from '../lib/characters'
 
-export default function TitleBar() {
-  return (
-    <div className="drag-region" style={{
-      height: 42, display: 'flex', alignItems: 'center',
-      justifyContent: 'space-between', padding: '0 12px',
-      flexShrink: 0, borderBottom: '1px solid #1a1927',
-      background: '#0d0c15',
-    }}>
-      {/* Left: spacer for symmetry */}
-      <div style={{ width: 80 }} />
+type UpdateState =
+  | { status: 'idle' }
+  | { status: 'available'; version: string }
+  | { status: 'downloaded'; version: string }
 
-      {/* Center: app name */}
-      <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
-        <div style={{
-          width: 18, height: 18, borderRadius: 5,
-          background: 'linear-gradient(135deg, #a78bfa, #f472b6)',
-          flexShrink: 0,
-        }} />
-        <span style={{ fontSize: 13, fontWeight: 600, color: '#c4c0d8', letterSpacing: '0.04em' }}>
-          情感陪伴
-        </span>
-      </div>
-
-      {/* Right: window controls */}
-      <div className="no-drag" style={{ display: 'flex', alignItems: 'center', gap: 2, width: 80, justifyContent: 'flex-end' }}>
-        <WinBtn onClick={() => api.win.minimize()} title="最小化">
-          <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5">
-            <line x1="5" y1="12" x2="19" y2="12" />
-          </svg>
-        </WinBtn>
-        <WinBtn onClick={() => api.win.maximize()} title="最大化">
-          <svg width="9" height="9" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5">
-            <rect x="4" y="4" width="16" height="16" rx="2" />
-          </svg>
-        </WinBtn>
-        <WinBtn onClick={() => api.win.close()} title="关闭" hoverColor="#f87171" hoverBg="rgba(239,68,68,0.15)">
-          <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5">
-            <line x1="18" y1="6" x2="6" y2="18" /><line x1="6" y1="6" x2="18" y2="18" />
-          </svg>
-        </WinBtn>
-      </div>
-    </div>
-  )
+type Props = {
+  character: Character
+  convTitle: string | null
+  update: UpdateState
+  onInstall: () => void
+  onDismissUpdate: () => void
 }
 
-function WinBtn({ onClick, title, children, hoverColor, hoverBg }: {
-  onClick: () => void
-  title: string
-  children: React.ReactNode
-  hoverColor?: string
-  hoverBg?: string
-}) {
+const useStyles = createStyles(({ token, css }) => ({
+  bar: css`
+    height: 40px;
+    display: flex;
+    align-items: center;
+    flex-shrink: 0;
+    border-bottom: 1px solid ${token.colorBorderSecondary};
+    background: ${token.colorBgLayout};
+    -webkit-app-region: drag;
+    user-select: none;
+  `,
+
+  railOffset: css`
+    width: 64px;
+    flex-shrink: 0;
+  `,
+
+  charCtx: css`
+    width: 240px;
+    flex-shrink: 0;
+    display: flex;
+    align-items: center;
+    gap: 7px;
+    padding: 0 10px 0 16px;
+    height: 100%;
+    border-right: 1px solid ${token.colorBorderSecondary};
+  `,
+
+  charName: css`
+    font-size: 12px;
+    font-weight: 500;
+    color: ${token.colorTextTertiary};
+    letter-spacing: 0.02em;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  `,
+
+  centerZone: css`
+    flex: 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 0 12px;
+    min-width: 0;
+  `,
+
+  convTitle: css`
+    font-size: 12px;
+    font-weight: 500;
+    color: ${token.colorTextQuaternary};
+    max-width: 280px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  `,
+
+  appLabel: css`
+    font-size: 12px;
+    font-weight: 500;
+    color: ${token.colorTextDisabled};
+  `,
+
+  rightZone: css`
+    display: flex;
+    align-items: center;
+    gap: 2px;
+    padding: 0 8px;
+    -webkit-app-region: no-drag;
+  `,
+
+  updateBadge: css`
+    display: flex;
+    align-items: center;
+    gap: 5px;
+    padding: 3px 8px 3px 6px;
+    border-radius: ${token.borderRadiusSM}px;
+    font-size: 11px;
+    margin-right: 4px;
+    cursor: pointer;
+    transition: opacity ${token.motionDurationFast};
+
+    &:hover {
+      opacity: 0.85;
+    }
+  `,
+
+  updateDot: css`
+    width: 5px;
+    height: 5px;
+    border-radius: 50%;
+    flex-shrink: 0;
+  `,
+
+  dismissBtn: css`
+    background: none;
+    border: none;
+    color: ${token.colorTextQuaternary};
+    cursor: pointer;
+    font-size: 13px;
+    padding: 0;
+    line-height: 1;
+    margin-left: 2px;
+    -webkit-app-region: no-drag;
+
+    &:hover {
+      color: ${token.colorTextSecondary};
+    }
+  `,
+
+  winBtn: css`
+    width: 26px;
+    height: 26px;
+    border-radius: ${token.borderRadiusSM}px;
+    border: none;
+    background: transparent;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: ${token.colorTextDisabled};
+    transition: background ${token.motionDurationFast}, color ${token.motionDurationFast};
+    outline: none;
+
+    &:hover {
+      background: ${token.colorFillSecondary};
+      color: ${token.colorTextSecondary};
+    }
+  `,
+
+  winBtnClose: css`
+    &:hover {
+      background: ${token.colorErrorBg};
+      color: ${token.colorError};
+    }
+  `,
+}))
+
+export default function TitleBar({ character, convTitle, update, onInstall, onDismissUpdate }: Props) {
+  const { styles, cx } = useStyles()
+
+  const isDownloaded = update.status === 'downloaded'
+  const isAvailable = update.status === 'available'
+
   return (
-    <button
-      onClick={onClick}
-      title={title}
-      style={{
-        width: 26, height: 26, borderRadius: 6, border: 'none',
-        background: 'transparent', cursor: 'pointer',
-        display: 'flex', alignItems: 'center', justifyContent: 'center',
-        color: '#4a4768', transition: 'all 0.1s',
-      }}
-      onMouseEnter={(e) => {
-        e.currentTarget.style.color = hoverColor ?? '#9b97b4'
-        e.currentTarget.style.background = hoverBg ?? 'rgba(255,255,255,0.06)'
-      }}
-      onMouseLeave={(e) => {
-        e.currentTarget.style.color = '#4a4768'
-        e.currentTarget.style.background = 'transparent'
-      }}
-    >
-      {children}
-    </button>
+    <div className={styles.bar}>
+      {/* Spacer aligned with NavRail */}
+      <div className={styles.railOffset} />
+
+      {/* Character context — aligned with ConvPanel column */}
+      <div className={styles.charCtx}>
+        <span style={{ fontSize: 16, lineHeight: 1 }}>{character.emoji}</span>
+        <span className={styles.charName}>{character.name}</span>
+      </div>
+
+      {/* Center: conversation title */}
+      <div className={styles.centerZone}>
+        {convTitle ? (
+          <span className={styles.convTitle}>{convTitle}</span>
+        ) : (
+          <span className={styles.appLabel}>情感陪伴</span>
+        )}
+      </div>
+
+      {/* Right: update badge + window controls */}
+      <div className={styles.rightZone}>
+        {update.status !== 'idle' && (
+          <div
+            className={styles.updateBadge}
+            style={{
+              background: isDownloaded ? 'rgba(74,222,128,0.07)' : 'rgba(212,136,85,0.07)',
+              border: `1px solid ${isDownloaded ? 'rgba(74,222,128,0.20)' : 'rgba(212,136,85,0.18)'}`,
+              color: isDownloaded ? '#4ade80' : '#d48855',
+            }}
+            onClick={isDownloaded ? onInstall : undefined}
+          >
+            <span
+              className={styles.updateDot}
+              style={{ background: isDownloaded ? '#4ade80' : '#d48855' }}
+            />
+            <span>
+              {isAvailable ? `v${update.version} 下载中` : `v${update.version} 就绪，点击重启`}
+            </span>
+            {isAvailable && (
+              <button
+                className={styles.dismissBtn}
+                onClick={(e) => {
+                  e.stopPropagation()
+                  onDismissUpdate()
+                }}
+              >
+                ×
+              </button>
+            )}
+          </div>
+        )}
+
+        <Tooltip title="最小化" placement="bottom">
+          <button className={styles.winBtn} onClick={() => api.win.minimize()}>
+            <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5">
+              <line x1="5" y1="12" x2="19" y2="12" />
+            </svg>
+          </button>
+        </Tooltip>
+
+        <Tooltip title="最大化" placement="bottom">
+          <button className={styles.winBtn} onClick={() => api.win.maximize()}>
+            <svg width="9" height="9" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5">
+              <rect x="4" y="4" width="16" height="16" rx="2" />
+            </svg>
+          </button>
+        </Tooltip>
+
+        <Tooltip title="关闭" placement="bottom">
+          <button
+            className={cx(styles.winBtn, styles.winBtnClose)}
+            onClick={() => api.win.close()}
+          >
+            <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5">
+              <line x1="18" y1="6" x2="6" y2="18" />
+              <line x1="6" y1="6" x2="18" y2="18" />
+            </svg>
+          </button>
+        </Tooltip>
+      </div>
+    </div>
   )
 }

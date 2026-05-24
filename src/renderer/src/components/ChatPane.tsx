@@ -1,8 +1,8 @@
 import { useEffect, useRef, useState, useCallback } from 'react'
+import { createStyles } from 'antd-style'
 import { SendHorizontal, User } from 'lucide-react'
 import { api, type ConversationRow, type MessageRow, type BilibiliVideo } from '../lib/api'
 import type { Character } from '../lib/characters'
-import { cn } from '@/lib/utils'
 
 const EMOTION_META: Record<string, { emoji: string; color: string }> = {
   开心: { emoji: '😊', color: '#4ade80' },
@@ -24,12 +24,385 @@ type Props = {
   onConversationUpdated: () => void
 }
 
-export default function ChatPane({ conversation, character, onConversationCreated, onConversationUpdated }: Props) {
+/* ─── Styles ─────────────────────────────────────────────────────────────── */
+
+const useStyles = createStyles(({ token, css }) => ({
+  pane: css`
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    min-width: 0;
+    background: ${token.colorBgBase};
+  `,
+
+  /* Error banner */
+  errorBanner: css`
+    flex-shrink: 0;
+    margin: 12px 16px 0;
+    padding: 8px 14px;
+    border-radius: ${token.borderRadius}px;
+    font-size: 12px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    background: ${token.colorErrorBg};
+    border: 1px solid ${token.colorErrorBorder};
+    color: ${token.colorError};
+  `,
+
+  errorDismiss: css`
+    background: none;
+    border: none;
+    color: ${token.colorError};
+    cursor: pointer;
+    opacity: 0.6;
+    flex-shrink: 0;
+    font-size: 14px;
+    padding: 0;
+    transition: opacity ${token.motionDurationFast};
+    &:hover { opacity: 1; }
+  `,
+
+  /* Messages scroll container */
+  messages: css`
+    flex: 1;
+    overflow-y: auto;
+    display: flex;
+    flex-direction: column;
+  `,
+
+  /* WideScreenContainer — caps reading width like reference project */
+  messagesInner: css`
+    width: 100%;
+    max-width: 780px;
+    margin: 0 auto;
+    padding: 24px 20px;
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+    flex: 1;
+  `,
+
+  /* Empty state */
+  emptyState: css`
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 20px;
+    text-align: center;
+    min-height: 58vh;
+    position: relative;
+  `,
+
+  charName: css`
+    font-size: 17px;
+    font-weight: 700;
+    color: ${token.colorText};
+    margin: 0;
+  `,
+
+  charTitle: css`
+    font-size: 13px;
+    line-height: 1.5;
+    margin: 0;
+  `,
+
+  tagRow: css`
+    display: flex;
+    gap: 6px;
+    flex-wrap: wrap;
+    justify-content: center;
+    max-width: 280px;
+  `,
+
+  tag: css`
+    font-size: 11px;
+    padding: 2px 10px;
+    border-radius: 20px;
+    font-weight: 500;
+  `,
+
+  starterList: css`
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    width: 100%;
+    max-width: 260px;
+  `,
+
+  starterBtn: css`
+    text-align: left;
+    font-size: 12px;
+    padding: 10px 16px;
+    border-radius: ${token.borderRadius}px;
+    border: 1px solid ${token.colorBorderSecondary};
+    background: ${token.colorFillQuaternary};
+    color: ${token.colorTextTertiary};
+    cursor: pointer;
+    transition: border-color ${token.motionDurationFast},
+      color ${token.motionDurationFast},
+      background ${token.motionDurationFast};
+    width: 100%;
+    outline: none;
+    font-family: ${token.fontFamily};
+  `,
+
+  /* Message rows */
+  msgRow: css`
+    display: flex;
+    gap: 10px;
+    align-items: flex-start;
+  `,
+
+  msgRowUser: css`
+    flex-direction: row-reverse;
+  `,
+
+  msgContent: css`
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    max-width: 72%;
+  `,
+
+  msgContentUser: css`
+    align-items: flex-end;
+  `,
+
+  msgSenderLabel: css`
+    font-size: 11px;
+    font-weight: 500;
+    padding: 0 2px;
+    margin-bottom: 2px;
+  `,
+
+  msgBubble: css`
+    padding: 10px 16px;
+    font-size: 14px;
+    line-height: 1.6;
+    white-space: pre-wrap;
+    word-break: break-words;
+    border-radius: 16px;
+    font-family: ${token.fontFamily};
+  `,
+
+  msgBubbleUser: css`
+    background: linear-gradient(150deg, #2a1c0d 0%, #1e1408 100%);
+    border: 1px solid rgba(212,136,85,0.18);
+    color: #ede8de;
+    border-top-right-radius: 4px;
+    box-shadow: inset 0 1px 0 rgba(212,136,85,0.06);
+  `,
+
+  msgBubbleAssistant: css`
+    background: ${token.colorBgContainer};
+    border: 1px solid ${token.colorBorder};
+    color: ${token.colorTextSecondary};
+    border-top-left-radius: 4px;
+  `,
+
+  emotionTag: css`
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    font-size: 11px;
+    opacity: 0.6;
+  `,
+
+  userAvatar: css`
+    flex-shrink: 0;
+    margin-top: 2px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 28px;
+    height: 28px;
+    border-radius: 50%;
+    background: linear-gradient(135deg, #2a1c0d 0%, #4a3018 100%);
+    border: 1px solid rgba(212,136,85,0.28);
+  `,
+
+  /* Typing indicator */
+  typingBubble: css`
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    padding: 12px 16px;
+    border-radius: 16px;
+    border-top-left-radius: 4px;
+    background: ${token.colorBgContainer};
+    border: 1px solid ${token.colorBorder};
+  `,
+
+  /* Bilibili video strip */
+  videoStrip: css`
+    margin-top: 8px;
+    margin-left: 38px;
+  `,
+
+  videoHint: css`
+    font-size: 11px;
+    color: ${token.colorTextTertiary};
+    margin-bottom: 8px;
+  `,
+
+  videoScroll: css`
+    display: flex;
+    gap: 8px;
+    overflow-x: auto;
+    padding-bottom: 4px;
+  `,
+
+  videoCard: css`
+    flex-shrink: 0;
+    width: 160px;
+    text-align: left;
+    border-radius: ${token.borderRadius}px;
+    overflow: hidden;
+    border: 1px solid ${token.colorBorder};
+    background: ${token.colorBgContainer};
+    cursor: pointer;
+    transition: border-color ${token.motionDurationFast},
+      background ${token.motionDurationFast};
+    outline: none;
+
+    &:hover {
+      border-color: ${token.colorPrimaryBorder};
+      background: ${token.colorBgElevated};
+    }
+  `,
+
+  videoInfo: css`
+    padding: 6px 8px 8px;
+  `,
+
+  videoTitle: css`
+    font-size: 11px;
+    line-height: 1.4;
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+    color: ${token.colorTextSecondary};
+  `,
+
+  videoMeta: css`
+    font-size: 10px;
+    color: ${token.colorTextTertiary};
+    margin-top: 4px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  `,
+
+  videoNocover: css`
+    width: 100%;
+    height: 90px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 11px;
+    background: ${token.colorBgLayout};
+    color: ${token.colorTextDisabled};
+  `,
+
+  /* Input area */
+  inputArea: css`
+    flex-shrink: 0;
+    padding: 12px 16px 16px;
+    border-top: 1px solid ${token.colorBorderSecondary};
+  `,
+
+  inputAreaInner: css`
+    width: 100%;
+    max-width: 780px;
+    margin: 0 auto;
+  `,
+
+  inputBox: css`
+    display: flex;
+    align-items: flex-end;
+    gap: 8px;
+    border-radius: ${token.borderRadiusLG}px;
+    padding: 12px 16px;
+    background: ${token.colorBgContainer};
+    border: 1px solid ${token.colorBorder};
+    transition: border-color ${token.motionDurationFast};
+
+    &:focus-within {
+      border-color: ${token.colorPrimaryBorder};
+    }
+  `,
+
+  inputTextarea: css`
+    flex: 1;
+    resize: none;
+    background: transparent;
+    border: none;
+    outline: none;
+    font-size: 14px;
+    color: ${token.colorText};
+    font-family: ${token.fontFamily};
+    line-height: 1.6;
+    max-height: 144px;
+    overflow-y: auto;
+
+    &::placeholder {
+      color: ${token.colorTextQuaternary};
+    }
+
+    &:disabled {
+      cursor: not-allowed;
+    }
+  `,
+
+  sendBtn: css`
+    flex-shrink: 0;
+    width: 32px;
+    height: 32px;
+    border-radius: ${token.borderRadius}px;
+    border: none;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    transition: opacity ${token.motionDurationFast};
+    color: white;
+    outline: none;
+
+    &:disabled {
+      cursor: not-allowed;
+      opacity: 0.45;
+    }
+  `,
+
+  inputHint: css`
+    text-align: center;
+    font-size: 11px;
+    color: ${token.colorTextDisabled};
+    margin-top: 8px;
+    user-select: none;
+  `,
+}))
+
+/* ─── Component ─────────────────────────────────────────────────────────── */
+
+export default function ChatPane({
+  conversation,
+  character,
+  onConversationCreated,
+  onConversationUpdated,
+}: Props) {
+  const { styles, cx } = useStyles()
   const [messages, setMessages] = useState<DisplayMsg[]>([])
   const [input, setInput] = useState('')
   const [sending, setSending] = useState(false)
   const [error, setError] = useState<string | null>(null)
-  const [recommendations, setRecommendations] = useState<Map<number, { keyword: string; videos: BilibiliVideo[] }>>(new Map())
+  const [recommendations, setRecommendations] = useState<
+    Map<number, { keyword: string; videos: BilibiliVideo[] }>
+  >(new Map())
   const bottomRef = useRef<HTMLDivElement>(null)
   const inputRef = useRef<HTMLTextAreaElement>(null)
   const convIdRef = useRef<number | null>(null)
@@ -77,7 +450,10 @@ export default function ChatPane({ conversation, character, onConversationCreate
       setSending(false)
       onConversationUpdated()
     })
-    return () => { offChunk(); offDone() }
+    return () => {
+      offChunk()
+      offDone()
+    }
   }, [onConversationUpdated])
 
   useEffect(() => {
@@ -133,170 +509,202 @@ export default function ChatPane({ conversation, character, onConversationCreate
   const isEmpty = messages.length === 0
 
   return (
-    <div className="flex-1 flex flex-col min-w-0" style={{ background: '#12111a' }}>
-      {/* Error toast */}
+    <div className={styles.pane}>
+      {/* Error banner */}
       {error && (
-        <div className="shrink-0 mx-4 mt-3 rounded-xl px-4 py-2.5 text-xs flex items-center gap-2" style={{ background: 'rgba(248,113,113,0.1)', border: '1px solid rgba(248,113,113,0.25)', color: '#f87171' }}>
-          <span className="flex-1">{error}</span>
-          <button onClick={() => setError(null)} className="opacity-60 hover:opacity-100 shrink-0">✕</button>
-        </div>
-      )}
-      {/* Messages */}
-      <div className="flex-1 overflow-y-auto px-5 py-6 flex flex-col gap-4">
-        {isEmpty && (
-          <div className="flex-1 flex flex-col items-center justify-center gap-5 text-center min-h-full relative">
-            {/* ambient glow */}
-            <div style={{
-              position: 'absolute', inset: 0, pointerEvents: 'none',
-              background: `radial-gradient(ellipse 60% 50% at 50% 45%, ${character.color}10 0%, transparent 70%)`,
-            }} />
-
-            <div
-              className="flex items-center justify-center text-4xl relative"
-              style={{
-                width: 88, height: 88, borderRadius: 28,
-                background: `linear-gradient(135deg, ${character.bgGradient[0]}, ${character.color}60)`,
-                border: `1px solid ${character.color}30`,
-                boxShadow: `0 0 0 8px ${character.color}08, 0 12px 40px ${character.color}25`,
-              }}
-            >
-              {character.emoji}
-            </div>
-
-            <div className="flex flex-col gap-1.5 relative">
-              <p className="text-[17px] font-bold" style={{ color: '#e8e6f0' }}>{character.name}</p>
-              <p className="text-sm leading-relaxed" style={{ color: character.color + 'aa' }}>
-                {character.title}
-              </p>
-            </div>
-
-            <div className="flex gap-2 flex-wrap justify-center max-w-xs relative">
-              {character.tags.map((tag) => (
-                <span
-                  key={tag}
-                  className="text-xs px-3 py-1 rounded-full font-medium"
-                  style={{
-                    background: `${character.color}15`,
-                    color: character.color,
-                    border: `1px solid ${character.color}30`,
-                  }}
-                >
-                  {tag}
-                </span>
-              ))}
-            </div>
-
-            {/* starter prompts */}
-            <div className="flex flex-col gap-1.5 w-full max-w-[260px] relative">
-              {['今天心情有点低落…', '最近压力好大', '想分享一件开心的事', '感觉很孤独'].map((s) => (
-                <button
-                  key={s}
-                  onClick={() => { setInput(s); inputRef.current?.focus() }}
-                  className="text-left text-xs px-4 py-2.5 rounded-xl transition-all"
-                  style={{ background: 'rgba(255,255,255,0.03)', border: '1px solid #252336', color: '#6b6890' }}
-                  onMouseEnter={(e) => {
-                    e.currentTarget.style.borderColor = `${character.color}40`
-                    e.currentTarget.style.color = '#9b97b4'
-                    e.currentTarget.style.background = `${character.color}08`
-                  }}
-                  onMouseLeave={(e) => {
-                    e.currentTarget.style.borderColor = '#252336'
-                    e.currentTarget.style.color = '#6b6890'
-                    e.currentTarget.style.background = 'rgba(255,255,255,0.03)'
-                  }}
-                >
-                  {s}
-                </button>
-              ))}
-            </div>
-          </div>
-        )}
-
-        {messages.map((msg, i) => {
-          const msgId = 'id' in msg ? msg.id : undefined
-          const rec = msgId ? recommendations.get(msgId) : undefined
-          return (
-            <div key={msgId ?? `stream-${i}`}>
-              <MessageBubble msg={msg} character={character} />
-              {rec && <VideoStrip keyword={rec.keyword} videos={rec.videos} />}
-            </div>
-          )
-        })}
-
-        {sending && !messages.some((m) => 'streaming' in m) && (
-          <div className="flex gap-3 items-start">
-            <CharAvatar character={character} />
-            <div
-              className="flex items-center gap-1.5 px-4 py-3 rounded-2xl"
-              style={{ background: '#1c1b28', border: '1px solid #2e2c42', borderTopLeftRadius: 4 }}
-            >
-              {[0, 120, 240].map((delay) => (
-                <span
-                  key={delay}
-                  className="w-1.5 h-1.5 rounded-full animate-bounce"
-                  style={{ backgroundColor: character.color, animationDelay: `${delay}ms` }}
-                />
-              ))}
-            </div>
-          </div>
-        )}
-
-        <div ref={bottomRef} />
-      </div>
-
-      {/* Input */}
-      <div className="shrink-0 px-4 pb-4 pt-3" style={{ borderTop: '1px solid #1a1927' }}>
-        <div
-          className="flex items-end gap-2 rounded-2xl px-4 py-3 transition-all"
-          style={{ background: '#1a1929', border: '1px solid #252336' }}
-          onFocusCapture={(e) => (e.currentTarget.style.borderColor = 'rgba(167,139,250,0.35)')}
-          onBlurCapture={(e) => (e.currentTarget.style.borderColor = '#252336')}
-        >
-          <textarea
-            ref={inputRef}
-            value={input}
-            onChange={(e) => setInput(e.target.value)}
-            onKeyDown={handleKeyDown}
-            placeholder="说说你的心情…"
-            rows={1}
-            style={{ fieldSizing: 'content' } as React.CSSProperties}
-            className="flex-1 resize-none bg-transparent text-sm text-[#e8e6f0] placeholder:text-[#4a4768] outline-none leading-6 max-h-36 overflow-y-auto"
-            disabled={sending}
-          />
-          <button
-            onClick={sendMessage}
-            disabled={!input.trim() || sending}
-            className={cn(
-              'shrink-0 w-8 h-8 rounded-xl flex items-center justify-center transition-all',
-              input.trim() && !sending
-                ? 'text-white'
-                : 'text-[#4a4768] cursor-not-allowed',
-            )}
-            style={{
-              background: input.trim() && !sending
-                ? `linear-gradient(135deg, #a78bfa, #f472b6)`
-                : '#252336',
-            }}
-          >
-            <SendHorizontal size={14} />
+        <div className={styles.errorBanner}>
+          <span style={{ flex: 1 }}>{error}</span>
+          <button className={styles.errorDismiss} onClick={() => setError(null)}>
+            ✕
           </button>
         </div>
-        <p className="text-center text-[11px] mt-2" style={{ color: '#2e2c42' }}>
-          Enter 发送 · Shift+Enter 换行
-        </p>
+      )}
+
+      {/* Messages */}
+      <div className={styles.messages}>
+        <div className={styles.messagesInner}>
+          {isEmpty && (
+            <div className={styles.emptyState}>
+              {/* Deep ambient glow */}
+              <div
+                style={{
+                  position: 'absolute',
+                  inset: 0,
+                  pointerEvents: 'none',
+                  background: `radial-gradient(ellipse 55% 45% at 50% 44%, ${character.color}18 0%, transparent 68%)`,
+                }}
+              />
+
+              {/* Breathing glow ring */}
+              <div
+                style={{
+                  position: 'absolute',
+                  width: 130,
+                  height: 130,
+                  borderRadius: '50%',
+                  background: `radial-gradient(circle, ${character.color}22 0%, transparent 70%)`,
+                  animation: 'ember-breathe 4s ease-in-out infinite',
+                  pointerEvents: 'none',
+                }}
+              />
+
+              {/* Floating character avatar */}
+              <div
+                style={{
+                  width: 92,
+                  height: 92,
+                  borderRadius: 30,
+                  background: `linear-gradient(135deg, ${character.bgGradient[0]}, ${character.color}55)`,
+                  border: `1px solid ${character.color}28`,
+                  boxShadow: `0 0 0 6px ${character.color}0a, 0 16px 48px ${character.color}20`,
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  fontSize: 38,
+                  position: 'relative',
+                  animation: 'ember-float 5s ease-in-out infinite',
+                }}
+              >
+                {character.emoji}
+              </div>
+
+              <div style={{ display: 'flex', flexDirection: 'column', gap: 6, position: 'relative' }}>
+                <p className={styles.charName}>{character.name}</p>
+                <p className={styles.charTitle} style={{ color: character.color + 'a0' }}>
+                  {character.title}
+                </p>
+              </div>
+
+              <div className={styles.tagRow} style={{ position: 'relative' }}>
+                {character.tags.map((tag) => (
+                  <span
+                    key={tag}
+                    className={styles.tag}
+                    style={{
+                      background: `${character.color}15`,
+                      color: character.color,
+                      border: `1px solid ${character.color}30`,
+                    }}
+                  >
+                    {tag}
+                  </span>
+                ))}
+              </div>
+
+              <div className={styles.starterList} style={{ position: 'relative' }}>
+                {['今天心情有点低落…', '最近压力好大', '想分享一件开心的事', '感觉很孤独'].map(
+                  (s) => (
+                    <button
+                      key={s}
+                      className={styles.starterBtn}
+                      onClick={() => {
+                        setInput(s)
+                        inputRef.current?.focus()
+                      }}
+                      onMouseEnter={(e) => {
+                        e.currentTarget.style.borderColor = `${character.color}50`
+                        e.currentTarget.style.background = `${character.color}0a`
+                        e.currentTarget.style.color = '#9b97b4'
+                      }}
+                      onMouseLeave={(e) => {
+                        e.currentTarget.style.borderColor = ''
+                        e.currentTarget.style.background = ''
+                        e.currentTarget.style.color = ''
+                      }}
+                    >
+                      {s}
+                    </button>
+                  ),
+                )}
+              </div>
+            </div>
+          )}
+
+          {messages.map((msg, i) => {
+            const msgId = 'id' in msg ? msg.id : undefined
+            const rec = msgId ? recommendations.get(msgId) : undefined
+            return (
+              <div key={msgId ?? `stream-${i}`}>
+                <MessageBubble msg={msg} character={character} styles={styles} cx={cx} />
+                {rec && (
+                  <VideoStrip keyword={rec.keyword} videos={rec.videos} styles={styles} />
+                )}
+              </div>
+            )
+          })}
+
+          {sending && !messages.some((m) => 'streaming' in m) && (
+            <div className={styles.msgRow}>
+              <CharAvatar character={character} />
+              <div className={styles.typingBubble}>
+                {[0, 120, 240].map((delay) => (
+                  <span
+                    key={delay}
+                    className="w-1.5 h-1.5 rounded-full animate-bounce"
+                    style={{ backgroundColor: character.color, animationDelay: `${delay}ms` }}
+                  />
+                ))}
+              </div>
+            </div>
+          )}
+
+          <div ref={bottomRef} />
+        </div>
+      </div>
+
+      {/* Input area */}
+      <div className={styles.inputArea}>
+        <div className={styles.inputAreaInner}>
+          <div className={styles.inputBox}>
+            <textarea
+              ref={inputRef}
+              value={input}
+              onChange={(e) => setInput(e.target.value)}
+              onKeyDown={handleKeyDown}
+              placeholder="说说你的心情…"
+              rows={1}
+              style={{ fieldSizing: 'content' } as React.CSSProperties}
+              className={styles.inputTextarea}
+              disabled={sending}
+            />
+            <button
+              onClick={sendMessage}
+              disabled={!input.trim() || sending}
+              className={styles.sendBtn}
+              style={{
+                background:
+                  input.trim() && !sending
+                    ? 'linear-gradient(135deg, #d48855, #c05438)'
+                    : 'rgba(255,244,230,0.06)',
+              }}
+            >
+              <SendHorizontal size={14} />
+            </button>
+          </div>
+          <p className={styles.inputHint}>Enter 发送 · Shift+Enter 换行</p>
+        </div>
       </div>
     </div>
   )
 }
 
+/* ─── Sub-components ─────────────────────────────────────────────────────── */
+
 function CharAvatar({ character }: { character: Character }) {
   return (
     <div
-      className="shrink-0 flex items-center justify-center text-sm mt-0.5"
       style={{
-        width: 28, height: 28, borderRadius: '50%',
-        background: `linear-gradient(135deg, ${character.bgGradient[0]}, ${character.color}50)`,
-        border: `1px solid ${character.color}25`,
+        flexShrink: 0,
+        width: 28,
+        height: 28,
+        borderRadius: '50%',
+        background: `linear-gradient(135deg, ${character.bgGradient[0]}, ${character.color}45)`,
+        border: `1px solid ${character.color}22`,
+        display: 'flex',
+        alignItems: 'center',
+        justifyContent: 'center',
+        fontSize: 13,
+        marginTop: 2,
       }}
     >
       {character.emoji}
@@ -304,65 +712,57 @@ function CharAvatar({ character }: { character: Character }) {
   )
 }
 
-function UserAvatar() {
-  return (
-    <div
-      className="shrink-0 mt-0.5 flex items-center justify-center"
-      style={{
-        width: 28, height: 28, borderRadius: '50%',
-        background: 'linear-gradient(135deg, #2d2459 0%, #4a3580 100%)',
-        border: '1px solid rgba(167,139,250,0.3)',
-      }}
-    >
-      <User size={12} color="#c4b5fd" strokeWidth={2.5} />
-    </div>
-  )
-}
+type StylesType = ReturnType<typeof useStyles>['styles']
+type CxType = ReturnType<typeof useStyles>['cx']
 
-function MessageBubble({ msg, character }: { msg: DisplayMsg; character: Character }) {
+function MessageBubble({
+  msg,
+  character,
+  styles,
+  cx,
+}: {
+  msg: DisplayMsg
+  character: Character
+  styles: StylesType
+  cx: CxType
+}) {
   const isUser = msg.role === 'user'
   const isStreaming = 'streaming' in msg
   const emotion = !isStreaming && isUser ? (msg as MessageRow).emotion : undefined
   const emotionMeta = emotion ? EMOTION_META[emotion] : undefined
 
   return (
-    <div className={cn('flex gap-3 items-start', isUser && 'flex-row-reverse')}>
-      {isUser ? <UserAvatar /> : <CharAvatar character={character} />}
-      <div className={cn('flex flex-col gap-1 max-w-[72%]', isUser ? 'items-end' : 'items-start')}>
+    <div className={cx(styles.msgRow, isUser && styles.msgRowUser)}>
+      {isUser ? (
+        <div className={styles.userAvatar}>
+          <User size={12} color="#d4a870" strokeWidth={2.5} />
+        </div>
+      ) : (
+        <CharAvatar character={character} />
+      )}
+
+      <div className={cx(styles.msgContent, isUser && styles.msgContentUser)}>
         {!isUser && (
-          <span className="text-[11px] font-medium px-0.5 mb-0.5" style={{ color: character.color + 'bb' }}>
+          <span className={styles.msgSenderLabel} style={{ color: character.color + 'bb' }}>
             {character.emoji} {character.name}
           </span>
         )}
+
         <div
-          className={cn(
-            'px-4 py-2.5 text-sm leading-relaxed whitespace-pre-wrap break-words',
-            isStreaming && 'after:content-["▋"] after:animate-pulse after:ml-0.5 after:text-[#a78bfa]',
+          className={cx(
+            styles.msgBubble,
+            isUser ? styles.msgBubbleUser : styles.msgBubbleAssistant,
+            /* streaming cursor via Tailwind — kept as utility class */
+            isStreaming
+              ? 'after:content-["▋"] after:animate-pulse after:ml-0.5 after:text-[#d48855]'
+              : '',
           )}
-          style={{
-            borderRadius: 16,
-            ...(isUser
-              ? {
-                  background: 'linear-gradient(135deg, #2d2459, #251d4a)',
-                  border: '1px solid rgba(167,139,250,0.18)',
-                  color: '#ede9f8',
-                  borderTopRightRadius: 4,
-                }
-              : {
-                  background: '#1c1b28',
-                  border: '1px solid #252336',
-                  color: '#d4d0e8',
-                  borderTopLeftRadius: 4,
-                }),
-          }}
         >
           {msg.content}
         </div>
+
         {emotionMeta && (
-          <span
-            className="flex items-center gap-1 text-[11px] opacity-60"
-            style={{ color: emotionMeta.color }}
-          >
+          <span className={styles.emotionTag} style={{ color: emotionMeta.color }}>
             <span>{emotionMeta.emoji}</span>
             <span>{emotion}</span>
           </span>
@@ -372,39 +772,43 @@ function MessageBubble({ msg, character }: { msg: DisplayMsg; character: Charact
   )
 }
 
-function VideoStrip({ keyword, videos }: { keyword: string; videos: BilibiliVideo[] }) {
+function VideoStrip({
+  keyword,
+  videos,
+  styles,
+}: {
+  keyword: string
+  videos: BilibiliVideo[]
+  styles: StylesType
+}) {
   function formatPlay(n: number): string {
     return n >= 10000 ? `${(n / 10000).toFixed(1)}万` : String(n)
   }
 
   return (
-    <div className="mt-2 ml-9">
-      <p className="text-[11px] mb-2" style={{ color: '#5e5b78' }}>
+    <div className={styles.videoStrip}>
+      <p className={styles.videoHint}>
         💡 为你找了一些{' '}
-        <span style={{ color: '#a78bfa' }}>{keyword}</span>
-        {' '}的视频
+        <span style={{ color: '#d48855' }}>{keyword}</span> 的视频
       </p>
-      <div className="flex gap-2 overflow-x-auto pb-1">
+      <div className={styles.videoScroll}>
         {videos.map((v) => (
           <button
             key={v.bvid}
+            className={styles.videoCard}
             onClick={() => window.open(`https://www.bilibili.com/video/${v.bvid}`, '_blank')}
-            className="shrink-0 w-40 text-left rounded-xl overflow-hidden transition-all"
-            style={{ border: '1px solid #2e2c42', background: '#1c1b28' }}
-            onMouseEnter={(e) => { e.currentTarget.style.borderColor = 'rgba(167,139,250,0.35)'; e.currentTarget.style.background = '#252336' }}
-            onMouseLeave={(e) => { e.currentTarget.style.borderColor = '#2e2c42'; e.currentTarget.style.background = '#1c1b28' }}
           >
             {v.cover ? (
-              <img src={v.cover} alt={v.title} className="w-full h-[90px] object-cover" />
+              <img src={v.cover} alt={v.title} style={{ width: '100%', height: 90, objectFit: 'cover', display: 'block' }} />
             ) : (
-              <div className="w-full h-[90px] flex items-center justify-center text-[11px]" style={{ background: '#16151f', color: '#3a3852' }}>
-                暂无封面
-              </div>
+              <div className={styles.videoNocover}>暂无封面</div>
             )}
-            <div className="px-2 py-1.5">
-              <p className="text-[11px] leading-4 line-clamp-2" style={{ color: '#d4d0e8' }}>{v.title}</p>
-              <p className="text-[10px] mt-1 flex items-center justify-between" style={{ color: '#5e5b78' }}>
-                <span className="truncate max-w-[70%]">{v.author}</span>
+            <div className={styles.videoInfo}>
+              <p className={styles.videoTitle}>{v.title}</p>
+              <p className={styles.videoMeta}>
+                <span style={{ overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap', maxWidth: '65%' }}>
+                  {v.author}
+                </span>
                 <span>{formatPlay(v.play)}播放</span>
               </p>
             </div>

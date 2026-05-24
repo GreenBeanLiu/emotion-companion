@@ -1,61 +1,80 @@
 @import "tailwindcss";
 
+/* ============================================================
+   Custom Tailwind tokens — warm ember palette
+   ============================================================ */
 @theme {
-  --color-background: #0d0c15;
-  --color-surface: #12111a;
-  --color-surface-2: #1c1b28;
-  --color-surface-3: #252336;
-  --color-border: #2a2840;
-  --color-border-soft: #1a1927;
-  --color-text: #e8e6f0;
-  --color-text-soft: #9b97b4;
-  --color-text-muted: #5e5b78;
-  --color-accent: #a78bfa;
-  --color-accent-2: #f472b6;
-  --color-user-bubble: #2d2459;
+  /* Background layers */
+  --color-background: #0c0905;
+  --color-surface: #110d08;
+  --color-surface-2: #1a1610;
+  --color-surface-3: #221d13;
 
-  /* shadcn color tokens → tailwind classes */
-  --color-card: #1a1928;
-  --color-popover: #1a1928;
-  --color-primary: #a78bfa;
-  --color-primary-foreground: #0d0c15;
-  --color-secondary: #252336;
-  --color-secondary-foreground: #c4c0d8;
-  --color-muted: #1a1928;
-  --color-muted-foreground: #6b6890;
-  --color-destructive: #f87171;
-  --color-ring: #a78bfa;
+  /* Border */
+  --color-border: #2c2418;
+  --color-border-soft: #1e1912;
+
+  /* Fill states — warm-tinted whites */
+  --color-fill-1: rgba(255,244,230,0.04);
+  --color-fill-2: rgba(255,244,230,0.06);
+  --color-fill-3: rgba(255,244,230,0.10);
+
+  /* Text — warm cream */
+  --color-text: #ede8de;
+  --color-text-soft: #a89888;
+  --color-text-muted: #6a5e50;
+
+  /* Accent — warm amber */
+  --color-accent: #d48855;
+  --color-accent-2: #e07060;
+  --color-user-bubble: #2a1c0d;
+
+  /* shadcn tokens (used by radix/shadcn components) */
+  --color-card: #1a1610;
+  --color-popover: #1a1610;
+  --color-primary: #d48855;
+  --color-primary-foreground: #0c0905;
+  --color-secondary: #221d13;
+  --color-secondary-foreground: #c4b8a8;
+  --color-muted: #1a1610;
+  --color-muted-foreground: #6a5e50;
+  --color-destructive: #e07272;
+  --color-ring: #d48855;
+
   --radius-sm: 8px;
   --radius-md: 12px;
   --radius-lg: 16px;
   --radius-xl: 20px;
 }
 
-/* shadcn CSS variables */
+/* shadcn CSS variables — warm ember hsl values */
 :root {
-  --background: 244 14% 8%;
-  --foreground: 244 16% 92%;
-  --card: 244 16% 12%;
-  --card-foreground: 244 16% 92%;
-  --popover: 244 16% 12%;
-  --popover-foreground: 244 16% 92%;
-  --primary: 258 89% 76%;
-  --primary-foreground: 244 14% 8%;
-  --secondary: 244 16% 18%;
-  --secondary-foreground: 244 16% 78%;
-  --muted: 244 16% 14%;
-  --muted-foreground: 244 12% 52%;
-  --accent: 244 16% 20%;
-  --accent-foreground: 244 16% 92%;
-  --destructive: 0 72% 71%;
+  --background:  30 37% 4%;
+  --foreground:  35 30% 91%;
+  --card:        30 35% 8%;
+  --card-foreground: 35 30% 91%;
+  --popover:     30 35% 8%;
+  --popover-foreground: 35 30% 91%;
+  --primary:     28 57% 58%;
+  --primary-foreground: 30 37% 4%;
+  --secondary:   28 24% 11%;
+  --secondary-foreground: 35 20% 78%;
+  --muted:       30 28% 9%;
+  --muted-foreground: 30 18% 48%;
+  --accent:      30 22% 13%;
+  --accent-foreground: 35 30% 91%;
+  --destructive: 0 60% 63%;
   --destructive-foreground: 0 0% 100%;
-  --border: 244 16% 20%;
-  --input: 244 16% 16%;
-  --ring: 258 89% 76%;
+  --border:      28 28% 14%;
+  --input:       28 28% 11%;
+  --ring:        28 57% 58%;
   --radius: 0.75rem;
 }
 
-* {
+/* ============================================================
+   Base resets
+   ============================================================ */
+*, *::before, *::after {
   box-sizing: border-box;
   margin: 0;
   padding: 0;
@@ -67,17 +86,64 @@ html, body, #root {
 }
 
 body {
-  background: var(--color-background);
-  color: var(--color-text);
-  font-family: -apple-system, "PingFang SC", "Microsoft YaHei", "Segoe UI", sans-serif;
+  background: #0c0905;
+  color: #ede8de;
+  font-family: "Segoe UI Variable", "Microsoft YaHei UI", "PingFang SC", -apple-system, "Segoe UI", sans-serif;
   font-size: 14px;
   -webkit-font-smoothing: antialiased;
 }
 
-::-webkit-scrollbar { width: 4px; }
-::-webkit-scrollbar-track { background: transparent; }
-::-webkit-scrollbar-thumb { background: #2a2840; border-radius: 2px; }
-::-webkit-scrollbar-thumb:hover { background: #5e5b78; }
+/* ============================================================
+   Grain texture overlay — subtle film-grain warmth
+   ============================================================ */
+body::after {
+  content: '';
+  position: fixed;
+  top: -50%;
+  left: -50%;
+  width: 200%;
+  height: 200%;
+  pointer-events: none;
+  z-index: 99999;
+  opacity: 0.028;
+  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='1'/%3E%3C/svg%3E");
+  background-repeat: repeat;
+  background-size: 256px 256px;
+  mix-blend-mode: overlay;
+}
 
+/* ============================================================
+   Scrollbar — slim, warm-toned
+   ============================================================ */
+::-webkit-scrollbar { width: 4px; height: 4px; }
+::-webkit-scrollbar-track { background: transparent; }
+::-webkit-scrollbar-thumb { background: #2c2418; border-radius: 2px; }
+::-webkit-scrollbar-thumb:hover { background: #6a5e50; }
+
+/* ============================================================
+   Ember animations (used in ChatPane empty state)
+   ============================================================ */
+@keyframes ember-breathe {
+  0%, 100% { transform: scale(1);    opacity: 0.55; }
+  50%       { transform: scale(1.18); opacity: 1;    }
+}
+
+@keyframes ember-float {
+  0%, 100% { transform: translateY(0); }
+  50%       { transform: translateY(-6px); }
+}
+
+/* ============================================================
+   Electron drag regions
+   ============================================================ */
 .drag-region { -webkit-app-region: drag; }
 .no-drag { -webkit-app-region: no-drag; }
+
+/* ============================================================
+   antd overrides
+   ============================================================ */
+.ant-tooltip-inner {
+  font-size: 12px !important;
+  padding: 4px 8px !important;
+  border-radius: 6px !important;
+}
