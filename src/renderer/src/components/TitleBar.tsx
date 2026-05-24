@@ -176,7 +176,7 @@ export default function TitleBar({ character, convTitle, update, onInstall, onDi
         {convTitle ? (
           <span className={styles.convTitle}>{convTitle}</span>
         ) : (
-          <span className={styles.appLabel}>情感陪伴</span>
+          <span className={styles.appLabel}>pulomi</span>
         )}
       </div>
 
