@@ -45,10 +45,12 @@ const useStyles = createStyles(({ token, css }) => ({
   `,
 
   charName: css`
-    font-size: 12px;
+    font-size: 13px;
     font-weight: 500;
-    color: ${token.colorTextTertiary};
-    letter-spacing: 0.02em;
+    font-family: 'Lora', 'Noto Serif SC', Georgia, serif;
+    font-style: italic;
+    color: ${token.colorPrimaryText};
+    letter-spacing: 0.01em;
     overflow: hidden;
     text-overflow: ellipsis;
     white-space: nowrap;

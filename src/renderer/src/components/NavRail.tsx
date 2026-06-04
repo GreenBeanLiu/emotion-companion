@@ -24,6 +24,9 @@ const useStyles = createStyles(({ token, css }) => ({
     flex-shrink: 0;
     margin-bottom: 12px;
     box-shadow: 0 2px 12px rgba(212,136,85,0.28);
+    display: flex;
+    align-items: center;
+    justify-content: center;
   `,
 
   /* Wrapper that adds the left-edge active indicator pip */
@@ -85,7 +88,12 @@ export default function NavRail({ character, onSettings, onChangeCharacter }: Pr
 
   return (
     <nav className={styles.rail}>
-      <div className={styles.logo} />
+      <div className={styles.logo}>
+        {/* Flame / spark icon */}
+        <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
+          <path d="M8 14c-2.5 0-4.5-1.8-4.5-4.5 0-1.8 1-3 2-4 .3 1 1 1.8 2 2-.2-1.5.5-3 2-4-.2 1.5.5 2.5 1 3.5.5 1 .5 2-.5 3 .8-.3 1.5-1 1.5-2 0 3-1.5 6-3.5 6z" fill="rgba(255,255,255,0.9)"/>
+        </svg>
+      </div>
 
       {/* Primary nav item — active state + left-edge indicator */}
       <div className={styles.activeWrap}>

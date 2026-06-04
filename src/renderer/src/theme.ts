@@ -63,7 +63,7 @@ export const emotionTheme = {
     fontSizeLG: 16,
     lineHeight: 1.6,
     fontFamily:
-      '"Segoe UI Variable", "Microsoft YaHei UI", "PingFang SC", -apple-system, "Segoe UI", sans-serif',
+      '"Noto Sans SC", "PingFang SC", "Microsoft YaHei UI", -apple-system, "Segoe UI Variable", "Segoe UI", sans-serif',
 
     // ── Motion ───────────────────────────────────────────────────────────────
     motionDurationFast: '0.12s',

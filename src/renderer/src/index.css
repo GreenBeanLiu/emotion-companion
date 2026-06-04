@@ -88,7 +88,7 @@ html, body, #root {
 body {
   background: #0c0905;
   color: #ede8de;
-  font-family: "Segoe UI Variable", "Microsoft YaHei UI", "PingFang SC", -apple-system, "Segoe UI", sans-serif;
+  font-family: "Noto Sans SC", "PingFang SC", "Microsoft YaHei UI", -apple-system, "Segoe UI Variable", "Segoe UI", sans-serif;
   font-size: 14px;
   -webkit-font-smoothing: antialiased;
 }
