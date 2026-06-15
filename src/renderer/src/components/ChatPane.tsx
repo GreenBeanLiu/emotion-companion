@@ -493,6 +493,7 @@ export default function ChatPane({
     Map<number, { keyword: string; videos: BilibiliVideo[] }>
   >(new Map())
   const bottomRef = useRef<HTMLDivElement>(null)
+  const messagesRef = useRef<HTMLDivElement>(null)
   const inputRef = useRef<HTMLTextAreaElement>(null)
   const convIdRef = useRef<number | null>(null)
 
@@ -504,7 +505,12 @@ export default function ChatPane({
       return
     }
     convIdRef.current = conversation.id
-    api.msg.list(conversation.id).then(setMessages)
+    api.msg.list(conversation.id).then((msgs) => {
+      setMessages(msgs)
+      requestAnimationFrame(() => {
+        bottomRef.current?.scrollIntoView({ behavior: 'instant' })
+      })
+    })
   }, [conversation?.id])
 
   useEffect(() => {
@@ -546,8 +552,13 @@ export default function ChatPane({
   }, [onConversationUpdated])
 
   useEffect(() => {
-    bottomRef.current?.scrollIntoView({ behavior: 'smooth' })
-  }, [messages])
+    const el = messagesRef.current
+    if (!el) return
+    const isNearBottom = el.scrollHeight - el.scrollTop - el.clientHeight < 120
+    if (isNearBottom || sending) {
+      bottomRef.current?.scrollIntoView({ behavior: 'smooth' })
+    }
+  }, [messages, sending])
 
   const sendMessage = useCallback(async () => {
     const text = input.trim()
@@ -610,7 +621,7 @@ export default function ChatPane({
       )}
 
       {/* Messages */}
-      <div className={styles.messages}>
+      <div className={styles.messages} ref={messagesRef}>
         <div className={cx(styles.messagesInner, styles.messagesTransition)} key={conversation?.id ?? 'empty'}>
           {isEmpty && (
             <div className={styles.emptyState}>
