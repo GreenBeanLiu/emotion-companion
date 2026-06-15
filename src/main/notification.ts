@@ -2,6 +2,12 @@ import { Notification } from 'electron'
 
 let reminderTimeout: ReturnType<typeof setTimeout> | null = null
 
+export function testNotification(): boolean {
+  if (!Notification.isSupported()) return false
+  new Notification({ title: 'pulomi', body: '提醒测试 · 通知功能正常 ✓' }).show()
+  return true
+}
+
 function msUntilTime(hhmm: string): number {
   const [h, m] = hhmm.split(':').map(Number)
   const now = new Date()

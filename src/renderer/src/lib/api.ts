@@ -75,6 +75,12 @@ declare global {
         onDownloaded: (cb: (data: { version: string }) => void) => () => void
         install: () => void
       }
+      app: {
+        version: () => Promise<string>
+      }
+      notification: {
+        test: () => Promise<{ ok: boolean }>
+      }
     }
   }
 }

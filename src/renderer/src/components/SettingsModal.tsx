@@ -232,11 +232,20 @@ export default function SettingsModal({ onClose }: { onClose: () => void }) {
   const [showKey, setShowKey] = useState(false)
   const [profile, setProfile] = useState<{ summary: string; updatedAt: string } | null>(null)
   const [showProfile, setShowProfile] = useState(false)
+  const [version, setVersion] = useState('')
+  const [notifResult, setNotifResult] = useState<'idle' | 'ok' | 'fail'>('idle')
 
   useEffect(() => {
     api.settings.load().then(setSettings)
     api.memory.get().then(setProfile)
+    api.app.version().then(setVersion).catch(() => {})
   }, [])
+
+  async function handleTestNotification() {
+    const result = await api.notification.test()
+    setNotifResult(result.ok ? 'ok' : 'fail')
+    setTimeout(() => setNotifResult('idle'), 3000)
+  }
 
   async function handleClearMemory() {
     await api.memory.clear()
@@ -445,7 +454,7 @@ export default function SettingsModal({ onClose }: { onClose: () => void }) {
             />
           </div>
           {settings.reminderEnabled ? (
-            <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
+            <div style={{ display: 'flex', alignItems: 'center', gap: 8, flexWrap: 'wrap' }}>
               <span style={{ fontSize: 12, color: 'var(--ant-color-text-tertiary)' }}>提醒时间</span>
               <input
                 type="time"
@@ -463,6 +472,21 @@ export default function SettingsModal({ onClose }: { onClose: () => void }) {
                   cursor: 'pointer',
                 }}
               />
+              <button
+                onClick={handleTestNotification}
+                style={{
+                  fontSize: 11,
+                  padding: '3px 10px',
+                  borderRadius: 6,
+                  border: '1px solid var(--ant-color-border)',
+                  background: 'transparent',
+                  color: notifResult === 'ok' ? 'var(--ant-color-success)' : notifResult === 'fail' ? 'var(--ant-color-error)' : 'var(--ant-color-text-tertiary)',
+                  cursor: 'pointer',
+                  fontFamily: 'inherit',
+                }}
+              >
+                {notifResult === 'ok' ? '✓ 通知正常' : notifResult === 'fail' ? '✗ 不支持' : '测试通知'}
+              </button>
             </div>
           ) : (
             <p className={styles.memoryEmpty}>开启后，每天固定时间收到来聊聊的提醒。</p>
@@ -472,6 +496,11 @@ export default function SettingsModal({ onClose }: { onClose: () => void }) {
 
       {/* Footer */}
       <div className={styles.footer}>
+        {version && (
+          <span style={{ fontSize: 11, color: 'var(--ant-color-text-quaternary)', marginRight: 'auto' }}>
+            v{version}
+          </span>
+        )}
         <Button onClick={onClose}>取消</Button>
         <Button type="primary" loading={saving} onClick={handleSave}>
           {saved ? '已保存 ✓' : '保存设置'}

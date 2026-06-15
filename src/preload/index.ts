@@ -92,6 +92,14 @@ const api = {
     },
     install: () => ipcRenderer.send('update:install'),
   },
+
+  app: {
+    version: () => ipcRenderer.invoke('app:version'),
+  },
+
+  notification: {
+    test: () => ipcRenderer.invoke('notification:test'),
+  },
 }
 
 if (process.contextIsolated) {

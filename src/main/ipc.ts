@@ -1,4 +1,4 @@
-import { ipcMain, BrowserWindow } from 'electron'
+import { ipcMain, BrowserWindow, app, Notification } from 'electron'
 import {
   createConversation,
   listConversations,
@@ -14,7 +14,7 @@ import {
 } from './db'
 import { streamChat } from './ai'
 import { loadSettings, saveSettings } from './settings'
-import { rescheduleReminder } from './notification'
+import { rescheduleReminder, testNotification } from './notification'
 import { getAvatars, setAvatar, clearAvatar } from './avatar'
 import { extractAndUpdateProfile, summarizeConversation } from './memory'
 import { detectEmotion } from './emotion'
@@ -23,6 +23,16 @@ import { shouldRecommend, generateKeyword, searchVideos } from './bilibili'
 const activeAbortControllers = new Map<number, AbortController>()
 
 export function registerIpcHandlers(): void {
+  // ── App ──────────────────────────────────────────────────────────
+  ipcMain.handle('app:version', () => app.getVersion())
+  ipcMain.handle('notification:test', () => {
+    const ok = testNotification()
+    if (!ok && Notification.isSupported()) {
+      new Notification({ title: 'pulomi', body: '提醒测试 · 通知功能正常 ✓' }).show()
+    }
+    return { ok: Notification.isSupported() }
+  })
+
   // ── Settings ────────────────────────────────────────────────────
   ipcMain.handle('settings:load', () => loadSettings())
   ipcMain.handle('settings:save', (_e, settings) => {
