@@ -398,9 +398,10 @@ const useStyles = createStyles(({ token, css }) => ({
   inputHint: css`
     text-align: center;
     font-size: 11px;
-    color: ${token.colorTextQuaternary};
+    color: ${token.colorTextTertiary};
     margin-top: 6px;
     user-select: none;
+    letter-spacing: 0.01em;
   `,
 }))
 
