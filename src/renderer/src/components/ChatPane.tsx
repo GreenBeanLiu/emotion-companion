@@ -1,7 +1,7 @@
 import { useEffect, useRef, useState, useCallback } from 'react'
 import { createStyles } from 'antd-style'
 import { Markdown } from '@lobehub/ui'
-import { SendHorizontal, User } from 'lucide-react'
+import { SendHorizontal, User, Copy, Check } from 'lucide-react'
 import { api, type ConversationRow, type MessageRow, type BilibiliVideo } from '../lib/api'
 import type { Character } from '../lib/characters'
 
@@ -165,6 +165,10 @@ const useStyles = createStyles(({ token, css }) => ({
     align-items: flex-start;
     padding: 16px 20px 4px;
     animation: msg-in 0.2s ease-out both;
+
+    &:hover .msg-actions {
+      opacity: 1;
+    }
   `,
 
   msgRowTight: css`
@@ -224,6 +228,34 @@ const useStyles = createStyles(({ token, css }) => ({
     color: ${token.colorText};
     padding: 0;
     white-space: normal;
+  `,
+
+  msgActions: css`
+    display: flex;
+    gap: 2px;
+    margin-top: 4px;
+    opacity: 0;
+    transition: opacity ${token.motionDurationFast};
+  `,
+
+  msgActionBtn: css`
+    width: 24px;
+    height: 24px;
+    border-radius: ${token.borderRadiusSM}px;
+    border: 1px solid ${token.colorBorderSecondary};
+    background: ${token.colorBgElevated};
+    color: ${token.colorTextTertiary};
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    transition: color ${token.motionDurationFast}, background ${token.motionDurationFast};
+    outline: none;
+
+    &:hover {
+      color: ${token.colorText};
+      background: ${token.colorFill};
+    }
   `,
 
   emotionTag: css`
@@ -759,10 +791,18 @@ function MessageBubble({
   cx: CxType
   tight?: boolean
 }) {
+  const [copied, setCopied] = useState(false)
   const isUser = msg.role === 'user'
   const isStreaming = 'streaming' in msg
   const emotion = !isStreaming && isUser ? (msg as MessageRow).emotion : undefined
   const emotionMeta = emotion ? EMOTION_META[emotion] : undefined
+
+  function handleCopy() {
+    navigator.clipboard.writeText(msg.content).then(() => {
+      setCopied(true)
+      setTimeout(() => setCopied(false), 1500)
+    })
+  }
 
   return (
     <div className={cx(styles.msgRow, isUser && styles.msgRowUser, tight && styles.msgRowTight)}>
@@ -817,6 +857,14 @@ function MessageBubble({
             <span>{emotionMeta.emoji}</span>
             <span>{emotion}</span>
           </span>
+        )}
+
+        {!isStreaming && (
+          <div className={`${styles.msgActions} msg-actions`}>
+            <button className={styles.msgActionBtn} onClick={handleCopy} title="复制">
+              {copied ? <Check size={11} strokeWidth={2.5} /> : <Copy size={11} />}
+            </button>
+          </div>
         )}
       </div>
     </div>
