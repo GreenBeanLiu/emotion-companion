@@ -47,6 +47,7 @@ const useStyles = createStyles(({ token, css }) => ({
     flex-direction: column;
     background: ${token.colorBgBase};
     border-left: 1px solid ${token.colorBorderSecondary};
+    animation: slide-in-right 0.2s ease-out both;
   `,
 
   header: css`
@@ -165,7 +166,7 @@ const useStyles = createStyles(({ token, css }) => ({
   card: css`
     border-radius: ${token.borderRadiusLG}px;
     padding: 16px 18px;
-    background: ${token.colorBgLayout};
+    background: ${token.colorFillTertiary};
     border: 1px solid ${token.colorBorderSecondary};
     display: flex;
     flex-direction: column;
