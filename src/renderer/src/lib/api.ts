@@ -73,6 +73,7 @@ export type ConversationRow = {
   created_at: string
   updated_at: string
   message_count?: number
+  summary?: string
 }
 
 export type BilibiliVideo = {

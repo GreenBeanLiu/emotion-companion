@@ -3,6 +3,7 @@ import {
   createConversation,
   listConversations,
   updateConversationTitle,
+  updateConversationSummary,
   deleteConversation,
   addMessage,
   listMessages,
@@ -12,7 +13,7 @@ import {
 } from './db'
 import { streamChat } from './ai'
 import { loadSettings, saveSettings } from './settings'
-import { extractAndUpdateProfile } from './memory'
+import { extractAndUpdateProfile, summarizeConversation } from './memory'
 import { detectEmotion } from './emotion'
 import { shouldRecommend, generateKeyword, searchVideos } from './bilibili'
 
@@ -67,6 +68,17 @@ export function registerIpcHandlers(): void {
       settings.systemPrompt = `${settings.systemPrompt}\n\n[关于这位用户的已知信息]\n${profile.summary}`
     }
 
+    // Inject recent conversation summaries for cross-session continuity
+    const recentSummaries = listConversations()
+      .filter((c) => c.id !== conversationId && c.summary)
+      .slice(0, 4)
+    if (recentSummaries.length > 0) {
+      const lines = recentSummaries
+        .map((c) => `• ${c.updated_at.slice(0, 10)} 「${c.title}」：${c.summary}`)
+        .join('\n')
+      settings.systemPrompt = `${settings.systemPrompt}\n\n[与该用户的历史对话摘要]\n${lines}`
+    }
+
     // Save user message
     const userMsg = addMessage(conversationId, 'user', content)
 
@@ -105,6 +117,14 @@ export function registerIpcHandlers(): void {
       { role: 'assistant' as const, content: fullReply },
     ]
     extractAndUpdateProfile(fullHistory, settings).catch(() => {})
+
+    // Generate/update conversation summary once there are enough exchanges
+    const allMsgs = listMessages(conversationId)
+    if (allMsgs.filter((m) => m.role === 'user').length >= 2) {
+      summarizeConversation(fullHistory, settings)
+        .then((summary) => { if (summary) updateConversationSummary(conversationId, summary) })
+        .catch(() => {})
+    }
 
     detectEmotion(content, settings).then(async (emotion) => {
       if (!emotion) return

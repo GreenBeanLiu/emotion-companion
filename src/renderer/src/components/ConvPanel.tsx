@@ -116,6 +116,9 @@ const useStyles = createStyles(({ token, css }) => ({
     font-size: 11px;
     color: ${token.colorTextDisabled};
     margin-top: 2px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
   `,
 
   moreBtn: css`
@@ -231,7 +234,9 @@ export default function ConvPanel({ activeId, refreshKey, onSelect, onNew }: Pro
                 className={cx(styles.item, activeId === conv.id && styles.itemActive)}
               >
                 <p className={cx(styles.itemTitle, 'item-title')}>{conv.title}</p>
-                <p className={styles.itemMeta}>{conv.message_count ?? 0} 条消息</p>
+                <p className={styles.itemMeta}>
+                  {conv.summary ?? `${conv.message_count ?? 0} 条消息`}
+                </p>
               </button>
 
               <button

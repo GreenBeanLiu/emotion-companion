@@ -1,6 +1,28 @@
 import { callSimple, type AiSettings, type ChatMessage } from './ai'
 import { getUserProfile, saveUserProfile } from './db'
 
+// Generate a one-line recap of a conversation for cross-session memory injection
+export async function summarizeConversation(
+  messages: ChatMessage[],
+  settings: AiSettings,
+): Promise<string> {
+  const userMsgs = messages.filter((m) => m.role === 'user')
+  if (userMsgs.length < 2) return ''
+
+  const dialog = messages
+    .map((m) => `${m.role === 'user' ? '用户' : 'AI'}：${m.content.slice(0, 300)}`)
+    .join('\n')
+    .slice(0, 3000)
+
+  const prompt = `请用一句话（不超过40字）概括以下对话的核心内容。从第三人称视角，描述用户的状态/心情和谈话的主要收获或结论。直接输出摘要，不要任何前缀或解释。
+
+对话：
+${dialog}`
+
+  const result = await callSimple(settings, prompt)
+  return result.trim().slice(0, 80)
+}
+
 export async function extractAndUpdateProfile(
   messages: ChatMessage[],
   settings: AiSettings,

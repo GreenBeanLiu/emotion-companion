@@ -7,6 +7,7 @@ export type ConversationRow = {
   created_at: string
   updated_at: string
   message_count?: number
+  summary?: string      // one-line AI-generated recap of this conversation
 }
 
 export type MessageRow = {
@@ -77,6 +78,14 @@ export function updateConversationTitle(id: number, title: string): void {
   store.set(
     'conversations',
     list.map((c) => (c.id === id ? { ...c, title } : c)),
+  )
+}
+
+export function updateConversationSummary(id: number, summary: string): void {
+  const list = store.get('conversations', [])
+  store.set(
+    'conversations',
+    list.map((c) => (c.id === id ? { ...c, summary } : c)),
   )
 }
 
