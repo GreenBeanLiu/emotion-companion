@@ -1,7 +1,7 @@
 import { useEffect, useRef, useState, useCallback } from 'react'
 import { createStyles } from 'antd-style'
 import { Markdown } from '@lobehub/ui'
-import { SendHorizontal, User, Copy, Check } from 'lucide-react'
+import { SendHorizontal, User, Copy, Check, ArrowDown } from 'lucide-react'
 import { api, type ConversationRow, type MessageRow, type BilibiliVideo } from '../lib/api'
 import type { Character } from '../lib/characters'
 
@@ -460,6 +460,32 @@ const useStyles = createStyles(({ token, css }) => ({
     letter-spacing: 0.01em;
   `,
 
+  scrollBottomBtn: css`
+    position: absolute;
+    bottom: 12px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+    border: 1px solid ${token.colorBorder};
+    background: ${token.colorBgElevated};
+    color: ${token.colorTextSecondary};
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.15);
+    transition: opacity ${token.motionDurationFast}, background ${token.motionDurationFast};
+    outline: none;
+    z-index: 10;
+
+    &:hover {
+      background: ${token.colorFill};
+      color: ${token.colorText};
+    }
+  `,
+
   kbdKey: css`
     display: inline-block;
     padding: 0 4px;
@@ -488,6 +514,7 @@ export default function ChatPane({
   const [input, setInput] = useState('')
   const [sending, setSending] = useState(false)
   const [inputFocused, setInputFocused] = useState(false)
+  const [showScrollBtn, setShowScrollBtn] = useState(false)
   const [error, setError] = useState<string | null>(null)
   const [recommendations, setRecommendations] = useState<
     Map<number, { keyword: string; videos: BilibiliVideo[] }>
@@ -621,7 +648,15 @@ export default function ChatPane({
       )}
 
       {/* Messages */}
-      <div className={styles.messages} ref={messagesRef}>
+      <div
+        className={styles.messages}
+        ref={messagesRef}
+        onScroll={(e) => {
+          const el = e.currentTarget
+          setShowScrollBtn(el.scrollHeight - el.scrollTop - el.clientHeight > 200)
+        }}
+        style={{ position: 'relative' }}
+      >
         <div className={cx(styles.messagesInner, styles.messagesTransition)} key={conversation?.id ?? 'empty'}>
           {isEmpty && (
             <div className={styles.emptyState}>
@@ -754,6 +789,16 @@ export default function ChatPane({
 
           <div ref={bottomRef} />
         </div>
+
+        {showScrollBtn && (
+          <button
+            className={styles.scrollBottomBtn}
+            onClick={() => bottomRef.current?.scrollIntoView({ behavior: 'smooth' })}
+            title="滚动到底部"
+          >
+            <ArrowDown size={14} />
+          </button>
+        )}
       </div>
 
       {/* Input area */}
