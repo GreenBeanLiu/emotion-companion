@@ -177,6 +177,7 @@ const useStyles = createStyles(({ token, css }) => ({
 
   msgRowTight: css`
     padding-top: 4px;
+    animation: none;
   `,
 
   msgRowUser: css`
@@ -294,7 +295,8 @@ const useStyles = createStyles(({ token, css }) => ({
   /* Bilibili video strip */
   videoStrip: css`
     margin-top: 8px;
-    margin-left: 38px;
+    margin-left: 44px;
+    padding: 0 20px;
   `,
 
   videoHint: css`

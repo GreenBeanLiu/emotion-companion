@@ -3,6 +3,7 @@ import { createStyles } from 'antd-style'
 import { Tooltip } from 'antd'
 import { SquarePen, Trash2, MoreVertical, MessageSquarePlus } from 'lucide-react'
 import { api, type ConversationRow } from '../lib/api'
+import type { Character } from '../lib/characters'
 import { ScrollArea } from '@/components/ui/scroll-area'
 
 function relativeTime(iso: string): string {
@@ -193,11 +194,12 @@ const useStyles = createStyles(({ token, css }) => ({
 type Props = {
   activeId: number | null
   refreshKey: number
+  character: Character
   onSelect: (conv: ConversationRow) => void
   onNew: () => void
 }
 
-export default function ConvPanel({ activeId, refreshKey, onSelect, onNew }: Props) {
+export default function ConvPanel({ activeId, refreshKey, character, onSelect, onNew }: Props) {
   const { styles, cx } = useStyles()
   const [convs, setConvs] = useState<ConversationRow[]>([])
   const [menuId, setMenuId] = useState<number | null>(null)
@@ -244,6 +246,7 @@ export default function ConvPanel({ activeId, refreshKey, onSelect, onNew }: Pro
               <button
                 onClick={() => onSelect(conv)}
                 className={cx(styles.item, activeId === conv.id && styles.itemActive)}
+                style={activeId === conv.id ? { borderLeft: `2px solid ${character.color}80`, paddingLeft: 10 } : undefined}
               >
                 <p className={cx(styles.itemTitle, 'item-title')}>{conv.title}</p>
                 <p className={styles.itemMeta}>

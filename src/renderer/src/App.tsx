@@ -107,6 +107,7 @@ export default function App({ appearance, onToggleTheme }: AppProps) {
             <ConvPanel
               activeId={activeConv?.id ?? null}
               refreshKey={convRefreshKey}
+              character={character}
               onSelect={setActiveConv}
               onNew={() => setActiveConv(null)}
             />
