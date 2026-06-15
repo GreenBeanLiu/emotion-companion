@@ -387,7 +387,7 @@ const useStyles = createStyles(({ token, css }) => ({
   inputHint: css`
     text-align: center;
     font-size: 11px;
-    color: ${token.colorTextDisabled};
+    color: ${token.colorTextTertiary};
     margin-top: 8px;
     user-select: none;
   `,

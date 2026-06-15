@@ -7,7 +7,7 @@ import { ScrollArea } from '@/components/ui/scroll-area'
 
 const useStyles = createStyles(({ token, css }) => ({
   panel: css`
-    width: 240px;
+    width: 260px;
     flex-shrink: 0;
     display: flex;
     flex-direction: column;
@@ -16,31 +16,29 @@ const useStyles = createStyles(({ token, css }) => ({
   `,
 
   header: css`
-    height: 40px;
+    height: 48px;
     display: flex;
     align-items: center;
     justify-content: space-between;
-    padding: 0 10px 0 16px;
+    padding: 0 12px 0 18px;
     flex-shrink: 0;
     border-bottom: 1px solid ${token.colorBorderSecondary};
   `,
 
   headerLabel: css`
-    font-size: 11px;
+    font-size: 14px;
     font-weight: 600;
-    color: ${token.colorTextQuaternary};
-    letter-spacing: 0.07em;
-    text-transform: uppercase;
+    color: ${token.colorText};
     user-select: none;
   `,
 
   newBtn: css`
-    width: 26px;
-    height: 26px;
-    border-radius: ${token.borderRadiusSM}px;
+    width: 30px;
+    height: 30px;
+    border-radius: ${token.borderRadius}px;
     border: none;
     background: transparent;
-    color: ${token.colorTextQuaternary};
+    color: ${token.colorTextTertiary};
     display: flex;
     align-items: center;
     justify-content: center;
@@ -50,8 +48,8 @@ const useStyles = createStyles(({ token, css }) => ({
     outline: none;
 
     &:hover {
-      background: ${token.colorPrimaryBg};
-      color: ${token.colorPrimary};
+      background: ${token.colorFill};
+      color: ${token.colorText};
     }
   `,
 
@@ -59,16 +57,16 @@ const useStyles = createStyles(({ token, css }) => ({
     display: flex;
     flex-direction: column;
     gap: 2px;
-    padding: 6px;
+    padding: 8px;
   `,
 
   emptyHint: css`
-    font-size: 12px;
-    color: ${token.colorTextDisabled};
+    font-size: 13px;
+    color: ${token.colorTextTertiary};
     text-align: center;
-    margin-top: 40px;
-    line-height: 1.7;
-    padding: 0 16px;
+    margin-top: 48px;
+    line-height: 1.8;
+    padding: 0 20px;
     user-select: none;
   `,
 
@@ -79,8 +77,8 @@ const useStyles = createStyles(({ token, css }) => ({
   item: css`
     width: 100%;
     text-align: left;
-    padding: 8px 32px 8px 12px;
-    border-radius: ${token.borderRadius}px;
+    padding: 10px 36px 10px 14px;
+    border-radius: ${token.borderRadiusLG}px;
     border: none;
     background: transparent;
     cursor: pointer;
@@ -94,11 +92,11 @@ const useStyles = createStyles(({ token, css }) => ({
   `,
 
   itemActive: css`
-    background: ${token.colorPrimaryBg} !important;
-    box-shadow: 0 1px 3px rgba(0,0,0,0.06), 0 0 0 1px ${token.colorBorderSecondary};
+    background: ${token.colorBgContainer} !important;
+    box-shadow: 0 1px 4px rgba(0,0,0,0.08), 0 0 0 1px ${token.colorBorderSecondary};
 
     .item-title {
-      color: ${token.colorText};
+      color: ${token.colorText} !important;
       font-weight: 500;
     }
   `,
@@ -110,12 +108,13 @@ const useStyles = createStyles(({ token, css }) => ({
     overflow: hidden;
     text-overflow: ellipsis;
     white-space: nowrap;
+    line-height: 1.4;
   `,
 
   itemMeta: css`
     font-size: 11px;
-    color: ${token.colorTextDisabled};
-    margin-top: 2px;
+    color: ${token.colorTextTertiary};
+    margin-top: 3px;
     overflow: hidden;
     text-overflow: ellipsis;
     white-space: nowrap;
@@ -123,12 +122,12 @@ const useStyles = createStyles(({ token, css }) => ({
 
   moreBtn: css`
     position: absolute;
-    right: 6px;
+    right: 8px;
     top: 50%;
     transform: translateY(-50%);
-    width: 20px;
-    height: 20px;
-    border-radius: 5px;
+    width: 22px;
+    height: 22px;
+    border-radius: 6px;
     border: none;
     background: transparent;
     color: ${token.colorTextTertiary};

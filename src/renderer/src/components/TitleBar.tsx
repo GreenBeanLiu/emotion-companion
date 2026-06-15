@@ -18,7 +18,7 @@ type Props = {
 
 const useStyles = createStyles(({ token, css }) => ({
   bar: css`
-    height: 40px;
+    height: 48px;
     display: flex;
     align-items: center;
     flex-shrink: 0;
@@ -34,23 +34,20 @@ const useStyles = createStyles(({ token, css }) => ({
   `,
 
   charCtx: css`
-    width: 240px;
+    width: 260px;
     flex-shrink: 0;
     display: flex;
     align-items: center;
-    gap: 7px;
-    padding: 0 10px 0 16px;
+    gap: 8px;
+    padding: 0 12px 0 18px;
     height: 100%;
     border-right: 1px solid ${token.colorBorderSecondary};
   `,
 
   charName: css`
     font-size: 13px;
-    font-weight: 500;
-    font-family: 'Lora', 'Noto Serif SC', Georgia, serif;
-    font-style: italic;
-    color: ${token.colorPrimaryText};
-    letter-spacing: 0.01em;
+    font-weight: 600;
+    color: ${token.colorText};
     overflow: hidden;
     text-overflow: ellipsis;
     white-space: nowrap;
@@ -66,19 +63,19 @@ const useStyles = createStyles(({ token, css }) => ({
   `,
 
   convTitle: css`
-    font-size: 12px;
+    font-size: 13px;
     font-weight: 500;
-    color: ${token.colorTextQuaternary};
-    max-width: 280px;
+    color: ${token.colorTextSecondary};
+    max-width: 320px;
     overflow: hidden;
     text-overflow: ellipsis;
     white-space: nowrap;
   `,
 
   appLabel: css`
-    font-size: 12px;
+    font-size: 13px;
     font-weight: 500;
-    color: ${token.colorTextDisabled};
+    color: ${token.colorTextTertiary};
   `,
 
   rightZone: css`
@@ -129,8 +126,8 @@ const useStyles = createStyles(({ token, css }) => ({
   `,
 
   winBtn: css`
-    width: 26px;
-    height: 26px;
+    width: 28px;
+    height: 28px;
     border-radius: ${token.borderRadiusSM}px;
     border: none;
     background: transparent;
@@ -138,13 +135,13 @@ const useStyles = createStyles(({ token, css }) => ({
     display: flex;
     align-items: center;
     justify-content: center;
-    color: ${token.colorTextDisabled};
+    color: ${token.colorTextTertiary};
     transition: background ${token.motionDurationFast}, color ${token.motionDurationFast};
     outline: none;
 
     &:hover {
-      background: ${token.colorFillSecondary};
-      color: ${token.colorTextSecondary};
+      background: ${token.colorFill};
+      color: ${token.colorText};
     }
   `,
 
