@@ -73,6 +73,10 @@ const useStyles = createStyles(({ token, css }) => ({
     flex-direction: column;
   `,
 
+  messagesTransition: css`
+    animation: msg-in 0.18s ease-out both;
+  `,
+
   messagesInner: css`
     width: 100%;
     max-width: 800px;
@@ -587,7 +591,7 @@ export default function ChatPane({
 
       {/* Messages */}
       <div className={styles.messages}>
-        <div className={styles.messagesInner}>
+        <div className={cx(styles.messagesInner, styles.messagesTransition)} key={conversation?.id ?? 'empty'}>
           {isEmpty && (
             <div className={styles.emptyState}>
               {/* Deep ambient glow */}

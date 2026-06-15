@@ -32,7 +32,7 @@ const useStyles = createStyles(({ token, css }) => ({
     gap: 10px;
     cursor: pointer;
     border: 1px solid ${token.colorBorderSecondary};
-    background: ${token.colorBgLayout};
+    background: ${token.colorFillTertiary};
     transition: border-color ${token.motionDurationFast}, background ${token.motionDurationFast};
     position: relative;
     outline: none;
@@ -40,7 +40,7 @@ const useStyles = createStyles(({ token, css }) => ({
 
     &:hover {
       border-color: ${token.colorBorder};
-      background: ${token.colorFill};
+      background: ${token.colorFillSecondary};
     }
   `,
 
@@ -222,7 +222,7 @@ const useStyles = createStyles(({ token, css }) => ({
     font-size: 13px;
     line-height: 1.6;
     resize: none;
-    background: ${token.colorBgLayout};
+    background: ${token.colorFillTertiary};
     border: 1px solid ${token.colorBorder};
     color: ${token.colorText};
     font-family: ${token.fontFamily};
