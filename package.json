@@ -1,6 +1,6 @@
 {
   "name": "pulomi",
-  "version": "0.1.20",
+  "version": "0.1.21",
   "description": "AI emotional companion desktop app",
   "main": "out/main/index.js",
   "scripts": {

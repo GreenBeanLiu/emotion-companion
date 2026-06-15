@@ -186,6 +186,11 @@ const useStyles = createStyles(({ token, css }) => ({
     max-width: 72%;
   `,
 
+  avatarSpacer: css`
+    flex-shrink: 0;
+    width: 32px;
+  `,
+
   msgSenderLabel: css`
     font-size: 12px;
     line-height: 1;
@@ -204,7 +209,7 @@ const useStyles = createStyles(({ token, css }) => ({
   `,
 
   msgBubbleUser: css`
-    background: ${token.colorBgContainer};
+    background: ${token.colorFill};
     border: 1px solid ${token.colorBorder};
     color: ${token.colorText};
   `,
@@ -757,15 +762,19 @@ function MessageBubble({
   return (
     <div className={cx(styles.msgRow, isUser && styles.msgRowUser, tight && styles.msgRowTight)}>
       {isUser ? (
-        <div className={styles.userAvatar}>
-          <User size={12} strokeWidth={2.5} />
-        </div>
+        tight ? <div className={styles.avatarSpacer} /> : (
+          <div className={styles.userAvatar}>
+            <User size={12} strokeWidth={2.5} />
+          </div>
+        )
       ) : (
-        <CharAvatar character={character} avatarUrl={avatarUrl} />
+        tight ? <div className={styles.avatarSpacer} /> : (
+          <CharAvatar character={character} avatarUrl={avatarUrl} />
+        )
       )}
 
       <div className={cx(styles.msgContent, isUser && styles.msgContentUser)}>
-        {!isUser && (
+        {!isUser && !tight && (
           <span className={styles.msgSenderLabel} style={{ color: character.color + 'bb' }}>
             {avatarUrl ? '' : character.emoji + ' '}{character.name}
           </span>
