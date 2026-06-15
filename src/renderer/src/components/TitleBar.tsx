@@ -157,7 +157,7 @@ const useStyles = createStyles(({ token, css }) => ({
 }))
 
 export default function TitleBar({ character, convTitle, update, onInstall, onDismissUpdate }: Props) {
-  const { styles, cx } = useStyles()
+  const { styles, cx, theme: token } = useStyles()
 
   const isDownloaded = update.status === 'downloaded'
   const isAvailable = update.status === 'available'
@@ -188,15 +188,15 @@ export default function TitleBar({ character, convTitle, update, onInstall, onDi
           <div
             className={styles.updateBadge}
             style={{
-              background: isDownloaded ? 'rgba(74,222,128,0.07)' : 'rgba(212,136,85,0.07)',
-              border: `1px solid ${isDownloaded ? 'rgba(74,222,128,0.20)' : 'rgba(212,136,85,0.18)'}`,
-              color: isDownloaded ? '#4ade80' : '#d48855',
+              background: isDownloaded ? token.colorSuccessBg : token.colorFillTertiary,
+              border: `1px solid ${isDownloaded ? token.colorSuccessBorder : token.colorBorder}`,
+              color: isDownloaded ? token.colorSuccess : token.colorTextSecondary,
             }}
             onClick={isDownloaded ? onInstall : undefined}
           >
             <span
               className={styles.updateDot}
-              style={{ background: isDownloaded ? '#4ade80' : '#d48855' }}
+              style={{ background: isDownloaded ? token.colorSuccess : token.colorTextTertiary }}
             />
             <span>
               {isAvailable ? `v${update.version} 下载中` : `v${update.version} 就绪，点击重启`}

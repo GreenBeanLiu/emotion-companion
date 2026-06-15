@@ -58,7 +58,7 @@ const useStyles = createStyles(({ token, css }) => ({
   list: css`
     display: flex;
     flex-direction: column;
-    gap: 1px;
+    gap: 2px;
     padding: 6px;
   `,
 
@@ -79,7 +79,7 @@ const useStyles = createStyles(({ token, css }) => ({
   item: css`
     width: 100%;
     text-align: left;
-    padding: 7px 30px 7px 10px;
+    padding: 8px 32px 8px 12px;
     border-radius: ${token.borderRadius}px;
     border: none;
     background: transparent;
@@ -95,6 +95,7 @@ const useStyles = createStyles(({ token, css }) => ({
 
   itemActive: css`
     background: ${token.colorPrimaryBg} !important;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.06), 0 0 0 1px ${token.colorBorderSecondary};
 
     .item-title {
       color: ${token.colorText};
@@ -147,8 +148,8 @@ const useStyles = createStyles(({ token, css }) => ({
     z-index: 50;
     border-radius: ${token.borderRadius}px;
     overflow: hidden;
-    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.5), 0 0 0 1px ${token.colorBorder};
-    background: ${token.colorBgContainer};
+    box-shadow: ${token.boxShadow}, 0 0 0 1px ${token.colorBorder};
+    background: ${token.colorBgElevated};
   `,
 
   deleteBtn: css`

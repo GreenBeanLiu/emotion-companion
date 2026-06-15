@@ -1,5 +1,6 @@
 import { useEffect, useRef, useState, useCallback } from 'react'
 import { createStyles } from 'antd-style'
+import { theme } from 'antd'
 import { SendHorizontal, User } from 'lucide-react'
 import { api, type ConversationRow, type MessageRow, type BilibiliVideo } from '../lib/api'
 import type { Character } from '../lib/characters'
@@ -71,15 +72,14 @@ const useStyles = createStyles(({ token, css }) => ({
     flex-direction: column;
   `,
 
-  /* WideScreenContainer — caps reading width like reference project */
+  /* WideScreenContainer — matches LobeHub max-width and per-message padding approach */
   messagesInner: css`
     width: 100%;
     max-width: 780px;
     margin: 0 auto;
-    padding: 24px 20px;
+    padding: 8px 0 32px;
     display: flex;
     flex-direction: column;
-    gap: 16px;
     flex: 1;
   `,
 
@@ -129,17 +129,17 @@ const useStyles = createStyles(({ token, css }) => ({
     flex-direction: column;
     gap: 6px;
     width: 100%;
-    max-width: 260px;
+    max-width: 300px;
   `,
 
   starterBtn: css`
     text-align: left;
-    font-size: 12px;
+    font-size: 13px;
     padding: 10px 16px;
     border-radius: ${token.borderRadius}px;
-    border: 1px solid ${token.colorBorderSecondary};
-    background: ${token.colorFillQuaternary};
-    color: ${token.colorTextTertiary};
+    border: 1px solid ${token.colorBorder};
+    background: ${token.colorFillTertiary};
+    color: ${token.colorTextSecondary};
     cursor: pointer;
     transition: border-color ${token.motionDurationFast},
       color ${token.motionDurationFast},
@@ -147,13 +147,20 @@ const useStyles = createStyles(({ token, css }) => ({
     width: 100%;
     outline: none;
     font-family: ${token.fontFamily};
+
+    &:hover {
+      border-color: ${token.colorPrimaryBorder};
+      background: ${token.colorFillSecondary};
+      color: ${token.colorText};
+    }
   `,
 
-  /* Message rows */
+  /* Message rows — LobeHub: padding-block: 24px 12px; padding-inline: 12px */
   msgRow: css`
     display: flex;
-    gap: 10px;
+    gap: 12px;
     align-items: flex-start;
+    padding: 24px 12px 12px;
   `,
 
   msgRowUser: css`
@@ -164,43 +171,44 @@ const useStyles = createStyles(({ token, css }) => ({
     display: flex;
     flex-direction: column;
     gap: 4px;
-    max-width: 72%;
+    max-width: 100%;
+    flex: 1;
+    min-width: 0;
   `,
 
   msgContentUser: css`
     align-items: flex-end;
+    max-width: 72%;
   `,
 
   msgSenderLabel: css`
-    font-size: 11px;
-    font-weight: 500;
-    padding: 0 2px;
-    margin-bottom: 2px;
+    font-size: 12px;
+    line-height: 1;
+    color: ${token.colorTextDescription};
+    margin-bottom: 6px;
   `,
 
   msgBubble: css`
-    padding: 10px 16px;
+    padding: 8px 12px;
     font-size: 14px;
     line-height: 1.6;
     white-space: pre-wrap;
     word-break: break-words;
-    border-radius: 16px;
+    border-radius: ${token.borderRadiusLG}px;
     font-family: ${token.fontFamily};
   `,
 
   msgBubbleUser: css`
-    background: linear-gradient(150deg, #2a1c0d 0%, #1e1408 100%);
-    border: 1px solid rgba(212,136,85,0.18);
-    color: #ede8de;
-    border-top-right-radius: 4px;
-    box-shadow: inset 0 1px 0 rgba(212,136,85,0.06);
+    background: ${token.colorBgContainer};
+    border: 1px solid ${token.colorBorder};
+    color: ${token.colorText};
   `,
 
   msgBubbleAssistant: css`
-    background: ${token.colorBgContainer};
-    border: 1px solid ${token.colorBorder};
-    color: ${token.colorTextSecondary};
-    border-top-left-radius: 4px;
+    background: transparent;
+    border: none;
+    color: ${token.colorText};
+    padding: 0;
   `,
 
   emotionTag: css`
@@ -213,15 +221,15 @@ const useStyles = createStyles(({ token, css }) => ({
 
   userAvatar: css`
     flex-shrink: 0;
-    margin-top: 2px;
     display: flex;
     align-items: center;
     justify-content: center;
-    width: 28px;
-    height: 28px;
+    width: 36px;
+    height: 36px;
     border-radius: 50%;
-    background: linear-gradient(135deg, #2a1c0d 0%, #4a3018 100%);
-    border: 1px solid rgba(212,136,85,0.28);
+    background: ${token.colorFillSecondary};
+    border: 1px solid ${token.colorBorderSecondary};
+    color: ${token.colorTextTertiary};
   `,
 
   /* Typing indicator */
@@ -229,11 +237,7 @@ const useStyles = createStyles(({ token, css }) => ({
     display: flex;
     align-items: center;
     gap: 6px;
-    padding: 12px 16px;
-    border-radius: 16px;
-    border-top-left-radius: 4px;
-    background: ${token.colorBgContainer};
-    border: 1px solid ${token.colorBorder};
+    padding: 8px 0;
   `,
 
   /* Bilibili video strip */
@@ -308,7 +312,6 @@ const useStyles = createStyles(({ token, css }) => ({
     color: ${token.colorTextDisabled};
   `,
 
-  /* Input area */
   inputArea: css`
     flex-shrink: 0;
     padding: 12px 16px 16px;
@@ -329,10 +332,12 @@ const useStyles = createStyles(({ token, css }) => ({
     padding: 12px 16px;
     background: ${token.colorBgContainer};
     border: 1px solid ${token.colorBorder};
-    transition: border-color ${token.motionDurationFast};
+    transition: border-color ${token.motionDurationFast},
+      box-shadow ${token.motionDurationFast};
 
     &:focus-within {
       border-color: ${token.colorPrimaryBorder};
+      box-shadow: 0 0 0 2px ${token.colorPrimaryBg};
     }
   `,
 
@@ -395,7 +400,7 @@ export default function ChatPane({
   onConversationCreated,
   onConversationUpdated,
 }: Props) {
-  const { styles, cx } = useStyles()
+  const { styles, cx, theme: token } = useStyles()
   const [messages, setMessages] = useState<DisplayMsg[]>([])
   const [input, setInput] = useState('')
   const [sending, setSending] = useState(false)
@@ -543,7 +548,7 @@ export default function ChatPane({
                   height: 130,
                   borderRadius: '50%',
                   background: `radial-gradient(circle, ${character.color}22 0%, transparent 70%)`,
-                  animation: 'ember-breathe 4s ease-in-out infinite',
+                  animation: 'lobe-breathe 4s ease-in-out infinite',
                   pointerEvents: 'none',
                 }}
               />
@@ -562,7 +567,7 @@ export default function ChatPane({
                   justifyContent: 'center',
                   fontSize: 38,
                   position: 'relative',
-                  animation: 'ember-float 5s ease-in-out infinite',
+                  animation: 'lobe-float 5s ease-in-out infinite',
                 }}
               >
                 {character.emoji}
@@ -601,16 +606,6 @@ export default function ChatPane({
                         setInput(s)
                         inputRef.current?.focus()
                       }}
-                      onMouseEnter={(e) => {
-                        e.currentTarget.style.borderColor = `${character.color}50`
-                        e.currentTarget.style.background = `${character.color}0a`
-                        e.currentTarget.style.color = '#9b97b4'
-                      }}
-                      onMouseLeave={(e) => {
-                        e.currentTarget.style.borderColor = ''
-                        e.currentTarget.style.background = ''
-                        e.currentTarget.style.color = ''
-                      }}
                     >
                       {s}
                     </button>
@@ -641,7 +636,7 @@ export default function ChatPane({
                   <span
                     key={delay}
                     className="w-1.5 h-1.5 rounded-full animate-bounce"
-                    style={{ backgroundColor: character.color, animationDelay: `${delay}ms` }}
+                    style={{ backgroundColor: '#aaaaaa', animationDelay: `${delay}ms` }}
                   />
                 ))}
               </div>
@@ -672,10 +667,8 @@ export default function ChatPane({
               disabled={!input.trim() || sending}
               className={styles.sendBtn}
               style={{
-                background:
-                  input.trim() && !sending
-                    ? 'linear-gradient(135deg, #d48855, #c05438)'
-                    : 'rgba(255,244,230,0.06)',
+                background: input.trim() && !sending ? token.colorPrimary : token.colorFillTertiary,
+                color: input.trim() && !sending ? token.colorBgLayout : token.colorTextQuaternary,
               }}
             >
               <SendHorizontal size={14} />
@@ -691,20 +684,20 @@ export default function ChatPane({
 /* ─── Sub-components ─────────────────────────────────────────────────────── */
 
 function CharAvatar({ character }: { character: Character }) {
+  const { token } = theme.useToken()
   return (
     <div
       style={{
         flexShrink: 0,
-        width: 28,
-        height: 28,
+        width: 36,
+        height: 36,
         borderRadius: '50%',
-        background: `linear-gradient(135deg, ${character.bgGradient[0]}, ${character.color}45)`,
-        border: `1px solid ${character.color}22`,
+        background: token.colorFillSecondary,
+        border: `1px solid ${token.colorBorderSecondary}`,
         display: 'flex',
         alignItems: 'center',
         justifyContent: 'center',
-        fontSize: 13,
-        marginTop: 2,
+        fontSize: 16,
       }}
     >
       {character.emoji}
@@ -735,7 +728,7 @@ function MessageBubble({
     <div className={cx(styles.msgRow, isUser && styles.msgRowUser)}>
       {isUser ? (
         <div className={styles.userAvatar}>
-          <User size={12} color="#d4a870" strokeWidth={2.5} />
+          <User size={12} strokeWidth={2.5} />
         </div>
       ) : (
         <CharAvatar character={character} />
@@ -754,7 +747,7 @@ function MessageBubble({
             isUser ? styles.msgBubbleUser : styles.msgBubbleAssistant,
             /* streaming cursor via Tailwind — kept as utility class */
             isStreaming
-              ? 'after:content-["▋"] after:animate-pulse after:ml-0.5 after:text-[#d48855]'
+              ? 'after:content-["▋"] after:animate-pulse after:ml-0.5 after:text-[#aaaaaa]'
               : '',
           )}
         >
@@ -788,8 +781,7 @@ function VideoStrip({
   return (
     <div className={styles.videoStrip}>
       <p className={styles.videoHint}>
-        💡 为你找了一些{' '}
-        <span style={{ color: '#d48855' }}>{keyword}</span> 的视频
+        💡 为你找了一些 <span style={{ color: 'var(--ant-color-text-secondary)' }}>{keyword}</span> 的视频
       </p>
       <div className={styles.videoScroll}>
         {videos.map((v) => (

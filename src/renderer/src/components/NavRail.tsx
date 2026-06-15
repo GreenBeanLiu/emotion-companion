@@ -1,6 +1,6 @@
 import { createStyles } from 'antd-style'
 import { ActionIcon } from '@lobehub/ui'
-import { MessageSquare, Settings } from 'lucide-react'
+import { MessageSquare, Settings, Sun, Moon } from 'lucide-react'
 import type { Character } from '../lib/characters'
 
 const useStyles = createStyles(({ token, css }) => ({
@@ -20,10 +20,9 @@ const useStyles = createStyles(({ token, css }) => ({
     width: 32px;
     height: 32px;
     border-radius: 10px;
-    background: linear-gradient(135deg, #d48855, #c05438);
+    background: ${token.colorPrimary};
     flex-shrink: 0;
     margin-bottom: 12px;
-    box-shadow: 0 2px 12px rgba(212,136,85,0.28);
     display: flex;
     align-items: center;
     justify-content: center;
@@ -79,19 +78,23 @@ const useStyles = createStyles(({ token, css }) => ({
 
 type Props = {
   character: Character
+  appearance: 'dark' | 'light'
   onSettings: () => void
   onChangeCharacter: () => void
+  onToggleTheme: () => void
 }
 
-export default function NavRail({ character, onSettings, onChangeCharacter }: Props) {
-  const { styles } = useStyles()
+export default function NavRail({ character, appearance, onSettings, onChangeCharacter, onToggleTheme }: Props) {
+  const { styles, theme: token } = useStyles()
+
+  // logo icon fill: inverse of logo background
+  const logoIconFill = appearance === 'dark' ? '#000000' : '#ffffff'
 
   return (
     <nav className={styles.rail}>
       <div className={styles.logo}>
-        {/* Flame / spark icon */}
         <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
-          <path d="M8 14c-2.5 0-4.5-1.8-4.5-4.5 0-1.8 1-3 2-4 .3 1 1 1.8 2 2-.2-1.5.5-3 2-4-.2 1.5.5 2.5 1 3.5.5 1 .5 2-.5 3 .8-.3 1.5-1 1.5-2 0 3-1.5 6-3.5 6z" fill="rgba(255,255,255,0.9)"/>
+          <path d="M8 14c-2.5 0-4.5-1.8-4.5-4.5 0-1.8 1-3 2-4 .3 1 1 1.8 2 2-.2-1.5.5-3 2-4-.2 1.5.5 2.5 1 3.5.5 1 .5 2-.5 3 .8-.3 1.5-1 1.5-2 0 3-1.5 6-3.5 6z" fill={logoIconFill}/>
         </svg>
       </div>
 
@@ -115,6 +118,14 @@ export default function NavRail({ character, onSettings, onChangeCharacter }: Pr
       >
         {character.emoji}
       </button>
+
+      {/* Theme toggle */}
+      <ActionIcon
+        icon={appearance === 'dark' ? <Sun size={16} /> : <Moon size={16} />}
+        title={appearance === 'dark' ? '切换亮色' : '切换暗色'}
+        onClick={onToggleTheme}
+        size={{ blockSize: 40, borderRadius: 8 }}
+      />
 
       {/* Settings */}
       <ActionIcon

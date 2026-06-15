@@ -33,7 +33,12 @@ const useStyles = createStyles(({ token, css }) => ({
   `,
 }))
 
-export default function App() {
+type AppProps = {
+  appearance: 'dark' | 'light'
+  onToggleTheme: () => void
+}
+
+export default function App({ appearance, onToggleTheme }: AppProps) {
   const { styles } = useStyles()
 
   const [activeConv, setActiveConv] = useState<ConversationRow | null>(null)
@@ -79,8 +84,10 @@ export default function App() {
       <div className={styles.contentRow}>
         <NavRail
           character={character}
+          appearance={appearance}
           onSettings={() => setShowSettings(true)}
           onChangeCharacter={() => setShowCharacterPicker(true)}
+          onToggleTheme={onToggleTheme}
         />
         <ConvPanel
           activeId={activeConv?.id ?? null}

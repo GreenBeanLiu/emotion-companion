@@ -11,6 +11,39 @@
   </head>
   <body>
     <div id="root"></div>
+    <!-- Browser preview mock: inject window.api when not running in Electron -->
+    <script>
+      if (!window.api) {
+        window.api = {
+          win: { minimize: () => {}, maximize: () => {}, close: () => {} },
+          settings: {
+            load: () => Promise.resolve({ provider: 'openai', apiKey: '', model: 'gpt-4o', baseUrl: '', characterId: 'default', systemPrompt: '', customSystemPrompt: '', tikhubKey: '' }),
+            save: () => Promise.resolve({ ok: true })
+          },
+          conv: {
+            list: () => Promise.resolve([
+              { id: 1, title: '今天心情有点低落', created_at: new Date().toISOString(), updated_at: new Date().toISOString(), message_count: 5 },
+              { id: 2, title: '最近压力好大，想聊聊', created_at: new Date().toISOString(), updated_at: new Date().toISOString(), message_count: 12 },
+              { id: 3, title: '分享一件开心的事', created_at: new Date().toISOString(), updated_at: new Date().toISOString(), message_count: 3 }
+            ]),
+            create: (t) => Promise.resolve({ id: Date.now(), title: t || '新对话', created_at: new Date().toISOString(), updated_at: new Date().toISOString() }),
+            rename: () => Promise.resolve({ ok: true }),
+            delete: () => Promise.resolve({ ok: true })
+          },
+          msg: { list: () => Promise.resolve([]) },
+          memory: { get: () => Promise.resolve(null), clear: () => Promise.resolve({ ok: true }) },
+          chat: {
+            send: () => Promise.resolve({ error: 'mock' }),
+            abort: () => Promise.resolve({ ok: true }),
+            onChunk: () => () => {},
+            onDone: () => () => {},
+            onEmotionUpdate: () => () => {},
+            onBilibiliResults: () => () => {}
+          },
+          update: { onAvailable: () => () => {}, onDownloaded: () => () => {}, install: () => {} }
+        };
+      }
+    </script>
     <script type="module" src="/src/main.tsx"></script>
   </body>
 </html>

@@ -378,7 +378,7 @@ export default function SettingsModal({ onClose }: { onClose: () => void }) {
         {/* Character info */}
         <div className={styles.infoCard}>
           <div className={styles.infoCardIcon}>
-            <Palette size={14} color="#d48855" />
+            <Palette size={14} color="#aaaaaa" />
           </div>
           <div>
             <p className={styles.infoCardTitle}>角色设定</p>
@@ -392,7 +392,7 @@ export default function SettingsModal({ onClose }: { onClose: () => void }) {
         <div className={styles.memoryCard}>
           <div className={styles.memoryHeader}>
             <div className={styles.memoryLeft}>
-              <Brain size={14} color="#d48855" />
+              <Brain size={14} color="#aaaaaa" />
               <span className={styles.memoryLabel}>长期记忆</span>
               {profile ? (
                 <span className={styles.memoryBadge}>已记录</span>

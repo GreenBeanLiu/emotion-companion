@@ -1,74 +1,75 @@
 @import "tailwindcss";
 
 /* ============================================================
-   Custom Tailwind tokens — warm ember palette
+   Custom Tailwind tokens — LobeHub dark (gray scale)
+   gray.dark: [#000,#0d0d0d,#1a1a1a,#202020,#2d2d2d,#444,#555,#666,#6f6f6f,#777,#aaa,#ddd,#fff]
    ============================================================ */
 @theme {
   /* Background layers */
-  --color-background: #0c0905;
-  --color-surface: #110d08;
-  --color-surface-2: #1a1610;
-  --color-surface-3: #221d13;
+  --color-background: #000000;
+  --color-surface: #0d0d0d;
+  --color-surface-2: #1a1a1a;
+  --color-surface-3: #2d2d2d;
 
   /* Border */
-  --color-border: #2c2418;
-  --color-border-soft: #1e1912;
+  --color-border: #202020;
+  --color-border-soft: #1a1a1a;
 
-  /* Fill states — warm-tinted whites */
-  --color-fill-1: rgba(255,244,230,0.04);
-  --color-fill-2: rgba(255,244,230,0.06);
-  --color-fill-3: rgba(255,244,230,0.10);
+  /* Fill states */
+  --color-fill-1: rgba(255,255,255,0.02);
+  --color-fill-2: rgba(255,255,255,0.06);
+  --color-fill-3: rgba(255,255,255,0.10);
 
-  /* Text — warm cream */
-  --color-text: #ede8de;
-  --color-text-soft: #a89888;
-  --color-text-muted: #6a5e50;
+  /* Text — white hierarchy */
+  --color-text: #ffffff;
+  --color-text-soft: #aaaaaa;
+  --color-text-muted: #6f6f6f;
 
-  /* Accent — warm amber */
-  --color-accent: #d48855;
-  --color-accent-2: #e07060;
-  --color-user-bubble: #2a1c0d;
+  /* Accent — near-white primary */
+  --color-accent: #eeeeee;
+  --color-accent-2: #ffffff;
+  --color-user-bubble: rgba(255,255,255,0.06);
 
-  /* shadcn tokens (used by radix/shadcn components) */
-  --color-card: #1a1610;
-  --color-popover: #1a1610;
-  --color-primary: #d48855;
-  --color-primary-foreground: #0c0905;
-  --color-secondary: #221d13;
-  --color-secondary-foreground: #c4b8a8;
-  --color-muted: #1a1610;
-  --color-muted-foreground: #6a5e50;
-  --color-destructive: #e07272;
-  --color-ring: #d48855;
+  /* shadcn tokens */
+  --color-card: #0d0d0d;
+  --color-popover: #1a1a1a;
+  --color-primary: #eeeeee;
+  --color-primary-foreground: #000000;
+  --color-secondary: #1a1a1a;
+  --color-secondary-foreground: #aaaaaa;
+  --color-muted: #0d0d0d;
+  --color-muted-foreground: #6f6f6f;
+  --color-destructive: #f87171;
+  --color-ring: #666666;
 
-  --radius-sm: 8px;
-  --radius-md: 12px;
-  --radius-lg: 16px;
-  --radius-xl: 20px;
+  --radius-sm: 6px;
+  --radius-md: 8px;
+  --radius-lg: 12px;
+  --radius-xl: 16px;
 }
 
-/* shadcn CSS variables — warm ember hsl values */
+/* shadcn CSS variables */
 :root {
-  --background:  30 37% 4%;
-  --foreground:  35 30% 91%;
-  --card:        30 35% 8%;
-  --card-foreground: 35 30% 91%;
-  --popover:     30 35% 8%;
-  --popover-foreground: 35 30% 91%;
-  --primary:     28 57% 58%;
-  --primary-foreground: 30 37% 4%;
-  --secondary:   28 24% 11%;
-  --secondary-foreground: 35 20% 78%;
-  --muted:       30 28% 9%;
-  --muted-foreground: 30 18% 48%;
-  --accent:      30 22% 13%;
-  --accent-foreground: 35 30% 91%;
-  --destructive: 0 60% 63%;
+  --background:  0 0% 0%;
+  --foreground:  0 0% 100%;
+  --card:        0 0% 5%;
+  --card-foreground: 0 0% 100%;
+  --popover:     0 0% 10%;
+  --popover-foreground: 0 0% 100%;
+  --primary:     0 0% 93%;
+  --primary-foreground: 0 0% 0%;
+  --secondary:   0 0% 10%;
+  --secondary-foreground: 0 0% 67%;
+  --muted:       0 0% 5%;
+  --muted-foreground: 0 0% 44%;
+  --accent:      0 0% 10%;
+  --accent-foreground: 0 0% 100%;
+  --destructive: 0 91% 71%;
   --destructive-foreground: 0 0% 100%;
-  --border:      28 28% 14%;
-  --input:       28 28% 11%;
-  --ring:        28 57% 58%;
-  --radius: 0.75rem;
+  --border:      0 0% 13%;
+  --input:       0 0% 5%;
+  --ring:        0 0% 40%;
+  --radius: 0.5rem;
 }
 
 /* ============================================================
@@ -86,49 +87,30 @@ html, body, #root {
 }
 
 body {
-  background: #0c0905;
-  color: #ede8de;
-  font-family: "Noto Sans SC", "PingFang SC", "Microsoft YaHei UI", -apple-system, "Segoe UI Variable", "Segoe UI", sans-serif;
+  background: var(--ant-color-bg-layout, #000000);
+  color: var(--ant-color-text, #ffffff);
+  font-family: Geist, -apple-system, BlinkMacSystemFont, "Segoe UI Variable Display", "Segoe UI", Roboto, "Helvetica Neue", Arial, "HarmonyOS Sans SC", "PingFang SC", "Microsoft YaHei UI", sans-serif;
   font-size: 14px;
   -webkit-font-smoothing: antialiased;
 }
 
 /* ============================================================
-   Grain texture overlay — subtle film-grain warmth
-   ============================================================ */
-body::after {
-  content: '';
-  position: fixed;
-  top: -50%;
-  left: -50%;
-  width: 200%;
-  height: 200%;
-  pointer-events: none;
-  z-index: 99999;
-  opacity: 0.028;
-  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='1'/%3E%3C/svg%3E");
-  background-repeat: repeat;
-  background-size: 256px 256px;
-  mix-blend-mode: overlay;
-}
-
-/* ============================================================
-   Scrollbar — slim, warm-toned
+   Scrollbar — LobeHub style: thin, on hover only
    ============================================================ */
 ::-webkit-scrollbar { width: 4px; height: 4px; }
 ::-webkit-scrollbar-track { background: transparent; }
-::-webkit-scrollbar-thumb { background: #2c2418; border-radius: 2px; }
-::-webkit-scrollbar-thumb:hover { background: #6a5e50; }
+::-webkit-scrollbar-thumb { background: var(--ant-color-fill-secondary, rgba(255,255,255,0.10)); border-radius: 10px; }
+::-webkit-scrollbar-thumb:hover { background: var(--ant-color-fill, rgba(255,255,255,0.16)); }
 
 /* ============================================================
-   Ember animations (used in ChatPane empty state)
+   Animations (empty state)
    ============================================================ */
-@keyframes ember-breathe {
-  0%, 100% { transform: scale(1);    opacity: 0.55; }
-  50%       { transform: scale(1.18); opacity: 1;    }
+@keyframes lobe-breathe {
+  0%, 100% { transform: scale(1);    opacity: 0.50; }
+  50%       { transform: scale(1.15); opacity: 1;    }
 }
 
-@keyframes ember-float {
+@keyframes lobe-float {
   0%, 100% { transform: translateY(0); }
   50%       { transform: translateY(-6px); }
 }

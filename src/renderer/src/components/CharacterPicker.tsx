@@ -327,7 +327,7 @@ export default function CharacterPicker({ currentId, onSelect, onClose }: Props)
                 <p className={styles.customName}>{customChar.name}</p>
                 <p className={styles.customTitle}>{customChar.title}</p>
               </div>
-              {currentId === 'custom' && <Check size={15} color="#d48855" />}
+              {currentId === 'custom' && <Check size={15} color="#eeeeee" />}
             </button>
           </div>
         </>
