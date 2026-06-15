@@ -76,6 +76,7 @@ const useStyles = createStyles(({ token, css }) => ({
     overflow-y: auto;
     display: flex;
     flex-direction: column;
+    min-height: 0;
   `,
 
   messagesTransition: css`
@@ -648,6 +649,7 @@ export default function ChatPane({
       )}
 
       {/* Messages */}
+      <div style={{ flex: 1, position: 'relative', minHeight: 0, display: 'flex', flexDirection: 'column' }}>
       <div
         className={styles.messages}
         ref={messagesRef}
@@ -655,7 +657,6 @@ export default function ChatPane({
           const el = e.currentTarget
           setShowScrollBtn(el.scrollHeight - el.scrollTop - el.clientHeight > 200)
         }}
-        style={{ position: 'relative' }}
       >
         <div className={cx(styles.messagesInner, styles.messagesTransition)} key={conversation?.id ?? 'empty'}>
           {isEmpty && (
@@ -799,6 +800,7 @@ export default function ChatPane({
             <ArrowDown size={14} />
           </button>
         )}
+      </div>
       </div>
 
       {/* Input area */}
