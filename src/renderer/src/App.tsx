@@ -84,7 +84,7 @@ export default function App({ appearance, onToggleTheme }: AppProps) {
       <TitleBar
         character={character}
         avatars={avatars}
-        convTitle={activeConv?.title ?? null}
+        convTitle={view === 'diary' ? '情绪日记' : (activeConv?.title ?? null)}
         update={update}
         onInstall={() => api.update.install()}
         onDismissUpdate={() => setUpdate({ status: 'idle' })}
@@ -125,7 +125,11 @@ export default function App({ appearance, onToggleTheme }: AppProps) {
             </DesktopLayoutContainer>
           </>
         )}
-        {view === 'diary' && <EmotionDiary />}
+        {view === 'diary' && (
+          <div key="diary" style={{ flex: 1, minWidth: 0, animation: 'msg-in 0.2s ease-out both' }}>
+            <EmotionDiary />
+          </div>
+        )}
       </div>
 
       {showSettings && <SettingsModal onClose={() => setShowSettings(false)} />}
