@@ -97,10 +97,11 @@ const useStyles = createStyles(({ token, css }) => ({
   `,
 
   charName: css`
-    font-size: 17px;
+    font-size: 20px;
     font-weight: 700;
     color: ${token.colorText};
     margin: 0;
+    letter-spacing: -0.02em;
   `,
 
   charTitle: css`
@@ -108,6 +109,7 @@ const useStyles = createStyles(({ token, css }) => ({
     line-height: 1.5;
     margin: 0;
     text-align: center;
+    max-width: 240px;
   `,
 
   tagRow: css`
@@ -558,8 +560,8 @@ export default function ChatPane({
               <div
                 style={{
                   position: 'absolute',
-                  width: 130,
-                  height: 130,
+                  width: 148,
+                  height: 148,
                   borderRadius: '50%',
                   background: `radial-gradient(circle, ${character.color}22 0%, transparent 70%)`,
                   animation: 'lobe-breathe 4s ease-in-out infinite',
@@ -570,9 +572,9 @@ export default function ChatPane({
               {/* Floating character avatar */}
               <div
                 style={{
-                  width: 92,
-                  height: 92,
-                  borderRadius: 30,
+                  width: 100,
+                  height: 100,
+                  borderRadius: 32,
                   background: avatars[character.id]
                     ? 'transparent'
                     : `linear-gradient(135deg, ${character.bgGradient[0]}, ${character.color}55)`,
