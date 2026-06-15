@@ -58,6 +58,9 @@ declare global {
           videos: BilibiliVideo[]
         }) => void) => () => void
       }
+      stats: {
+        emotions: () => Promise<Array<{ date: string; emotion: string; count: number }>>
+      }
       update: {
         onAvailable: (cb: (data: { version: string }) => void) => () => void
         onDownloaded: (cb: (data: { version: string }) => void) => () => void

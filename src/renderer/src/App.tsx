@@ -4,6 +4,7 @@ import TitleBar from './components/TitleBar'
 import NavRail from './components/NavRail'
 import ConvPanel from './components/ConvPanel'
 import ChatPane from './components/ChatPane'
+import EmotionDiary from './components/EmotionDiary'
 import DesktopLayoutContainer from './components/DesktopLayoutContainer'
 import SettingsModal from './components/SettingsModal'
 import CharacterPicker from './components/CharacterPicker'
@@ -41,6 +42,7 @@ type AppProps = {
 export default function App({ appearance, onToggleTheme }: AppProps) {
   const { styles } = useStyles()
 
+  const [view, setView] = useState<'chat' | 'diary'>('chat')
   const [activeConv, setActiveConv] = useState<ConversationRow | null>(null)
   const [showSettings, setShowSettings] = useState(false)
   const [showCharacterPicker, setShowCharacterPicker] = useState(false)
@@ -85,27 +87,34 @@ export default function App({ appearance, onToggleTheme }: AppProps) {
         <NavRail
           character={character}
           appearance={appearance}
+          view={view}
+          onViewChange={setView}
           onSettings={() => setShowSettings(true)}
           onChangeCharacter={() => setShowCharacterPicker(true)}
           onToggleTheme={onToggleTheme}
         />
-        <ConvPanel
-          activeId={activeConv?.id ?? null}
-          refreshKey={convRefreshKey}
-          onSelect={setActiveConv}
-          onNew={() => setActiveConv(null)}
-        />
-        <DesktopLayoutContainer>
-          <ChatPane
-            conversation={activeConv}
-            character={character}
-            onConversationCreated={(conv) => {
-              setActiveConv(conv)
-              refreshConvs()
-            }}
-            onConversationUpdated={refreshConvs}
-          />
-        </DesktopLayoutContainer>
+        {view === 'chat' && (
+          <>
+            <ConvPanel
+              activeId={activeConv?.id ?? null}
+              refreshKey={convRefreshKey}
+              onSelect={setActiveConv}
+              onNew={() => setActiveConv(null)}
+            />
+            <DesktopLayoutContainer>
+              <ChatPane
+                conversation={activeConv}
+                character={character}
+                onConversationCreated={(conv) => {
+                  setActiveConv(conv)
+                  refreshConvs()
+                }}
+                onConversationUpdated={refreshConvs}
+              />
+            </DesktopLayoutContainer>
+          </>
+        )}
+        {view === 'diary' && <EmotionDiary />}
       </div>
 
       {showSettings && <SettingsModal onClose={() => setShowSettings(false)} />}

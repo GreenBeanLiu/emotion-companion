@@ -69,6 +69,10 @@ const api = {
     },
   },
 
+  stats: {
+    emotions: () => ipcRenderer.invoke('stats:emotions'),
+  },
+
   update: {
     onAvailable: (cb: (data: { version: string }) => void) => {
       const handler = (_e: Electron.IpcRendererEvent, data: unknown) => cb(data as never)

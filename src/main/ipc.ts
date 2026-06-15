@@ -10,6 +10,7 @@ import {
   updateMessageEmotion,
   getUserProfile,
   clearUserProfile,
+  getEmotionStats,
 } from './db'
 import { streamChat } from './ai'
 import { loadSettings, saveSettings } from './settings'
@@ -33,6 +34,9 @@ export function registerIpcHandlers(): void {
     clearUserProfile()
     return { ok: true }
   })
+
+  // ── Stats ─────────────────────────────────────────────────────────
+  ipcMain.handle('stats:emotions', () => getEmotionStats())
 
   // ── Conversations ────────────────────────────────────────────────
   ipcMain.handle('conv:list', () => listConversations())

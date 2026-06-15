@@ -140,6 +140,32 @@ export function listMessages(conversationId: number): MessageRow[] {
     .sort((a, b) => a.created_at.localeCompare(b.created_at))
 }
 
+// ── Emotion stats ─────────────────────────────────────────────
+
+export type EmotionStat = {
+  date: string   // YYYY-MM-DD
+  emotion: string
+  count: number
+}
+
+export function getEmotionStats(): EmotionStat[] {
+  const messages = store.get('messages', [])
+  const byDate: Record<string, Record<string, number>> = {}
+
+  for (const msg of messages) {
+    if (!msg.emotion || msg.role !== 'user') continue
+    const date = msg.created_at.slice(0, 10)
+    if (!byDate[date]) byDate[date] = {}
+    byDate[date][msg.emotion] = (byDate[date][msg.emotion] || 0) + 1
+  }
+
+  return Object.entries(byDate)
+    .flatMap(([date, emotions]) =>
+      Object.entries(emotions).map(([emotion, count]) => ({ date, emotion, count })),
+    )
+    .sort((a, b) => a.date.localeCompare(b.date))
+}
+
 // ── User profile (long-term memory) ───────────────────────────────
 
 export function getUserProfile(): UserProfile | null {

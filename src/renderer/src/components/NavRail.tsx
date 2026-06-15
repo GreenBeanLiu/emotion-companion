@@ -1,6 +1,6 @@
 import { createStyles } from 'antd-style'
 import { ActionIcon } from '@lobehub/ui'
-import { MessageSquare, Settings, Sun, Moon } from 'lucide-react'
+import { MessageSquare, BarChart2, Settings, Sun, Moon } from 'lucide-react'
 import type { Character } from '../lib/characters'
 
 const useStyles = createStyles(({ token, css }) => ({
@@ -79,12 +79,14 @@ const useStyles = createStyles(({ token, css }) => ({
 type Props = {
   character: Character
   appearance: 'dark' | 'light'
+  view: 'chat' | 'diary'
+  onViewChange: (v: 'chat' | 'diary') => void
   onSettings: () => void
   onChangeCharacter: () => void
   onToggleTheme: () => void
 }
 
-export default function NavRail({ character, appearance, onSettings, onChangeCharacter, onToggleTheme }: Props) {
+export default function NavRail({ character, appearance, view, onViewChange, onSettings, onChangeCharacter, onToggleTheme }: Props) {
   const { styles, theme: token } = useStyles()
 
   // logo icon fill: inverse of logo background
@@ -98,12 +100,24 @@ export default function NavRail({ character, appearance, onSettings, onChangeCha
         </svg>
       </div>
 
-      {/* Primary nav item — active state + left-edge indicator */}
-      <div className={styles.activeWrap}>
+      {/* Chat nav item */}
+      <div className={view === 'chat' ? styles.activeWrap : undefined}>
         <ActionIcon
           icon={<MessageSquare size={16} />}
           title="对话"
-          active
+          active={view === 'chat'}
+          onClick={() => onViewChange('chat')}
+          size={{ blockSize: 40, borderRadius: 8 }}
+        />
+      </div>
+
+      {/* Diary nav item */}
+      <div className={view === 'diary' ? styles.activeWrap : undefined}>
+        <ActionIcon
+          icon={<BarChart2 size={16} />}
+          title="情绪日记"
+          active={view === 'diary'}
+          onClick={() => onViewChange('diary')}
           size={{ blockSize: 40, borderRadius: 8 }}
         />
       </div>

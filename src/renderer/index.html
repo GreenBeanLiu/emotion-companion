@@ -32,6 +32,25 @@
           },
           msg: { list: () => Promise.resolve([]) },
           memory: { get: () => Promise.resolve(null), clear: () => Promise.resolve({ ok: true }) },
+          stats: {
+            emotions: () => {
+              // generate ~60 days of mock emotion data
+              const emotions = ['开心','平静','焦虑','悲伤','愤怒','疲惫','孤独'];
+              const result = [];
+              const today = new Date();
+              for (let i = 59; i >= 0; i--) {
+                const d = new Date(today); d.setDate(today.getDate() - i);
+                if (Math.random() > 0.35) { // ~65% days have entries
+                  const date = d.toISOString().slice(0,10);
+                  const n = Math.floor(Math.random() * 3) + 1;
+                  for (let j = 0; j < n; j++) {
+                    result.push({ date, emotion: emotions[Math.floor(Math.random()*emotions.length)], count: Math.floor(Math.random()*3)+1 });
+                  }
+                }
+              }
+              return Promise.resolve(result);
+            }
+          },
           chat: {
             send: () => Promise.resolve({ error: 'mock' }),
             abort: () => Promise.resolve({ ok: true }),
