@@ -232,7 +232,7 @@ const useStyles = createStyles(({ token, css }) => ({
     flex: 1;
     border-radius: ${token.borderRadiusLG}px;
     padding: 16px 20px;
-    background: ${token.colorBgLayout};
+    background: ${token.colorFillTertiary};
     border: 1px solid ${token.colorBorderSecondary};
     display: flex;
     flex-direction: column;
