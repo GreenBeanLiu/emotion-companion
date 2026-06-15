@@ -17,6 +17,8 @@ declare global {
           systemPrompt: string
           customSystemPrompt: string
           tikhubKey: string
+          reminderEnabled: boolean
+          reminderTime: string
         }>
         save: (s: {
           provider: 'claude' | 'openai'
@@ -27,6 +29,8 @@ declare global {
           systemPrompt: string
           customSystemPrompt: string
           tikhubKey: string
+          reminderEnabled: boolean
+          reminderTime: string
         }) => Promise<{ ok: boolean }>
       }
       conv: {

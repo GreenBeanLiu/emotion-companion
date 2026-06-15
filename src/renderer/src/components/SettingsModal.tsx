@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react'
 import { createStyles } from 'antd-style'
-import { Modal, Input, Select, Button, Segmented, Divider } from 'antd'
-import { Eye, EyeOff, Brain, Palette } from 'lucide-react'
+import { Modal, Input, Select, Button, Segmented, Divider, Switch } from 'antd'
+import { Eye, EyeOff, Brain, Palette, Bell } from 'lucide-react'
 import { api } from '../lib/api'
 
 type Settings = {
@@ -10,6 +10,8 @@ type Settings = {
   model: string
   baseUrl: string
   tikhubKey: string
+  reminderEnabled: boolean
+  reminderTime: string
 }
 
 const MODEL_OPTIONS = {
@@ -222,6 +224,8 @@ export default function SettingsModal({ onClose }: { onClose: () => void }) {
     model: '',
     baseUrl: '',
     tikhubKey: '',
+    reminderEnabled: false,
+    reminderTime: '20:00',
   })
   const [saving, setSaving] = useState(false)
   const [saved, setSaved] = useState(false)
@@ -424,6 +428,44 @@ export default function SettingsModal({ onClose }: { onClose: () => void }) {
           )}
           {profile && showProfile && (
             <pre className={styles.memoryContent}>{profile.summary}</pre>
+          )}
+        </div>
+
+        {/* Daily reminder */}
+        <div className={styles.memoryCard}>
+          <div className={styles.memoryHeader}>
+            <div className={styles.memoryLeft}>
+              <Bell size={14} color="#aaaaaa" />
+              <span className={styles.memoryLabel}>每日提醒</span>
+            </div>
+            <Switch
+              size="small"
+              checked={settings.reminderEnabled}
+              onChange={(v) => patch({ reminderEnabled: v })}
+            />
+          </div>
+          {settings.reminderEnabled ? (
+            <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
+              <span style={{ fontSize: 12, color: 'var(--ant-color-text-tertiary)' }}>提醒时间</span>
+              <input
+                type="time"
+                value={settings.reminderTime}
+                onChange={(e) => patch({ reminderTime: e.target.value })}
+                style={{
+                  background: 'transparent',
+                  border: '1px solid var(--ant-color-border)',
+                  borderRadius: 6,
+                  padding: '3px 8px',
+                  fontSize: 13,
+                  color: 'var(--ant-color-text)',
+                  outline: 'none',
+                  fontFamily: 'inherit',
+                  cursor: 'pointer',
+                }}
+              />
+            </div>
+          ) : (
+            <p className={styles.memoryEmpty}>开启后，每天固定时间收到来聊聊的提醒。</p>
           )}
         </div>
       </div>

@@ -12,6 +12,8 @@ type SettingsData = {
   systemPrompt: string
   customSystemPrompt: string
   tikhubKey: string
+  reminderEnabled: boolean
+  reminderTime: string
 }
 
 const DEFAULTS: SettingsData = {
@@ -23,6 +25,8 @@ const DEFAULTS: SettingsData = {
   systemPrompt: '',
   customSystemPrompt: '',
   tikhubKey: '',
+  reminderEnabled: false,
+  reminderTime: '20:00',
 }
 
 function settingsPath(): string {
@@ -66,6 +70,8 @@ export function loadSettings(): SettingsData {
     systemPrompt: (raw.systemPrompt as string) ?? DEFAULTS.systemPrompt,
     customSystemPrompt: (raw.customSystemPrompt as string) ?? DEFAULTS.customSystemPrompt,
     tikhubKey: (raw.tikhubKey as string) ?? DEFAULTS.tikhubKey,
+    reminderEnabled: (raw.reminderEnabled as boolean) ?? DEFAULTS.reminderEnabled,
+    reminderTime: (raw.reminderTime as string) ?? DEFAULTS.reminderTime,
   }
 }
 
@@ -87,6 +93,8 @@ export function saveSettings(settings: SettingsData): void {
   raw.systemPrompt = settings.systemPrompt
   raw.customSystemPrompt = settings.customSystemPrompt
   raw.tikhubKey = settings.tikhubKey
+  raw.reminderEnabled = settings.reminderEnabled
+  raw.reminderTime = settings.reminderTime
 
   writeRaw(raw)
 }

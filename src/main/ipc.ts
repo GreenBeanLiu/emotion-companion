@@ -14,6 +14,7 @@ import {
 } from './db'
 import { streamChat } from './ai'
 import { loadSettings, saveSettings } from './settings'
+import { rescheduleReminder } from './notification'
 import { extractAndUpdateProfile, summarizeConversation } from './memory'
 import { detectEmotion } from './emotion'
 import { shouldRecommend, generateKeyword, searchVideos } from './bilibili'
@@ -25,6 +26,7 @@ export function registerIpcHandlers(): void {
   ipcMain.handle('settings:load', () => loadSettings())
   ipcMain.handle('settings:save', (_e, settings) => {
     saveSettings(settings)
+    rescheduleReminder(settings.reminderEnabled, settings.reminderTime)
     return { ok: true }
   })
 

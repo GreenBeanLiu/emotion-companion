@@ -17,7 +17,7 @@
         window.api = {
           win: { minimize: () => {}, maximize: () => {}, close: () => {} },
           settings: {
-            load: () => Promise.resolve({ provider: 'openai', apiKey: '', model: 'gpt-4o', baseUrl: '', characterId: 'default', systemPrompt: '', customSystemPrompt: '', tikhubKey: '' }),
+            load: () => Promise.resolve({ provider: 'openai', apiKey: '', model: 'gpt-4o', baseUrl: '', characterId: 'default', systemPrompt: '', customSystemPrompt: '', tikhubKey: '', reminderEnabled: false, reminderTime: '20:00' }),
             save: () => Promise.resolve({ ok: true })
           },
           conv: {

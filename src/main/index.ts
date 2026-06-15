@@ -3,6 +3,8 @@ import { join } from 'path'
 import { electronApp, optimizer, is } from '@electron-toolkit/utils'
 import { autoUpdater } from 'electron-updater'
 import { registerIpcHandlers } from './ipc'
+import { rescheduleReminder } from './notification'
+import { loadSettings } from './settings'
 
 function setupAutoUpdater(win: BrowserWindow): void {
   autoUpdater.autoDownload = true
@@ -71,6 +73,8 @@ app.whenReady().then(() => {
 
   registerIpcHandlers()
   createWindow()
+  const s = loadSettings()
+  rescheduleReminder(s.reminderEnabled, s.reminderTime)
 
   app.on('activate', () => {
     if (BrowserWindow.getAllWindows().length === 0) createWindow()
