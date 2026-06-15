@@ -21,6 +21,7 @@ type DisplayMsg = MessageRow | StreamingMsg
 type Props = {
   conversation: ConversationRow | null
   character: Character
+  avatars: Record<string, string>
   onConversationCreated: (conv: ConversationRow) => void
   onConversationUpdated: () => void
 }
@@ -397,6 +398,7 @@ const useStyles = createStyles(({ token, css }) => ({
 export default function ChatPane({
   conversation,
   character,
+  avatars,
   onConversationCreated,
   onConversationUpdated,
 }: Props) {
@@ -559,8 +561,10 @@ export default function ChatPane({
                   width: 92,
                   height: 92,
                   borderRadius: 30,
-                  background: `linear-gradient(135deg, ${character.bgGradient[0]}, ${character.color}55)`,
-                  border: `1px solid ${character.color}28`,
+                  background: avatars[character.id]
+                    ? 'transparent'
+                    : `linear-gradient(135deg, ${character.bgGradient[0]}, ${character.color}55)`,
+                  border: avatars[character.id] ? 'none' : `1px solid ${character.color}28`,
                   boxShadow: `0 0 0 6px ${character.color}0a, 0 16px 48px ${character.color}20`,
                   display: 'flex',
                   alignItems: 'center',
@@ -568,9 +572,18 @@ export default function ChatPane({
                   fontSize: 38,
                   position: 'relative',
                   animation: 'lobe-float 5s ease-in-out infinite',
+                  overflow: 'hidden',
                 }}
               >
-                {character.emoji}
+                {avatars[character.id] ? (
+                  <img
+                    src={avatars[character.id]}
+                    alt={character.name}
+                    style={{ width: '100%', height: '100%', objectFit: 'cover' }}
+                  />
+                ) : (
+                  character.emoji
+                )}
               </div>
 
               <div style={{ display: 'flex', flexDirection: 'column', gap: 6, position: 'relative' }}>
@@ -620,7 +633,7 @@ export default function ChatPane({
             const rec = msgId ? recommendations.get(msgId) : undefined
             return (
               <div key={msgId ?? `stream-${i}`}>
-                <MessageBubble msg={msg} character={character} styles={styles} cx={cx} />
+                <MessageBubble msg={msg} character={character} avatarUrl={avatars[character.id]} styles={styles} cx={cx} />
                 {rec && (
                   <VideoStrip keyword={rec.keyword} videos={rec.videos} styles={styles} />
                 )}
@@ -683,7 +696,7 @@ export default function ChatPane({
 
 /* ─── Sub-components ─────────────────────────────────────────────────────── */
 
-function CharAvatar({ character }: { character: Character }) {
+function CharAvatar({ character, avatarUrl }: { character: Character; avatarUrl?: string }) {
   const { token } = theme.useToken()
   return (
     <div
@@ -692,15 +705,20 @@ function CharAvatar({ character }: { character: Character }) {
         width: 36,
         height: 36,
         borderRadius: '50%',
-        background: token.colorFillSecondary,
-        border: `1px solid ${token.colorBorderSecondary}`,
+        background: avatarUrl ? 'transparent' : token.colorFillSecondary,
+        border: avatarUrl ? 'none' : `1px solid ${token.colorBorderSecondary}`,
         display: 'flex',
         alignItems: 'center',
         justifyContent: 'center',
         fontSize: 16,
+        overflow: 'hidden',
       }}
     >
-      {character.emoji}
+      {avatarUrl ? (
+        <img src={avatarUrl} alt={character.name} style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
+      ) : (
+        character.emoji
+      )}
     </div>
   )
 }
@@ -711,11 +729,13 @@ type CxType = ReturnType<typeof useStyles>['cx']
 function MessageBubble({
   msg,
   character,
+  avatarUrl,
   styles,
   cx,
 }: {
   msg: DisplayMsg
   character: Character
+  avatarUrl?: string
   styles: StylesType
   cx: CxType
 }) {
@@ -731,13 +751,13 @@ function MessageBubble({
           <User size={12} strokeWidth={2.5} />
         </div>
       ) : (
-        <CharAvatar character={character} />
+        <CharAvatar character={character} avatarUrl={avatarUrl} />
       )}
 
       <div className={cx(styles.msgContent, isUser && styles.msgContentUser)}>
         {!isUser && (
           <span className={styles.msgSenderLabel} style={{ color: character.color + 'bb' }}>
-            {character.emoji} {character.name}
+            {avatarUrl ? '' : character.emoji + ' '}{character.name}
           </span>
         )}
 

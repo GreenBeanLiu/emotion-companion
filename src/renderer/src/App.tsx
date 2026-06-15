@@ -108,6 +108,7 @@ export default function App({ appearance, onToggleTheme }: AppProps) {
               <ChatPane
                 conversation={activeConv}
                 character={character}
+                avatars={avatars}
                 onConversationCreated={(conv) => {
                   setActiveConv(conv)
                   refreshConvs()
