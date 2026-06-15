@@ -73,12 +73,11 @@ const useStyles = createStyles(({ token, css }) => ({
     flex-direction: column;
   `,
 
-  /* WideScreenContainer — matches LobeHub max-width and per-message padding approach */
   messagesInner: css`
     width: 100%;
-    max-width: 780px;
+    max-width: 800px;
     margin: 0 auto;
-    padding: 8px 0 32px;
+    padding: 12px 0 40px;
     display: flex;
     flex-direction: column;
     flex: 1;
@@ -156,12 +155,11 @@ const useStyles = createStyles(({ token, css }) => ({
     }
   `,
 
-  /* Message rows — LobeHub: padding-block: 24px 12px; padding-inline: 12px */
   msgRow: css`
     display: flex;
     gap: 12px;
     align-items: flex-start;
-    padding: 24px 12px 12px;
+    padding: 20px 20px 8px;
   `,
 
   msgRowUser: css`
@@ -315,13 +313,14 @@ const useStyles = createStyles(({ token, css }) => ({
 
   inputArea: css`
     flex-shrink: 0;
-    padding: 12px 16px 16px;
+    padding: 10px 20px 14px;
     border-top: 1px solid ${token.colorBorderSecondary};
+    background: ${token.colorBgBase};
   `,
 
   inputAreaInner: css`
     width: 100%;
-    max-width: 780px;
+    max-width: 800px;
     margin: 0 auto;
   `,
 
@@ -330,15 +329,14 @@ const useStyles = createStyles(({ token, css }) => ({
     align-items: flex-end;
     gap: 8px;
     border-radius: ${token.borderRadiusLG}px;
-    padding: 12px 16px;
+    padding: 10px 14px;
     background: ${token.colorBgContainer};
-    border: 1px solid ${token.colorBorder};
+    border: 1px solid ${token.colorBorderSecondary};
     transition: border-color ${token.motionDurationFast},
       box-shadow ${token.motionDurationFast};
 
     &:focus-within {
       border-color: ${token.colorPrimaryBorder};
-      box-shadow: 0 0 0 2px ${token.colorPrimaryBg};
     }
   `,
 
@@ -352,11 +350,12 @@ const useStyles = createStyles(({ token, css }) => ({
     color: ${token.colorText};
     font-family: ${token.fontFamily};
     line-height: 1.6;
-    max-height: 144px;
+    max-height: 160px;
     overflow-y: auto;
+    padding: 0;
 
     &::placeholder {
-      color: ${token.colorTextQuaternary};
+      color: ${token.colorTextTertiary};
     }
 
     &:disabled {
@@ -366,9 +365,9 @@ const useStyles = createStyles(({ token, css }) => ({
 
   sendBtn: css`
     flex-shrink: 0;
-    width: 32px;
-    height: 32px;
-    border-radius: ${token.borderRadius}px;
+    width: 30px;
+    height: 30px;
+    border-radius: ${token.borderRadiusSM}px;
     border: none;
     display: flex;
     align-items: center;
@@ -380,15 +379,15 @@ const useStyles = createStyles(({ token, css }) => ({
 
     &:disabled {
       cursor: not-allowed;
-      opacity: 0.45;
+      opacity: 0.35;
     }
   `,
 
   inputHint: css`
     text-align: center;
     font-size: 11px;
-    color: ${token.colorTextTertiary};
-    margin-top: 8px;
+    color: ${token.colorTextQuaternary};
+    margin-top: 6px;
     user-select: none;
   `,
 }))

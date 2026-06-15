@@ -7,7 +7,7 @@ import { ScrollArea } from '@/components/ui/scroll-area'
 
 const useStyles = createStyles(({ token, css }) => ({
   panel: css`
-    width: 260px;
+    width: 280px;
     flex-shrink: 0;
     display: flex;
     flex-direction: column;
@@ -16,26 +16,26 @@ const useStyles = createStyles(({ token, css }) => ({
   `,
 
   header: css`
-    height: 48px;
+    height: 44px;
     display: flex;
     align-items: center;
     justify-content: space-between;
-    padding: 0 12px 0 18px;
+    padding: 0 10px 0 16px;
     flex-shrink: 0;
     border-bottom: 1px solid ${token.colorBorderSecondary};
   `,
 
   headerLabel: css`
-    font-size: 14px;
+    font-size: 13px;
     font-weight: 600;
     color: ${token.colorText};
     user-select: none;
   `,
 
   newBtn: css`
-    width: 30px;
-    height: 30px;
-    border-radius: ${token.borderRadius}px;
+    width: 28px;
+    height: 28px;
+    border-radius: ${token.borderRadiusSM}px;
     border: none;
     background: transparent;
     color: ${token.colorTextTertiary};
@@ -56,15 +56,15 @@ const useStyles = createStyles(({ token, css }) => ({
   list: css`
     display: flex;
     flex-direction: column;
-    gap: 2px;
-    padding: 8px;
+    gap: 1px;
+    padding: 6px;
   `,
 
   emptyHint: css`
     font-size: 13px;
     color: ${token.colorTextTertiary};
     text-align: center;
-    margin-top: 48px;
+    margin-top: 56px;
     line-height: 1.8;
     padding: 0 20px;
     user-select: none;
@@ -77,8 +77,8 @@ const useStyles = createStyles(({ token, css }) => ({
   item: css`
     width: 100%;
     text-align: left;
-    padding: 10px 36px 10px 14px;
-    border-radius: ${token.borderRadiusLG}px;
+    padding: 8px 36px 8px 12px;
+    border-radius: ${token.borderRadius}px;
     border: none;
     background: transparent;
     cursor: pointer;
@@ -87,13 +87,12 @@ const useStyles = createStyles(({ token, css }) => ({
     outline: none;
 
     &:hover {
-      background: ${token.colorFill};
+      background: ${token.colorFillTertiary};
     }
   `,
 
   itemActive: css`
-    background: ${token.colorBgContainer} !important;
-    box-shadow: 0 1px 4px rgba(0,0,0,0.08), 0 0 0 1px ${token.colorBorderSecondary};
+    background: ${token.colorFillSecondary} !important;
 
     .item-title {
       color: ${token.colorText} !important;
@@ -114,20 +113,21 @@ const useStyles = createStyles(({ token, css }) => ({
   itemMeta: css`
     font-size: 11px;
     color: ${token.colorTextTertiary};
-    margin-top: 3px;
+    margin-top: 2px;
     overflow: hidden;
     text-overflow: ellipsis;
     white-space: nowrap;
+    line-height: 1.4;
   `,
 
   moreBtn: css`
     position: absolute;
-    right: 8px;
+    right: 6px;
     top: 50%;
     transform: translateY(-50%);
-    width: 22px;
-    height: 22px;
-    border-radius: 6px;
+    width: 20px;
+    height: 20px;
+    border-radius: 4px;
     border: none;
     background: transparent;
     color: ${token.colorTextTertiary};
@@ -145,8 +145,8 @@ const useStyles = createStyles(({ token, css }) => ({
 
   contextMenu: css`
     position: absolute;
-    right: 6px;
-    top: 38px;
+    right: 4px;
+    top: calc(100% - 4px);
     z-index: 50;
     border-radius: ${token.borderRadius}px;
     overflow: hidden;
@@ -192,9 +192,7 @@ export default function ConvPanel({ activeId, refreshKey, onSelect, onNew }: Pro
   }, [refreshKey])
 
   useEffect(() => {
-    function handleClick() {
-      setMenuId(null)
-    }
+    function handleClick() { setMenuId(null) }
     document.addEventListener('click', handleClick)
     return () => document.removeEventListener('click', handleClick)
   }, [])

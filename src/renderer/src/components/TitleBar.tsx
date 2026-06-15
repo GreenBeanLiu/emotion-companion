@@ -19,7 +19,7 @@ type Props = {
 
 const useStyles = createStyles(({ token, css }) => ({
   bar: css`
-    height: 48px;
+    height: 44px;
     display: flex;
     align-items: center;
     flex-shrink: 0;
@@ -29,20 +29,28 @@ const useStyles = createStyles(({ token, css }) => ({
     user-select: none;
   `,
 
+  /* Matches NavRail width exactly */
   railOffset: css`
-    width: 64px;
+    width: 56px;
     flex-shrink: 0;
   `,
 
+  /* Matches ConvPanel width exactly */
   charCtx: css`
-    width: 260px;
+    width: 280px;
     flex-shrink: 0;
     display: flex;
     align-items: center;
     gap: 8px;
-    padding: 0 12px 0 18px;
+    padding: 0 12px 0 16px;
     height: 100%;
     border-right: 1px solid ${token.colorBorderSecondary};
+  `,
+
+  charEmoji: css`
+    font-size: 15px;
+    line-height: 1;
+    flex-shrink: 0;
   `,
 
   charName: css`
@@ -52,6 +60,8 @@ const useStyles = createStyles(({ token, css }) => ({
     overflow: hidden;
     text-overflow: ellipsis;
     white-space: nowrap;
+    flex: 1;
+    min-width: 0;
   `,
 
   centerZone: css`
@@ -59,7 +69,7 @@ const useStyles = createStyles(({ token, css }) => ({
     display: flex;
     align-items: center;
     justify-content: center;
-    padding: 0 12px;
+    padding: 0 16px;
     min-width: 0;
   `,
 
@@ -67,7 +77,7 @@ const useStyles = createStyles(({ token, css }) => ({
     font-size: 13px;
     font-weight: 500;
     color: ${token.colorTextSecondary};
-    max-width: 320px;
+    max-width: 360px;
     overflow: hidden;
     text-overflow: ellipsis;
     white-space: nowrap;
@@ -77,13 +87,14 @@ const useStyles = createStyles(({ token, css }) => ({
     font-size: 13px;
     font-weight: 500;
     color: ${token.colorTextTertiary};
+    letter-spacing: 0.01em;
   `,
 
   rightZone: css`
     display: flex;
     align-items: center;
     gap: 2px;
-    padding: 0 8px;
+    padding: 0 6px;
     -webkit-app-region: no-drag;
   `,
 
@@ -97,9 +108,10 @@ const useStyles = createStyles(({ token, css }) => ({
     margin-right: 4px;
     cursor: pointer;
     transition: opacity ${token.motionDurationFast};
+    -webkit-app-region: no-drag;
 
     &:hover {
-      opacity: 0.85;
+      opacity: 0.82;
     }
   `,
 
@@ -113,7 +125,8 @@ const useStyles = createStyles(({ token, css }) => ({
   dismissBtn: css`
     background: none;
     border: none;
-    color: ${token.colorTextQuaternary};
+    color: inherit;
+    opacity: 0.5;
     cursor: pointer;
     font-size: 13px;
     padding: 0;
@@ -122,7 +135,7 @@ const useStyles = createStyles(({ token, css }) => ({
     -webkit-app-region: no-drag;
 
     &:hover {
-      color: ${token.colorTextSecondary};
+      opacity: 1;
     }
   `,
 
@@ -139,6 +152,7 @@ const useStyles = createStyles(({ token, css }) => ({
     color: ${token.colorTextTertiary};
     transition: background ${token.motionDurationFast}, color ${token.motionDurationFast};
     outline: none;
+    -webkit-app-region: no-drag;
 
     &:hover {
       background: ${token.colorFill};
@@ -163,12 +177,12 @@ export default function TitleBar({ character, convTitle, update, onInstall, onDi
 
   return (
     <div className={styles.bar}>
-      {/* Spacer aligned with NavRail */}
+      {/* Aligned with NavRail */}
       <div className={styles.railOffset} />
 
-      {/* Character context — aligned with ConvPanel column */}
+      {/* Aligned with ConvPanel */}
       <div className={styles.charCtx}>
-        <span style={{ fontSize: 16, lineHeight: 1 }}>{character.emoji}</span>
+        <span className={styles.charEmoji}>{character.emoji}</span>
         <span className={styles.charName}>{character.name}</span>
       </div>
 
@@ -221,10 +235,7 @@ export default function TitleBar({ character, convTitle, update, onInstall, onDi
             </span>
             <button
               className={styles.dismissBtn}
-              onClick={(e) => {
-                e.stopPropagation()
-                onDismissUpdate()
-              }}
+              onClick={(e) => { e.stopPropagation(); onDismissUpdate() }}
             >
               ×
             </button>

@@ -39,7 +39,7 @@ const useStyles = createStyles(({ token, css }) => ({
   overlay: css`
     position: fixed;
     top: 0;
-    left: 64px;
+    left: 56px;
     right: 0;
     bottom: 0;
     z-index: 200;
