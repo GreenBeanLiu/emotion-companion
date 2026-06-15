@@ -7,6 +7,7 @@ type UpdateState =
   | { status: 'idle' }
   | { status: 'available'; version: string }
   | { status: 'downloaded'; version: string }
+  | { status: 'error'; message: string }
 
 type Props = {
   character: Character
@@ -158,6 +159,7 @@ export default function TitleBar({ character, convTitle, update, onInstall, onDi
 
   const isDownloaded = update.status === 'downloaded'
   const isAvailable = update.status === 'available'
+  const isError = update.status === 'error'
 
   return (
     <div className={styles.bar}>
@@ -185,30 +187,47 @@ export default function TitleBar({ character, convTitle, update, onInstall, onDi
           <div
             className={styles.updateBadge}
             style={{
-              background: isDownloaded ? token.colorSuccessBg : token.colorFillTertiary,
-              border: `1px solid ${isDownloaded ? token.colorSuccessBorder : token.colorBorder}`,
-              color: isDownloaded ? token.colorSuccess : token.colorTextSecondary,
+              background: isDownloaded
+                ? token.colorSuccessBg
+                : isError
+                  ? token.colorErrorBg
+                  : token.colorFillTertiary,
+              border: `1px solid ${isDownloaded ? token.colorSuccessBorder : isError ? token.colorErrorBorder : token.colorBorder}`,
+              color: isDownloaded
+                ? token.colorSuccess
+                : isError
+                  ? token.colorError
+                  : token.colorTextSecondary,
             }}
             onClick={isDownloaded ? onInstall : undefined}
+            title={isError ? (update as { status: 'error'; message: string }).message : undefined}
           >
             <span
               className={styles.updateDot}
-              style={{ background: isDownloaded ? token.colorSuccess : token.colorTextTertiary }}
+              style={{
+                background: isDownloaded
+                  ? token.colorSuccess
+                  : isError
+                    ? token.colorError
+                    : token.colorTextTertiary,
+              }}
             />
             <span>
-              {isAvailable ? `v${update.version} 下载中` : `v${update.version} 就绪，点击重启`}
+              {isAvailable
+                ? `v${(update as { version: string }).version} 下载中`
+                : isDownloaded
+                  ? `v${(update as { version: string }).version} 就绪，点击重启`
+                  : '更新检查失败'}
             </span>
-            {isAvailable && (
-              <button
-                className={styles.dismissBtn}
-                onClick={(e) => {
-                  e.stopPropagation()
-                  onDismissUpdate()
-                }}
-              >
-                ×
-              </button>
-            )}
+            <button
+              className={styles.dismissBtn}
+              onClick={(e) => {
+                e.stopPropagation()
+                onDismissUpdate()
+              }}
+            >
+              ×
+            </button>
           </div>
         )}
 

@@ -9,6 +9,7 @@ import { loadSettings } from './settings'
 function setupAutoUpdater(win: BrowserWindow): void {
   autoUpdater.autoDownload = true
   autoUpdater.autoInstallOnAppQuit = true
+  autoUpdater.logger = null // suppress default logger noise
 
   autoUpdater.on('update-available', (info) => {
     win.webContents.send('update:available', { version: info.version })
@@ -18,12 +19,21 @@ function setupAutoUpdater(win: BrowserWindow): void {
     win.webContents.send('update:downloaded', { version: info.version })
   })
 
+  autoUpdater.on('error', (err) => {
+    // Surface the error to the renderer so the user can see it
+    win.webContents.send('update:error', { message: err.message ?? String(err) })
+  })
+
   ipcMain.on('update:install', () => {
     autoUpdater.quitAndInstall()
   })
 
   // 启动后 3 秒再检查，避免影响启动速度
-  setTimeout(() => autoUpdater.checkForUpdates(), 3000)
+  setTimeout(() => {
+    autoUpdater.checkForUpdates().catch((err) => {
+      win.webContents.send('update:error', { message: err.message ?? String(err) })
+    })
+  }, 3000)
 }
 
 function createWindow(): void {

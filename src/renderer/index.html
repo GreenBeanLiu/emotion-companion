@@ -64,7 +64,7 @@
             onEmotionUpdate: () => () => {},
             onBilibiliResults: () => () => {}
           },
-          update: { onAvailable: () => () => {}, onDownloaded: () => () => {}, install: () => {} },
+          update: { onAvailable: () => () => {}, onDownloaded: () => () => {}, onError: () => () => {}, install: () => {} },
           app: { version: () => Promise.resolve('0.1.10-preview') },
           notification: { test: () => Promise.resolve({ ok: true }) }
         };

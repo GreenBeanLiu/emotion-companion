@@ -90,6 +90,11 @@ const api = {
       ipcRenderer.on('update:downloaded', handler)
       return () => ipcRenderer.off('update:downloaded', handler)
     },
+    onError: (cb: (data: { message: string }) => void) => {
+      const handler = (_e: Electron.IpcRendererEvent, data: unknown) => cb(data as never)
+      ipcRenderer.on('update:error', handler)
+      return () => ipcRenderer.off('update:error', handler)
+    },
     install: () => ipcRenderer.send('update:install'),
   },
 

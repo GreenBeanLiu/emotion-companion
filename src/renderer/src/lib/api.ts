@@ -73,6 +73,7 @@ declare global {
       update: {
         onAvailable: (cb: (data: { version: string }) => void) => () => void
         onDownloaded: (cb: (data: { version: string }) => void) => () => void
+        onError: (cb: (data: { message: string }) => void) => () => void
         install: () => void
       }
       app: {

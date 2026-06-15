@@ -16,6 +16,7 @@ type UpdateState =
   | { status: 'idle' }
   | { status: 'available'; version: string }
   | { status: 'downloaded'; version: string }
+  | { status: 'error'; message: string }
 
 const useStyles = createStyles(({ token, css }) => ({
   shell: css`
@@ -63,9 +64,13 @@ export default function App({ appearance, onToggleTheme }: AppProps) {
     const offDone = api.update.onDownloaded(({ version }) =>
       setUpdate({ status: 'downloaded', version }),
     )
+    const offErr = api.update.onError(({ message }) =>
+      setUpdate({ status: 'error', message }),
+    )
     return () => {
       offAvail()
       offDone()
+      offErr()
     }
   }, [])
 
