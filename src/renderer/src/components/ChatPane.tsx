@@ -382,11 +382,6 @@ const useStyles = createStyles(({ token, css }) => ({
     box-shadow: 0 2px 12px rgba(0,0,0,0.12), 0 1px 3px rgba(0,0,0,0.08);
     transition: border-color ${token.motionDurationFast},
       box-shadow ${token.motionDurationFast};
-
-    &:focus-within {
-      border-color: ${token.colorBorderSecondary};
-      box-shadow: 0 4px 20px rgba(0,0,0,0.16), 0 1px 4px rgba(0,0,0,0.10);
-    }
   `,
 
   inputTextarea: css`
@@ -455,6 +450,7 @@ export default function ChatPane({
   const [messages, setMessages] = useState<DisplayMsg[]>([])
   const [input, setInput] = useState('')
   const [sending, setSending] = useState(false)
+  const [inputFocused, setInputFocused] = useState(false)
   const [error, setError] = useState<string | null>(null)
   const [recommendations, setRecommendations] = useState<
     Map<number, { keyword: string; videos: BilibiliVideo[] }>
@@ -664,6 +660,7 @@ export default function ChatPane({
                     <button
                       key={s}
                       className={styles.starterBtn}
+                      style={{ borderLeftColor: character.color + '70', borderLeftWidth: 2 }}
                       onClick={() => {
                         setInput(s)
                         inputRef.current?.focus()
@@ -714,12 +711,17 @@ export default function ChatPane({
       {/* Input area */}
       <div className={styles.inputArea}>
         <div className={styles.inputAreaInner}>
-          <div className={styles.inputBox}>
+          <div
+            className={styles.inputBox}
+            style={inputFocused ? { borderColor: character.color + '60', boxShadow: `0 4px 20px rgba(0,0,0,0.16), 0 0 0 3px ${character.color}14` } : undefined}
+          >
             <textarea
               ref={inputRef}
               value={input}
               onChange={(e) => setInput(e.target.value)}
               onKeyDown={handleKeyDown}
+              onFocus={() => setInputFocused(true)}
+              onBlur={() => setInputFocused(false)}
               placeholder="说说你的心情…"
               rows={1}
               style={{ fieldSizing: 'content' } as React.CSSProperties}
