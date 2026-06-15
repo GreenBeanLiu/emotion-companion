@@ -840,17 +840,17 @@ export default function ChatPane({
 
           <div ref={bottomRef} />
         </div>
-
-        {showScrollBtn && (
-          <button
-            className={styles.scrollBottomBtn}
-            onClick={() => bottomRef.current?.scrollIntoView({ behavior: 'smooth' })}
-            title="滚动到底部"
-          >
-            <ArrowDown size={14} />
-          </button>
-        )}
       </div>
+
+      {showScrollBtn && (
+        <button
+          className={styles.scrollBottomBtn}
+          onClick={() => bottomRef.current?.scrollIntoView({ behavior: 'smooth' })}
+          title="滚动到底部"
+        >
+          <ArrowDown size={14} />
+        </button>
+      )}
       </div>
 
       {/* Input area */}
@@ -878,8 +878,8 @@ export default function ChatPane({
               disabled={!input.trim() || sending}
               className={styles.sendBtn}
               style={{
-                background: input.trim() && !sending ? character.color : token.colorFillTertiary,
-                color: input.trim() && !sending ? '#0f0e17' : token.colorTextQuaternary,
+                background: input.trim() && !sending ? character.color : token.colorFillSecondary,
+                color: input.trim() && !sending ? '#ffffff' : token.colorTextTertiary,
               }}
             >
               <SendHorizontal size={14} />
@@ -978,12 +978,6 @@ function MessageBubble({
           </span>
         )}
 
-        {'created_at' in msg && (
-          <span className={`${styles.msgTimestamp} msg-timestamp`}>
-            {formatTime((msg as MessageRow).created_at)}
-          </span>
-        )}
-
         <div
           className={cx(
             styles.msgBubble,
@@ -995,7 +989,7 @@ function MessageBubble({
           ) : isStreaming ? (
             <>
               {msg.content}
-              <span className="animate-pulse ml-0.5" style={{ color: '#888888' }}>▋</span>
+              <span className="animate-pulse ml-0.5" style={{ color: character.color }}>▋</span>
             </>
           ) : (
             <Markdown
@@ -1010,6 +1004,12 @@ function MessageBubble({
             </Markdown>
           )}
         </div>
+
+        {'created_at' in msg && (
+          <span className={`${styles.msgTimestamp} msg-timestamp`}>
+            {formatTime((msg as MessageRow).created_at)}
+          </span>
+        )}
 
         {emotionMeta && (
           <span className={styles.emotionTag} style={{ color: emotionMeta.color }}>
