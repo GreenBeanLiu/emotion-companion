@@ -10,6 +10,22 @@ function formatTime(iso: string): string {
   return d.toLocaleTimeString('zh-CN', { hour: '2-digit', minute: '2-digit' })
 }
 
+function formatDateSeparator(iso: string): string {
+  const d = new Date(iso)
+  const now = new Date()
+  const diffDays = Math.floor((now.getTime() - d.getTime()) / 86400000)
+  if (diffDays === 0) return '今天'
+  if (diffDays === 1) return '昨天'
+  const y = d.getFullYear()
+  const m = String(d.getMonth() + 1).padStart(2, '0')
+  const day = String(d.getDate()).padStart(2, '0')
+  return y === now.getFullYear() ? `${m}月${day}日` : `${y}年${m}月${day}日`
+}
+
+function isSameDay(a: string, b: string): boolean {
+  return new Date(a).toDateString() === new Date(b).toDateString()
+}
+
 const EMOTION_META: Record<string, { emoji: string; color: string }> = {
   开心: { emoji: '😊', color: '#4ade80' },
   平静: { emoji: '😌', color: '#60a5fa' },
@@ -243,6 +259,29 @@ const useStyles = createStyles(({ token, css }) => ({
     color: ${token.colorText};
     padding: 0;
     white-space: normal;
+  `,
+
+  dateSeparator: css`
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 12px 20px 4px;
+    user-select: none;
+
+    &::before, &::after {
+      content: '';
+      flex: 1;
+      height: 1px;
+      background: ${token.colorBorderSecondary};
+    }
+  `,
+
+  dateSeparatorText: css`
+    font-size: 11px;
+    color: ${token.colorTextTertiary};
+    white-space: nowrap;
+    font-weight: 500;
+    letter-spacing: 0.03em;
   `,
 
   msgTimestamp: css`
@@ -762,9 +801,21 @@ export default function ChatPane({
             const rec = msgId ? recommendations.get(msgId) : undefined
             const prevMsg = i > 0 ? messages[i - 1] : null
             const isTight = prevMsg !== null && prevMsg.role === msg.role
+            const showDate = 'created_at' in msg && (
+              i === 0 ||
+              !('created_at' in messages[i - 1]) ||
+              !isSameDay(msg.created_at, (messages[i - 1] as MessageRow).created_at)
+            )
             return (
               <div key={msgId ?? `stream-${i}`}>
-                <MessageBubble msg={msg} character={character} avatarUrl={avatars[character.id]} styles={styles} cx={cx} tight={isTight} />
+                {'created_at' in msg && showDate && (
+                  <div className={styles.dateSeparator}>
+                    <span className={styles.dateSeparatorText}>
+                      {formatDateSeparator(msg.created_at)}
+                    </span>
+                  </div>
+                )}
+                <MessageBubble msg={msg} character={character} avatarUrl={avatars[character.id]} styles={styles} cx={cx} tight={isTight && !showDate} />
                 {rec && (
                   <VideoStrip keyword={rec.keyword} videos={rec.videos} styles={styles} />
                 )}
