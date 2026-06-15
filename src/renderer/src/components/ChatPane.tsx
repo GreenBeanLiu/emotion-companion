@@ -1,6 +1,6 @@
 import { useEffect, useRef, useState, useCallback } from 'react'
 import { createStyles } from 'antd-style'
-import { theme } from 'antd'
+import { Markdown } from '@lobehub/ui'
 import { SendHorizontal, User } from 'lucide-react'
 import { api, type ConversationRow, type MessageRow, type BilibiliVideo } from '../lib/api'
 import type { Character } from '../lib/characters'
@@ -222,6 +222,7 @@ const useStyles = createStyles(({ token, css }) => ({
     border: none;
     color: ${token.colorText};
     padding: 0;
+    white-space: normal;
   `,
 
   emotionTag: css`
@@ -787,13 +788,27 @@ function MessageBubble({
           className={cx(
             styles.msgBubble,
             isUser ? styles.msgBubbleUser : styles.msgBubbleAssistant,
-            /* streaming cursor via Tailwind — kept as utility class */
-            isStreaming
-              ? 'after:content-["▋"] after:animate-pulse after:ml-0.5 after:text-[#aaaaaa]'
-              : '',
           )}
         >
-          {msg.content}
+          {isUser ? (
+            msg.content
+          ) : isStreaming ? (
+            <>
+              {msg.content}
+              <span className="animate-pulse ml-0.5" style={{ color: '#888888' }}>▋</span>
+            </>
+          ) : (
+            <Markdown
+              variant="chat"
+              fontSize={14}
+              style={{ margin: 0 }}
+              enableLatex={false}
+              enableMermaid={false}
+              enableImageGallery={false}
+            >
+              {msg.content || ' '}
+            </Markdown>
+          )}
         </div>
 
         {emotionMeta && (
