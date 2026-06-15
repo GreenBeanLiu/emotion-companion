@@ -56,22 +56,22 @@ const useStyles = createStyles(({ token, css }) => ({
     width: 32px;
     height: 32px;
     border-radius: 8px;
-    border: 1px solid ${token.colorPrimaryBorder};
-    background: ${token.colorPrimaryBg};
     display: flex;
     align-items: center;
     justify-content: center;
     font-size: 18px;
     cursor: pointer;
-    transition: background ${token.motionDurationFast} ${token.motionEaseOut},
-      border-color ${token.motionDurationFast} ${token.motionEaseOut};
+    transition: filter ${token.motionDurationFast} ${token.motionEaseOut},
+      transform ${token.motionDurationFast} ${token.motionEaseOut};
     flex-shrink: 0;
     margin-bottom: 4px;
     outline: none;
+    border: none;
+    background: transparent;
 
     &:hover {
-      background: ${token.colorPrimaryBgHover};
-      border-color: ${token.colorPrimaryBorderHover};
+      filter: brightness(1.15);
+      transform: scale(1.08);
     }
   `,
 }))
@@ -127,15 +127,30 @@ export default function NavRail({ character, avatars, appearance, view, onViewCh
         onClick={onChangeCharacter}
         title={`切换角色 · 当前：${character.name}`}
       >
-        {avatars[character.id] ? (
-          <img
-            src={avatars[character.id]}
-            alt={character.name}
-            style={{ width: 24, height: 24, borderRadius: 6, objectFit: 'cover' }}
-          />
-        ) : (
-          character.emoji
-        )}
+        <div
+          style={{
+            width: 32,
+            height: 32,
+            borderRadius: 8,
+            background: avatars[character.id] ? 'transparent' : `linear-gradient(135deg, ${character.bgGradient[0]}, ${character.color}70)`,
+            border: `1px solid ${character.color}40`,
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center',
+            fontSize: 17,
+            overflow: 'hidden',
+          }}
+        >
+          {avatars[character.id] ? (
+            <img
+              src={avatars[character.id]}
+              alt={character.name}
+              style={{ width: '100%', height: '100%', objectFit: 'cover' }}
+            />
+          ) : (
+            character.emoji
+          )}
+        </div>
       </button>
 
       <ActionIcon

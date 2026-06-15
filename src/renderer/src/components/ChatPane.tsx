@@ -321,7 +321,7 @@ const useStyles = createStyles(({ token, css }) => ({
     justify-content: center;
     font-size: 11px;
     background: ${token.colorBgLayout};
-    color: ${token.colorTextDisabled};
+    color: ${token.colorTextTertiary};
   `,
 
   inputArea: css`
@@ -665,7 +665,7 @@ export default function ChatPane({
                   <span
                     key={delay}
                     className="w-1.5 h-1.5 rounded-full animate-bounce"
-                    style={{ backgroundColor: '#aaaaaa', animationDelay: `${delay}ms` }}
+                    style={{ backgroundColor: character.color + 'cc', animationDelay: `${delay}ms` }}
                   />
                 ))}
               </div>
@@ -696,8 +696,8 @@ export default function ChatPane({
               disabled={!input.trim() || sending}
               className={styles.sendBtn}
               style={{
-                background: input.trim() && !sending ? token.colorPrimary : token.colorFillTertiary,
-                color: input.trim() && !sending ? token.colorBgLayout : token.colorTextQuaternary,
+                background: input.trim() && !sending ? character.color : token.colorFillTertiary,
+                color: input.trim() && !sending ? '#0f0e17' : token.colorTextQuaternary,
               }}
             >
               <SendHorizontal size={14} />
@@ -713,7 +713,6 @@ export default function ChatPane({
 /* ─── Sub-components ─────────────────────────────────────────────────────── */
 
 function CharAvatar({ character, avatarUrl }: { character: Character; avatarUrl?: string }) {
-  const { token } = theme.useToken()
   return (
     <div
       style={{
@@ -721,8 +720,8 @@ function CharAvatar({ character, avatarUrl }: { character: Character; avatarUrl?
         width: 32,
         height: 32,
         borderRadius: '50%',
-        background: avatarUrl ? 'transparent' : token.colorFillSecondary,
-        border: avatarUrl ? 'none' : `1px solid ${token.colorBorderSecondary}`,
+        background: avatarUrl ? 'transparent' : `linear-gradient(135deg, ${character.bgGradient[0]}, ${character.color}60)`,
+        border: avatarUrl ? 'none' : `1px solid ${character.color}30`,
         display: 'flex',
         alignItems: 'center',
         justifyContent: 'center',
