@@ -100,7 +100,7 @@ const useStyles = createStyles(({ token, css }) => ({
     flex-direction: column;
     align-items: center;
     justify-content: center;
-    gap: 20px;
+    gap: 16px;
     text-align: center;
     min-height: 58vh;
     position: relative;
@@ -715,30 +715,29 @@ export default function ChatPane({
                 )}
               </div>
 
-              <div style={{ display: 'flex', flexDirection: 'column', gap: 4, position: 'relative', alignItems: 'center' }}>
+              <div style={{ display: 'flex', flexDirection: 'column', gap: 6, position: 'relative', alignItems: 'center' }}>
                 <p className={styles.charName}>{character.name}</p>
                 <p className={styles.charTitle} style={{ color: character.color + 'cc' }}>
                   {character.title}
                 </p>
+                <div className={styles.tagRow} style={{ marginTop: 2 }}>
+                  {character.tags.map((tag) => (
+                    <span
+                      key={tag}
+                      className={styles.tag}
+                      style={{
+                        background: `${character.color}15`,
+                        color: character.color,
+                        border: `1px solid ${character.color}30`,
+                      }}
+                    >
+                      {tag}
+                    </span>
+                  ))}
+                </div>
               </div>
 
-              <div className={styles.tagRow} style={{ position: 'relative' }}>
-                {character.tags.map((tag) => (
-                  <span
-                    key={tag}
-                    className={styles.tag}
-                    style={{
-                      background: `${character.color}15`,
-                      color: character.color,
-                      border: `1px solid ${character.color}30`,
-                    }}
-                  >
-                    {tag}
-                  </span>
-                ))}
-              </div>
-
-              <div className={styles.starterList} style={{ position: 'relative' }}>
+              <div className={styles.starterList} style={{ position: 'relative', marginTop: 8 }}>
                 {['今天心情有点低落…', '最近压力好大', '想分享一件开心的事', '感觉很孤独'].map(
                   (s) => (
                     <button
