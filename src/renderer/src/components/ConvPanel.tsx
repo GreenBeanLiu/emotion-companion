@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react'
 import { createStyles } from 'antd-style'
 import { Tooltip } from 'antd'
-import { SquarePen, Trash2, MoreVertical, MessageSquarePlus } from 'lucide-react'
+import { SquarePen, Trash2, MoreVertical, MessageSquarePlus, Search } from 'lucide-react'
 import { api, type ConversationRow } from '../lib/api'
 import type { Character } from '../lib/characters'
 import { ScrollArea } from '@/components/ui/scroll-area'
@@ -72,6 +72,30 @@ const useStyles = createStyles(({ token, css }) => ({
     flex-direction: column;
     gap: 1px;
     padding: 6px;
+  `,
+
+  searchWrap: css`
+    padding: 6px 8px;
+    border-bottom: 1px solid ${token.colorBorderSecondary};
+    flex-shrink: 0;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    color: ${token.colorTextTertiary};
+  `,
+
+  searchInput: css`
+    flex: 1;
+    border: none;
+    outline: none;
+    background: transparent;
+    font-size: 13px;
+    color: ${token.colorText};
+    font-family: ${token.fontFamily};
+
+    &::placeholder {
+      color: ${token.colorTextTertiary};
+    }
   `,
 
   emptyHint: css`
@@ -203,6 +227,7 @@ export default function ConvPanel({ activeId, refreshKey, character, onSelect, o
   const { styles, cx } = useStyles()
   const [convs, setConvs] = useState<ConversationRow[]>([])
   const [menuId, setMenuId] = useState<number | null>(null)
+  const [search, setSearch] = useState('')
 
   useEffect(() => {
     api.conv.list().then(setConvs)
@@ -213,6 +238,10 @@ export default function ConvPanel({ activeId, refreshKey, character, onSelect, o
     document.addEventListener('click', handleClick)
     return () => document.removeEventListener('click', handleClick)
   }, [])
+
+  const filteredConvs = search.trim()
+    ? convs.filter((c) => c.title.toLowerCase().includes(search.toLowerCase()))
+    : convs
 
   async function handleDelete(e: React.MouseEvent, id: number) {
     e.stopPropagation()
@@ -232,6 +261,18 @@ export default function ConvPanel({ activeId, refreshKey, character, onSelect, o
         </Tooltip>
       </div>
 
+      {convs.length > 0 && (
+        <div className={styles.searchWrap}>
+          <Search size={12} />
+          <input
+            className={styles.searchInput}
+            value={search}
+            onChange={(e) => setSearch(e.target.value)}
+            placeholder="搜索对话"
+          />
+        </div>
+      )}
+
       <ScrollArea className="flex-1 min-h-0">
         {convs.length === 0 && (
           <div className={styles.emptyHint}>
@@ -241,7 +282,7 @@ export default function ConvPanel({ activeId, refreshKey, character, onSelect, o
           </div>
         )}
         <div className={styles.list}>
-          {convs.map((conv) => (
+          {filteredConvs.map((conv) => (
             <div key={conv.id} className={cx(styles.itemWrap, 'group')}>
               <button
                 onClick={() => onSelect(conv)}
