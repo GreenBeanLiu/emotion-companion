@@ -50,7 +50,7 @@ const useStyles = createStyles(({ token, css }) => ({
   `,
 
   header: css`
-    height: 48px;
+    height: 44px;
     flex-shrink: 0;
     display: flex;
     align-items: center;

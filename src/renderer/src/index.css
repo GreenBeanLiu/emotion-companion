@@ -99,8 +99,8 @@ body {
    ============================================================ */
 ::-webkit-scrollbar { width: 4px; height: 4px; }
 ::-webkit-scrollbar-track { background: transparent; }
-::-webkit-scrollbar-thumb { background: var(--ant-color-fill-secondary, rgba(255,255,255,0.10)); border-radius: 10px; }
-::-webkit-scrollbar-thumb:hover { background: var(--ant-color-fill, rgba(255,255,255,0.16)); }
+::-webkit-scrollbar-thumb { background: var(--ant-color-fill-secondary, rgba(128,128,128,0.18)); border-radius: 10px; }
+::-webkit-scrollbar-thumb:hover { background: var(--ant-color-fill, rgba(128,128,128,0.30)); }
 
 /* ============================================================
    Animations (empty state)

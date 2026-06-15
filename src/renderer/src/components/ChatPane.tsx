@@ -159,7 +159,11 @@ const useStyles = createStyles(({ token, css }) => ({
     display: flex;
     gap: 12px;
     align-items: flex-start;
-    padding: 20px 20px 8px;
+    padding: 16px 20px 4px;
+  `,
+
+  msgRowTight: css`
+    padding-top: 4px;
   `,
 
   msgRowUser: css`
@@ -223,8 +227,8 @@ const useStyles = createStyles(({ token, css }) => ({
     display: flex;
     align-items: center;
     justify-content: center;
-    width: 36px;
-    height: 36px;
+    width: 32px;
+    height: 32px;
     border-radius: 50%;
     background: ${token.colorFillSecondary};
     border: 1px solid ${token.colorBorderSecondary};
@@ -630,9 +634,11 @@ export default function ChatPane({
           {messages.map((msg, i) => {
             const msgId = 'id' in msg ? msg.id : undefined
             const rec = msgId ? recommendations.get(msgId) : undefined
+            const prevMsg = i > 0 ? messages[i - 1] : null
+            const isTight = prevMsg !== null && prevMsg.role === msg.role
             return (
               <div key={msgId ?? `stream-${i}`}>
-                <MessageBubble msg={msg} character={character} avatarUrl={avatars[character.id]} styles={styles} cx={cx} />
+                <MessageBubble msg={msg} character={character} avatarUrl={avatars[character.id]} styles={styles} cx={cx} tight={isTight} />
                 {rec && (
                   <VideoStrip keyword={rec.keyword} videos={rec.videos} styles={styles} />
                 )}
@@ -701,15 +707,15 @@ function CharAvatar({ character, avatarUrl }: { character: Character; avatarUrl?
     <div
       style={{
         flexShrink: 0,
-        width: 36,
-        height: 36,
+        width: 32,
+        height: 32,
         borderRadius: '50%',
         background: avatarUrl ? 'transparent' : token.colorFillSecondary,
         border: avatarUrl ? 'none' : `1px solid ${token.colorBorderSecondary}`,
         display: 'flex',
         alignItems: 'center',
         justifyContent: 'center',
-        fontSize: 16,
+        fontSize: 15,
         overflow: 'hidden',
       }}
     >
@@ -731,12 +737,14 @@ function MessageBubble({
   avatarUrl,
   styles,
   cx,
+  tight,
 }: {
   msg: DisplayMsg
   character: Character
   avatarUrl?: string
   styles: StylesType
   cx: CxType
+  tight?: boolean
 }) {
   const isUser = msg.role === 'user'
   const isStreaming = 'streaming' in msg
@@ -744,7 +752,7 @@ function MessageBubble({
   const emotionMeta = emotion ? EMOTION_META[emotion] : undefined
 
   return (
-    <div className={cx(styles.msgRow, isUser && styles.msgRowUser)}>
+    <div className={cx(styles.msgRow, isUser && styles.msgRowUser, tight && styles.msgRowTight)}>
       {isUser ? (
         <div className={styles.userAvatar}>
           <User size={12} strokeWidth={2.5} />
