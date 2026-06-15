@@ -5,6 +5,11 @@ import { SendHorizontal, User, Copy, Check } from 'lucide-react'
 import { api, type ConversationRow, type MessageRow, type BilibiliVideo } from '../lib/api'
 import type { Character } from '../lib/characters'
 
+function formatTime(iso: string): string {
+  const d = new Date(iso)
+  return d.toLocaleTimeString('zh-CN', { hour: '2-digit', minute: '2-digit' })
+}
+
 const EMOTION_META: Record<string, { emoji: string; color: string }> = {
   开心: { emoji: '😊', color: '#4ade80' },
   平静: { emoji: '😌', color: '#60a5fa' },
@@ -173,6 +178,10 @@ const useStyles = createStyles(({ token, css }) => ({
     &:hover .msg-actions {
       opacity: 1;
     }
+
+    &:hover .msg-timestamp {
+      opacity: 1;
+    }
   `,
 
   msgRowTight: css`
@@ -233,6 +242,15 @@ const useStyles = createStyles(({ token, css }) => ({
     color: ${token.colorText};
     padding: 0;
     white-space: normal;
+  `,
+
+  msgTimestamp: css`
+    font-size: 10px;
+    color: ${token.colorTextQuaternary};
+    margin-bottom: 4px;
+    opacity: 0;
+    transition: opacity ${token.motionDurationFast};
+    user-select: none;
   `,
 
   msgActions: css`
@@ -849,6 +867,12 @@ function MessageBubble({
         {!isUser && !tight && (
           <span className={styles.msgSenderLabel} style={{ color: character.color + 'bb' }}>
             {avatarUrl ? '' : character.emoji + ' '}{character.name}
+          </span>
+        )}
+
+        {'created_at' in msg && (
+          <span className={`${styles.msgTimestamp} msg-timestamp`}>
+            {formatTime((msg as MessageRow).created_at)}
           </span>
         )}
 
