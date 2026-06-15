@@ -240,7 +240,7 @@ const useStyles = createStyles(({ token, css }) => ({
 
   promptHint: css`
     font-size: 11px;
-    color: ${token.colorTextDisabled};
+    color: ${token.colorTextTertiary};
   `,
 
   footer: css`

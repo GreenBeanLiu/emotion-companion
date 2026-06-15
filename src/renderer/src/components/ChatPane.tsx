@@ -125,19 +125,19 @@ const useStyles = createStyles(({ token, css }) => ({
   `,
 
   starterList: css`
-    display: flex;
-    flex-direction: column;
-    gap: 6px;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 8px;
     width: 100%;
-    max-width: 300px;
+    max-width: 380px;
   `,
 
   starterBtn: css`
     text-align: left;
     font-size: 13px;
-    padding: 10px 16px;
+    padding: 10px 14px;
     border-radius: ${token.borderRadius}px;
-    border: 1px solid ${token.colorBorder};
+    border: 1px solid ${token.colorBorderSecondary};
     background: ${token.colorFillTertiary};
     color: ${token.colorTextSecondary};
     cursor: pointer;
@@ -147,9 +147,10 @@ const useStyles = createStyles(({ token, css }) => ({
     width: 100%;
     outline: none;
     font-family: ${token.fontFamily};
+    line-height: 1.4;
 
     &:hover {
-      border-color: ${token.colorPrimaryBorder};
+      border-color: ${token.colorBorder};
       background: ${token.colorFillSecondary};
       color: ${token.colorText};
     }

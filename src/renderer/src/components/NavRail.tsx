@@ -30,6 +30,7 @@ const useStyles = createStyles(({ token, css }) => ({
 
   activeWrap: css`
     position: relative;
+    width: 56px;
     display: flex;
     align-items: center;
     justify-content: center;
@@ -37,7 +38,7 @@ const useStyles = createStyles(({ token, css }) => ({
     &::before {
       content: '';
       position: absolute;
-      left: -8px;
+      left: 0;
       top: 50%;
       transform: translateY(-50%);
       width: 3px;

@@ -73,6 +73,36 @@
 }
 
 /* ============================================================
+   Light mode Tailwind token overrides
+   ============================================================ */
+html[data-appearance="light"] {
+  --color-background: #f3f4f6;
+  --color-surface: #ffffff;
+  --color-surface-2: #f0f0f0;
+  --color-surface-3: #e8e8e8;
+  --color-border: #e0e0e0;
+  --color-border-soft: #eeeeee;
+  --color-fill-1: rgba(0,0,0,0.015);
+  --color-fill-2: rgba(0,0,0,0.03);
+  --color-fill-3: rgba(0,0,0,0.05);
+  --color-text: #000000;
+  --color-text-soft: #555555;
+  --color-text-muted: #888888;
+  --color-accent: #111111;
+  --color-accent-2: #000000;
+  --color-user-bubble: rgba(0,0,0,0.04);
+  --color-card: #ffffff;
+  --color-popover: #ffffff;
+  --color-primary: #111111;
+  --color-primary-foreground: #ffffff;
+  --color-secondary: #f0f0f0;
+  --color-secondary-foreground: #555555;
+  --color-muted: #f9f9f9;
+  --color-muted-foreground: #888888;
+  --color-ring: #aaaaaa;
+}
+
+/* ============================================================
    Base resets
    ============================================================ */
 *, *::before, *::after {
