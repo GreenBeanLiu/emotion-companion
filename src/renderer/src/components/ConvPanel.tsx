@@ -26,7 +26,7 @@ const useStyles = createStyles(({ token, css }) => ({
   `,
 
   headerLabel: css`
-    font-size: 13px;
+    font-size: 14px;
     font-weight: 600;
     color: ${token.colorText};
     user-select: none;

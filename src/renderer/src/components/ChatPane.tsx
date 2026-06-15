@@ -107,6 +107,7 @@ const useStyles = createStyles(({ token, css }) => ({
     font-size: 13px;
     line-height: 1.5;
     margin: 0;
+    text-align: center;
   `,
 
   tagRow: css`
@@ -318,8 +319,8 @@ const useStyles = createStyles(({ token, css }) => ({
 
   inputArea: css`
     flex-shrink: 0;
-    padding: 10px 20px 14px;
-    border-top: 1px solid ${token.colorBorderSecondary};
+    padding: 10px 20px 16px;
+    border-top: 1px solid ${token.colorBorder};
     background: ${token.colorBgBase};
   `,
 
@@ -335,8 +336,9 @@ const useStyles = createStyles(({ token, css }) => ({
     gap: 8px;
     border-radius: ${token.borderRadiusLG}px;
     padding: 10px 14px;
-    background: ${token.colorBgContainer};
-    border: 1px solid ${token.colorBorderSecondary};
+    background: ${token.colorBgElevated};
+    border: 1px solid ${token.colorBorder};
+    box-shadow: ${token.boxShadowSecondary};
     transition: border-color ${token.motionDurationFast},
       box-shadow ${token.motionDurationFast};
 
@@ -590,9 +592,9 @@ export default function ChatPane({
                 )}
               </div>
 
-              <div style={{ display: 'flex', flexDirection: 'column', gap: 6, position: 'relative' }}>
+              <div style={{ display: 'flex', flexDirection: 'column', gap: 4, position: 'relative', alignItems: 'center' }}>
                 <p className={styles.charName}>{character.name}</p>
-                <p className={styles.charTitle} style={{ color: character.color + 'a0' }}>
+                <p className={styles.charTitle} style={{ color: character.color + 'cc' }}>
                   {character.title}
                 </p>
               </div>
