@@ -11,6 +11,7 @@ type UpdateState =
 
 type Props = {
   character: Character
+  avatars: Record<string, string>
   convTitle: string | null
   update: UpdateState
   onInstall: () => void
@@ -47,10 +48,16 @@ const useStyles = createStyles(({ token, css }) => ({
     border-right: 1px solid ${token.colorBorderSecondary};
   `,
 
-  charEmoji: css`
-    font-size: 15px;
-    line-height: 1;
+  charAvatar: css`
+    width: 24px;
+    height: 24px;
+    border-radius: 6px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 13px;
     flex-shrink: 0;
+    overflow: hidden;
   `,
 
   charName: css`
@@ -168,8 +175,9 @@ const useStyles = createStyles(({ token, css }) => ({
   `,
 }))
 
-export default function TitleBar({ character, convTitle, update, onInstall, onDismissUpdate }: Props) {
+export default function TitleBar({ character, avatars, convTitle, update, onInstall, onDismissUpdate }: Props) {
   const { styles, cx, theme: token } = useStyles()
+  const avatarUrl = avatars[character.id]
 
   const isDownloaded = update.status === 'downloaded'
   const isAvailable = update.status === 'available'
@@ -182,7 +190,19 @@ export default function TitleBar({ character, convTitle, update, onInstall, onDi
 
       {/* Aligned with ConvPanel */}
       <div className={styles.charCtx}>
-        <span className={styles.charEmoji}>{character.emoji}</span>
+        <div
+          className={styles.charAvatar}
+          style={{
+            background: avatarUrl ? 'transparent' : `linear-gradient(135deg, ${character.bgGradient[0]}, ${character.color}60)`,
+            border: `1px solid ${character.color}35`,
+          }}
+        >
+          {avatarUrl ? (
+            <img src={avatarUrl} alt={character.name} style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
+          ) : (
+            character.emoji
+          )}
+        </div>
         <span className={styles.charName}>{character.name}</span>
       </div>
 

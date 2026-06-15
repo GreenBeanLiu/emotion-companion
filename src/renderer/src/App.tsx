@@ -83,6 +83,7 @@ export default function App({ appearance, onToggleTheme }: AppProps) {
       {/* Desktop shell: TitleBar spans full width with column-aligned zones */}
       <TitleBar
         character={character}
+        avatars={avatars}
         convTitle={activeConv?.title ?? null}
         update={update}
         onInstall={() => api.update.install()}

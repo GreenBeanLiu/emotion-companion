@@ -164,6 +164,7 @@ const useStyles = createStyles(({ token, css }) => ({
     gap: 12px;
     align-items: flex-start;
     padding: 16px 20px 4px;
+    animation: msg-in 0.2s ease-out both;
   `,
 
   msgRowTight: css`
@@ -327,7 +328,6 @@ const useStyles = createStyles(({ token, css }) => ({
   inputArea: css`
     flex-shrink: 0;
     padding: 10px 20px 16px;
-    border-top: 1px solid ${token.colorBorder};
     background: ${token.colorBgBase};
   `,
 
@@ -345,12 +345,13 @@ const useStyles = createStyles(({ token, css }) => ({
     padding: 10px 14px;
     background: ${token.colorBgElevated};
     border: 1px solid ${token.colorBorder};
-    box-shadow: ${token.boxShadowSecondary};
+    box-shadow: 0 2px 12px rgba(0,0,0,0.12), 0 1px 3px rgba(0,0,0,0.08);
     transition: border-color ${token.motionDurationFast},
       box-shadow ${token.motionDurationFast};
 
     &:focus-within {
-      border-color: ${token.colorPrimaryBorder};
+      border-color: ${token.colorBorderSecondary};
+      box-shadow: 0 4px 20px rgba(0,0,0,0.16), 0 1px 4px rgba(0,0,0,0.10);
     }
   `,
 
