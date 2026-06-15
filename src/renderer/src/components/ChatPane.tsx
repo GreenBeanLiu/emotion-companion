@@ -435,6 +435,19 @@ const useStyles = createStyles(({ token, css }) => ({
     user-select: none;
     letter-spacing: 0.01em;
   `,
+
+  kbdKey: css`
+    display: inline-block;
+    padding: 0 4px;
+    border-radius: 3px;
+    border: 1px solid ${token.colorBorderSecondary};
+    background: ${token.colorFillTertiary};
+    font-size: 10px;
+    line-height: 16px;
+    font-family: ${token.fontFamily};
+    color: ${token.colorTextSecondary};
+    vertical-align: middle;
+  `,
 }))
 
 /* ─── Component ─────────────────────────────────────────────────────────── */
@@ -722,7 +735,7 @@ export default function ChatPane({
               onKeyDown={handleKeyDown}
               onFocus={() => setInputFocused(true)}
               onBlur={() => setInputFocused(false)}
-              placeholder="说说你的心情…"
+              placeholder={`和${character.name}说说你的心情…`}
               rows={1}
               style={{ fieldSizing: 'content' } as React.CSSProperties}
               className={styles.inputTextarea}
@@ -740,7 +753,13 @@ export default function ChatPane({
               <SendHorizontal size={14} />
             </button>
           </div>
-          <p className={styles.inputHint}>Enter 发送 · Shift+Enter 换行</p>
+          <p className={styles.inputHint}>
+            <span className={styles.kbdKey}>Enter</span>
+            {' '}发送
+            {'  ·  '}
+            <span className={styles.kbdKey}>Shift+Enter</span>
+            {' '}换行
+          </p>
         </div>
       </div>
     </div>

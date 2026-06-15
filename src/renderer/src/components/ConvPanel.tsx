@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react'
 import { createStyles } from 'antd-style'
 import { Tooltip } from 'antd'
-import { SquarePen, Trash2, MoreVertical } from 'lucide-react'
+import { SquarePen, Trash2, MoreVertical, MessageSquarePlus } from 'lucide-react'
 import { api, type ConversationRow } from '../lib/api'
 import { ScrollArea } from '@/components/ui/scroll-area'
 
@@ -77,10 +77,12 @@ const useStyles = createStyles(({ token, css }) => ({
     font-size: 13px;
     color: ${token.colorTextTertiary};
     text-align: center;
-    margin-top: 56px;
-    line-height: 1.8;
+    margin-top: 48px;
     padding: 0 20px;
     user-select: none;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
   `,
 
   itemWrap: css`
@@ -230,11 +232,11 @@ export default function ConvPanel({ activeId, refreshKey, onSelect, onNew }: Pro
 
       <ScrollArea className="flex-1 min-h-0">
         {convs.length === 0 && (
-          <p className={styles.emptyHint}>
-            还没有对话
-            <br />
-            点击上方按钮开始
-          </p>
+          <div className={styles.emptyHint}>
+            <MessageSquarePlus size={22} strokeWidth={1.5} style={{ marginBottom: 10, opacity: 0.4 }} />
+            <div>还没有对话</div>
+            <div style={{ fontSize: 12, marginTop: 4 }}>点击右上角开始</div>
+          </div>
         )}
         <div className={styles.list}>
           {convs.map((conv) => (
