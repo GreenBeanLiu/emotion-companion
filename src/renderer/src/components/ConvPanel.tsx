@@ -5,6 +5,19 @@ import { SquarePen, Trash2, MoreVertical } from 'lucide-react'
 import { api, type ConversationRow } from '../lib/api'
 import { ScrollArea } from '@/components/ui/scroll-area'
 
+function relativeTime(iso: string): string {
+  const diffMs = Date.now() - new Date(iso).getTime()
+  const mins = Math.floor(diffMs / 60000)
+  if (mins < 1) return '刚刚'
+  if (mins < 60) return `${mins}分钟前`
+  const hours = Math.floor(mins / 60)
+  if (hours < 24) return `${hours}小时前`
+  const days = Math.floor(hours / 24)
+  if (days === 1) return '昨天'
+  if (days < 7) return `${days}天前`
+  return new Date(iso).toLocaleDateString('zh-CN', { month: 'short', day: 'numeric' })
+}
+
 const useStyles = createStyles(({ token, css }) => ({
   panel: css`
     width: 280px;
@@ -232,7 +245,8 @@ export default function ConvPanel({ activeId, refreshKey, onSelect, onNew }: Pro
               >
                 <p className={cx(styles.itemTitle, 'item-title')}>{conv.title}</p>
                 <p className={styles.itemMeta}>
-                  {conv.summary ?? `${conv.message_count ?? 0} 条消息`}
+                  {relativeTime(conv.updated_at)}
+                  {conv.message_count ? ` · ${conv.message_count} 条` : ''}
                 </p>
               </button>
 

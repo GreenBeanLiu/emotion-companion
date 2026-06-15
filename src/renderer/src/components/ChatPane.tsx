@@ -215,6 +215,7 @@ const useStyles = createStyles(({ token, css }) => ({
     background: ${token.colorFill};
     border: 1px solid ${token.colorBorder};
     color: ${token.colorText};
+    padding: 8px 14px;
   `,
 
   msgBubbleAssistant: css`
@@ -381,9 +382,9 @@ const useStyles = createStyles(({ token, css }) => ({
 
   sendBtn: css`
     flex-shrink: 0;
-    width: 30px;
-    height: 30px;
-    border-radius: ${token.borderRadiusSM}px;
+    width: 32px;
+    height: 32px;
+    border-radius: ${token.borderRadius}px;
     border: none;
     display: flex;
     align-items: center;
