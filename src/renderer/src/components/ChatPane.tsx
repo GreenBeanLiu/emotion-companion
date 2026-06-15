@@ -631,7 +631,7 @@ export default function ChatPane({
                   position: 'absolute',
                   inset: 0,
                   pointerEvents: 'none',
-                  background: `radial-gradient(ellipse 55% 45% at 50% 44%, ${character.color}18 0%, transparent 68%)`,
+                  background: `radial-gradient(ellipse 60% 50% at 50% 44%, ${character.color}20 0%, ${character.color}08 40%, transparent 70%)`,
                 }}
               />
 
