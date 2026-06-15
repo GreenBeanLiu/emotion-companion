@@ -65,6 +65,11 @@ declare global {
       stats: {
         emotions: () => Promise<Array<{ date: string; emotion: string; count: number }>>
       }
+      avatar: {
+        getAll: () => Promise<Record<string, string>>
+        set: (characterId: string, dataUrl: string) => Promise<{ ok: boolean }>
+        clear: (characterId: string) => Promise<{ ok: boolean }>
+      }
       update: {
         onAvailable: (cb: (data: { version: string }) => void) => () => void
         onDownloaded: (cb: (data: { version: string }) => void) => () => void

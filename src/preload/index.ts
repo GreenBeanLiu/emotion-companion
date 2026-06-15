@@ -73,6 +73,12 @@ const api = {
     emotions: () => ipcRenderer.invoke('stats:emotions'),
   },
 
+  avatar: {
+    getAll: () => ipcRenderer.invoke('avatar:getAll'),
+    set: (characterId: string, dataUrl: string) => ipcRenderer.invoke('avatar:set', characterId, dataUrl),
+    clear: (characterId: string) => ipcRenderer.invoke('avatar:clear', characterId),
+  },
+
   update: {
     onAvailable: (cb: (data: { version: string }) => void) => {
       const handler = (_e: Electron.IpcRendererEvent, data: unknown) => cb(data as never)

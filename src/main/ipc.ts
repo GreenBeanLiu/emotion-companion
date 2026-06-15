@@ -15,6 +15,7 @@ import {
 import { streamChat } from './ai'
 import { loadSettings, saveSettings } from './settings'
 import { rescheduleReminder } from './notification'
+import { getAvatars, setAvatar, clearAvatar } from './avatar'
 import { extractAndUpdateProfile, summarizeConversation } from './memory'
 import { detectEmotion } from './emotion'
 import { shouldRecommend, generateKeyword, searchVideos } from './bilibili'
@@ -39,6 +40,17 @@ export function registerIpcHandlers(): void {
 
   // ── Stats ─────────────────────────────────────────────────────────
   ipcMain.handle('stats:emotions', () => getEmotionStats())
+
+  // ── Avatars ───────────────────────────────────────────────────────
+  ipcMain.handle('avatar:getAll', () => getAvatars())
+  ipcMain.handle('avatar:set', (_e, characterId: string, dataUrl: string) => {
+    setAvatar(characterId, dataUrl)
+    return { ok: true }
+  })
+  ipcMain.handle('avatar:clear', (_e, characterId: string) => {
+    clearAvatar(characterId)
+    return { ok: true }
+  })
 
   // ── Conversations ────────────────────────────────────────────────
   ipcMain.handle('conv:list', () => listConversations())

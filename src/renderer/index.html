@@ -32,6 +32,11 @@
           },
           msg: { list: () => Promise.resolve([]) },
           memory: { get: () => Promise.resolve(null), clear: () => Promise.resolve({ ok: true }) },
+          avatar: {
+            getAll: () => Promise.resolve({}),
+            set: () => Promise.resolve({ ok: true }),
+            clear: () => Promise.resolve({ ok: true }),
+          },
           stats: {
             emotions: () => {
               // generate ~60 days of mock emotion data

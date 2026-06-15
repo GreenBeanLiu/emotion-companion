@@ -1,7 +1,7 @@
-import { useState } from 'react'
+import { useRef, useState } from 'react'
 import { createStyles } from 'antd-style'
 import { Modal, Button } from 'antd'
-import { ChevronLeft, Check } from 'lucide-react'
+import { ChevronLeft, Check, Camera, X } from 'lucide-react'
 import { CHARACTERS, getCharacter, type Character } from '../lib/characters'
 import { api } from '../lib/api'
 
@@ -69,6 +69,54 @@ const useStyles = createStyles(({ token, css }) => ({
     align-items: center;
     justify-content: center;
     font-size: 24px;
+    position: relative;
+    flex-shrink: 0;
+    overflow: hidden;
+
+    &:hover .avatar-overlay {
+      opacity: 1;
+    }
+  `,
+
+  avatarOverlay: css`
+    position: absolute;
+    inset: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: rgba(0,0,0,0.45);
+    border-radius: inherit;
+    opacity: 0;
+    transition: opacity ${token.motionDurationFast};
+    cursor: pointer;
+  `,
+
+  avatarClearBtn: css`
+    position: absolute;
+    top: -4px;
+    right: -4px;
+    width: 16px;
+    height: 16px;
+    border-radius: 50%;
+    background: ${token.colorError};
+    border: none;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 2;
+    padding: 0;
+    opacity: 0;
+    transition: opacity ${token.motionDurationFast};
+  `,
+
+  cardEmojiWrap: css`
+    position: relative;
+    flex-shrink: 0;
+
+    &:hover .avatar-clear {
+      opacity: 1;
+    }
   `,
 
   cardName: css`
@@ -207,14 +255,45 @@ const useStyles = createStyles(({ token, css }) => ({
 
 type Props = {
   currentId: string
+  avatars: Record<string, string>
   onSelect: (character: Character) => void
+  onAvatarsChange: (avatars: Record<string, string>) => void
   onClose: () => void
 }
 
-export default function CharacterPicker({ currentId, onSelect, onClose }: Props) {
+export default function CharacterPicker({ currentId, avatars, onSelect, onAvatarsChange, onClose }: Props) {
   const { styles, cx } = useStyles()
   const [customPrompt, setCustomPrompt] = useState('')
   const [showCustomInput, setShowCustomInput] = useState(false)
+  const fileInputRef = useRef<HTMLInputElement>(null)
+  const [uploadingFor, setUploadingFor] = useState<string | null>(null)
+
+  function handleAvatarClick(e: React.MouseEvent, characterId: string) {
+    e.stopPropagation()
+    setUploadingFor(characterId)
+    fileInputRef.current?.click()
+  }
+
+  async function handleFileChange(e: React.ChangeEvent<HTMLInputElement>) {
+    const file = e.target.files?.[0]
+    if (!file || !uploadingFor) return
+    const reader = new FileReader()
+    reader.onload = async (ev) => {
+      const dataUrl = ev.target?.result as string
+      await api.avatar.set(uploadingFor, dataUrl)
+      onAvatarsChange({ ...avatars, [uploadingFor]: dataUrl })
+    }
+    reader.readAsDataURL(file)
+    e.target.value = ''
+  }
+
+  async function handleAvatarClear(e: React.MouseEvent, characterId: string) {
+    e.stopPropagation()
+    await api.avatar.clear(characterId)
+    const next = { ...avatars }
+    delete next[characterId]
+    onAvatarsChange(next)
+  }
 
   const presetChars = CHARACTERS.filter((c) => c.id !== 'custom')
   const customChar = CHARACTERS.find((c) => c.id === 'custom')!
@@ -258,10 +337,20 @@ export default function CharacterPicker({ currentId, onSelect, onClose }: Props)
       {!showCustomInput ? (
         <>
           <div className={styles.body}>
+            {/* Hidden file input */}
+            <input
+              ref={fileInputRef}
+              type="file"
+              accept="image/*"
+              style={{ display: 'none' }}
+              onChange={handleFileChange}
+            />
+
             {/* Preset grid */}
             <div className={styles.grid}>
               {presetChars.map((char) => {
                 const isActive = currentId === char.id
+                const customAvatar = avatars[char.id]
                 return (
                   <button
                     key={char.id}
@@ -284,14 +373,40 @@ export default function CharacterPicker({ currentId, onSelect, onClose }: Props)
                         <Check size={10} color="#0f0e17" strokeWidth={3} />
                       </div>
                     )}
-                    <div
-                      className={styles.cardEmoji}
-                      style={{
-                        background: `linear-gradient(135deg, ${char.bgGradient[0]}, ${char.color}25)`,
-                        border: `1px solid ${char.color}25`,
-                      }}
-                    >
-                      {char.emoji}
+                    <div className={styles.cardEmojiWrap}>
+                      <div
+                        className={styles.cardEmoji}
+                        style={{
+                          background: customAvatar
+                            ? 'transparent'
+                            : `linear-gradient(135deg, ${char.bgGradient[0]}, ${char.color}25)`,
+                          border: customAvatar ? 'none' : `1px solid ${char.color}25`,
+                        }}
+                      >
+                        {customAvatar ? (
+                          <img
+                            src={customAvatar}
+                            alt={char.name}
+                            style={{ width: '100%', height: '100%', objectFit: 'cover', borderRadius: 6 }}
+                          />
+                        ) : (
+                          char.emoji
+                        )}
+                        <div
+                          className={`${styles.avatarOverlay} avatar-overlay`}
+                          onClick={(e) => handleAvatarClick(e, char.id)}
+                        >
+                          <Camera size={14} color="#ffffff" />
+                        </div>
+                      </div>
+                      {customAvatar && (
+                        <button
+                          className={`${styles.avatarClearBtn} avatar-clear`}
+                          onClick={(e) => handleAvatarClear(e, char.id)}
+                        >
+                          <X size={9} color="#ffffff" strokeWidth={3} />
+                        </button>
+                      )}
                     </div>
                     <div>
                       <p className={styles.cardName}>{char.name}</p>

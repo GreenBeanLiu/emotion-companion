@@ -78,6 +78,7 @@ const useStyles = createStyles(({ token, css }) => ({
 
 type Props = {
   character: Character
+  avatars: Record<string, string>
   appearance: 'dark' | 'light'
   view: 'chat' | 'diary'
   onViewChange: (v: 'chat' | 'diary') => void
@@ -86,7 +87,7 @@ type Props = {
   onToggleTheme: () => void
 }
 
-export default function NavRail({ character, appearance, view, onViewChange, onSettings, onChangeCharacter, onToggleTheme }: Props) {
+export default function NavRail({ character, avatars, appearance, view, onViewChange, onSettings, onChangeCharacter, onToggleTheme }: Props) {
   const { styles, theme: token } = useStyles()
 
   // logo icon fill: inverse of logo background
@@ -130,7 +131,15 @@ export default function NavRail({ character, appearance, view, onViewChange, onS
         onClick={onChangeCharacter}
         title={`切换角色 · 当前：${character.name}`}
       >
-        {character.emoji}
+        {avatars[character.id] ? (
+          <img
+            src={avatars[character.id]}
+            alt={character.name}
+            style={{ width: 28, height: 28, borderRadius: 6, objectFit: 'cover' }}
+          />
+        ) : (
+          character.emoji
+        )}
       </button>
 
       {/* Theme toggle */}

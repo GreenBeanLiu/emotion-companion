@@ -49,11 +49,13 @@ export default function App({ appearance, onToggleTheme }: AppProps) {
   const [character, setCharacter] = useState<Character>(getCharacter(DEFAULT_CHARACTER_ID))
   const [convRefreshKey, setConvRefreshKey] = useState(0)
   const [update, setUpdate] = useState<UpdateState>({ status: 'idle' })
+  const [avatars, setAvatars] = useState<Record<string, string>>({})
 
   useEffect(() => {
     api.settings.load().then((s) => {
       setCharacter(getCharacter(s.characterId || DEFAULT_CHARACTER_ID))
     })
+    api.avatar.getAll().then(setAvatars)
 
     const offAvail = api.update.onAvailable(({ version }) =>
       setUpdate({ status: 'available', version }),
@@ -86,6 +88,7 @@ export default function App({ appearance, onToggleTheme }: AppProps) {
       <div className={styles.contentRow}>
         <NavRail
           character={character}
+          avatars={avatars}
           appearance={appearance}
           view={view}
           onViewChange={setView}
@@ -121,7 +124,9 @@ export default function App({ appearance, onToggleTheme }: AppProps) {
       {showCharacterPicker && (
         <CharacterPicker
           currentId={character.id}
+          avatars={avatars}
           onSelect={setCharacter}
+          onAvatarsChange={setAvatars}
           onClose={() => setShowCharacterPicker(false)}
         />
       )}
