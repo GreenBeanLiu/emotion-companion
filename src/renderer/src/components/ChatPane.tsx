@@ -890,11 +890,18 @@ export default function ChatPane({
             <div className={styles.msgRow}>
               <CharAvatar character={character} avatarUrl={avatars[character.id]} />
               <div className={styles.typingBubble}>
-                {[0, 150, 300].map((delay) => (
+                {[0, 160, 320].map((delay) => (
                   <span
                     key={delay}
-                    className="w-2 h-2 rounded-full animate-bounce"
-                    style={{ backgroundColor: character.color + 'cc', animationDelay: `${delay}ms` }}
+                    style={{
+                      width: 7,
+                      height: 7,
+                      borderRadius: '50%',
+                      display: 'inline-block',
+                      backgroundColor: character.color,
+                      animation: `typing-dot 1.4s ease-in-out infinite`,
+                      animationDelay: `${delay}ms`,
+                    }}
                   />
                 ))}
               </div>
