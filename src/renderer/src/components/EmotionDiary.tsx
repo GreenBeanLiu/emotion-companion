@@ -89,6 +89,7 @@ const useStyles = createStyles(({ token, css }) => ({
     font-weight: 600;
     color: ${token.colorText};
     margin: 0;
+    letter-spacing: -0.02em;
   `,
 
   subtext: css`
@@ -233,7 +234,7 @@ const useStyles = createStyles(({ token, css }) => ({
     border-radius: ${token.borderRadiusLG}px;
     padding: 16px 20px;
     background: ${token.colorFillTertiary};
-    border: 1px solid ${token.colorBorderSecondary};
+    border: 1px solid ${token.colorBorder};
     display: flex;
     flex-direction: column;
     gap: 4px;
@@ -241,9 +242,10 @@ const useStyles = createStyles(({ token, css }) => ({
 
   statValue: css`
     font-size: 24px;
-    font-weight: 700;
+    font-weight: 600;
     color: ${token.colorText};
     line-height: 1.2;
+    letter-spacing: -0.02em;
   `,
 
   statLabel: css`

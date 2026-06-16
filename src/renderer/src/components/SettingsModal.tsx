@@ -166,9 +166,9 @@ const useStyles = createStyles(({ token, css }) => ({
 
   card: css`
     border-radius: ${token.borderRadiusLG}px;
-    padding: 16px 18px;
+    padding: 16px 20px;
     background: ${token.colorFillTertiary};
-    border: 1px solid ${token.colorBorderSecondary};
+    border: 1px solid ${token.colorBorder};
     display: flex;
     flex-direction: column;
     gap: 10px;
