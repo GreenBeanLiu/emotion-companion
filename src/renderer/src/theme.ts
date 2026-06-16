@@ -23,40 +23,40 @@ const sharedTokens = {
 }
 
 /**
- * LobeHub light theme — gray.light + primary.light from lobe-ui source
- * gray.light:  [#ffffff,#f9f9f9,#f0f0f0,#e8e8e8,#e0e0e0,#d0d0d0,#a8a8a8,#888888,#6a6a6a,#555555,#333333,#1a1a1a,#000000]
- * primary.light:[#ffffff,#f9f9f9,#f0f0f0,#e0e0e0,#c8c8c8,#aaaaaa,#888888,#555555,#333333,#111111,#000000,#000000,#000000]
+ * LobeHub light theme — exact values from @lobehub/ui generateColorNeutralPalette + gray.light
+ * gray.light:  [#fff,#f8f8f8,#eeeeee,#e3e3e3,#dddddd,#cccccc,#bbbbbb,#aaaaaa,#999999,#888888,#666666,#333333,#080808]
+ * gray.lightA: [0.015,0.03,0.06,0.12,0.18,0.24,0.32,0.38,0.44,0.5,0.68,0.84,0.98]
  */
 export const emotionLightTheme = {
   algorithm: defaultAlgorithm,
   token: {
     ...sharedTokens,
-    colorBgLayout: '#f3f4f6',
-    colorBgBase: '#fafafa',
-    colorBgContainer: '#fafafa',
-    colorBgElevated: '#ffffff',
-    colorBgSpotlight: '#1f2937',
-    colorBgMask: 'rgba(0,0,0,0.25)',
-    colorFill: 'rgba(0,0,0,0.09)',
-    colorFillSecondary: 'rgba(0,0,0,0.05)',
-    colorFillTertiary: 'rgba(0,0,0,0.03)',
-    colorFillQuaternary: 'rgba(0,0,0,0.015)',
-    colorBorder: '#d1d5db',
-    colorBorderSecondary: '#e5e7eb',
-    colorText: '#000000',
-    colorTextSecondary: '#555555',
-    colorTextTertiary: '#888888',
-    colorTextQuaternary: '#a8a8a8',
-    colorTextPlaceholder: '#c0c0c0',
-    colorTextDescription: '#888888',
-    colorTextDisabled: '#d0d0d0',
+    colorBgLayout: '#f8f8f8',      // gray.light[1]
+    colorBgBase: '#ffffff',        // gray.light[0]
+    colorBgContainer: '#ffffff',   // gray.light[0]
+    colorBgElevated: '#ffffff',    // gray.light[0]
+    colorBgSpotlight: '#dddddd',   // gray.light[4]
+    colorBgMask: 'rgba(0,0,0,0.44)',   // gray.lightA[8]
+    colorFill: 'rgba(0,0,0,0.12)',         // lightA[3]
+    colorFillSecondary: 'rgba(0,0,0,0.06)',  // lightA[2]
+    colorFillTertiary: 'rgba(0,0,0,0.03)',   // lightA[1]
+    colorFillQuaternary: 'rgba(0,0,0,0.015)', // lightA[0]
+    colorBorder: '#e3e3e3',           // gray.light[3]
+    colorBorderSecondary: '#eeeeee',  // gray.light[2]
+    colorText: '#080808',             // gray.light[12]
+    colorTextSecondary: '#666666',    // gray.light[10]
+    colorTextTertiary: '#999999',     // gray.light[8]
+    colorTextQuaternary: '#bbbbbb',   // gray.light[6]
+    colorTextPlaceholder: '#cccccc',  // gray.light[5]
+    colorTextDescription: '#999999',
+    colorTextDisabled: '#dddddd',     // gray.light[4]
     colorPrimary: '#111111',
     colorPrimaryHover: '#000000',
     colorPrimaryActive: '#333333',
-    colorPrimaryBg: '#ffffff',
-    colorPrimaryBgHover: '#f0f2f5',
-    colorPrimaryBorder: '#9ca3af',
-    colorPrimaryBorderHover: '#6b7280',
+    colorPrimaryBg: '#f8f8f8',
+    colorPrimaryBgHover: '#eeeeee',
+    colorPrimaryBorder: '#aaaaaa',
+    colorPrimaryBorderHover: '#888888',
     colorPrimaryText: '#111111',
     colorPrimaryTextHover: '#000000',
     colorError: '#ef4444',
@@ -70,9 +70,9 @@ export const emotionLightTheme = {
   },
   components: {
     Modal: { contentBg: '#ffffff', headerBg: '#ffffff', footerBg: '#ffffff', titleFontSize: 14 },
-    Input: { activeBorderColor: '#aaaaaa', hoverBorderColor: '#c0c0c0', colorBgContainer: '#ffffff', colorBorder: '#e0e0e0' },
-    Select: { colorBgContainer: '#ffffff', colorBorder: '#e0e0e0' },
-    Button: { defaultBorderColor: '#e0e0e0', defaultBg: '#ffffff', defaultColor: '#555555' },
+    Input: { activeBorderColor: '#aaaaaa', hoverBorderColor: '#bbbbbb', colorBgContainer: '#ffffff', colorBorder: '#e3e3e3' },
+    Select: { colorBgContainer: '#ffffff', colorBorder: '#e3e3e3' },
+    Button: { defaultBorderColor: '#e3e3e3', defaultBg: '#ffffff', defaultColor: '#666666' },
     Tooltip: { colorBgSpotlight: '#333333', colorTextLightSolid: '#ffffff' },
     Scrollbar: { colorScrollbarThumb: 'rgba(0,0,0,0.18)', colorScrollbarThumbHover: 'rgba(0,0,0,0.30)' },
   },
@@ -98,7 +98,7 @@ export const emotionTheme = {
     colorBgElevated: '#1a1a1a',
     // colorBgSpotlight = gray.dark[4]
     colorBgSpotlight: '#2d2d2d',
-    colorBgMask: 'rgba(0,0,0,0.72)',
+    colorBgMask: 'rgba(0,0,0,0.44)',
 
     // ── Fill states — gray.darkA ─────────────────────────────────────────────
     // colorFill = gray.darkA[3]
