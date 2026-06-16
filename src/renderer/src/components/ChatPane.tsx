@@ -224,7 +224,7 @@ const useStyles = createStyles(({ token, css }) => ({
 
   avatarSpacer: css`
     flex-shrink: 0;
-    width: 32px;
+    width: 36px;
   `,
 
   msgSenderLabel: css`
@@ -332,8 +332,8 @@ const useStyles = createStyles(({ token, css }) => ({
     display: flex;
     align-items: center;
     justify-content: center;
-    width: 32px;
-    height: 32px;
+    width: 36px;
+    height: 36px;
     border-radius: 50%;
     background: linear-gradient(135deg, #6366f1 0%, #8b5cf6 100%);
     color: #ffffff;
@@ -354,7 +354,7 @@ const useStyles = createStyles(({ token, css }) => ({
   /* Bilibili video strip */
   videoStrip: css`
     margin-top: 8px;
-    margin-left: 44px;
+    margin-left: 48px;
     padding: 0 20px;
   `,
 
@@ -1003,15 +1003,15 @@ function CharAvatar({ character, avatarUrl }: { character: Character; avatarUrl?
     <div
       style={{
         flexShrink: 0,
-        width: 32,
-        height: 32,
+        width: 36,
+        height: 36,
         borderRadius: '50%',
         background: avatarUrl ? 'transparent' : `linear-gradient(135deg, ${character.bgGradient[0]}, ${character.color}60)`,
         border: avatarUrl ? 'none' : `1px solid ${character.color}30`,
         display: 'flex',
         alignItems: 'center',
         justifyContent: 'center',
-        fontSize: 15,
+        fontSize: 17,
         overflow: 'hidden',
       }}
     >
