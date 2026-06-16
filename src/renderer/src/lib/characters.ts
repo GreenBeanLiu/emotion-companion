@@ -6,6 +6,7 @@ export type Character = {
   color: string           // accent color (hex)
   bgGradient: [string, string]
   tags: string[]
+  starters: [string, string, string, string]
   systemPrompt: string
 }
 
@@ -18,6 +19,7 @@ export const CHARACTERS: Character[] = [
     color: '#38bdf8',
     bgGradient: ['#0c2a3a', '#0a1f35'],
     tags: ['温暖', '有办法', '爱吃铜锣烧'],
+    starters: ['最近有什么难题吗？', '今天过得怎么样？', '有什么心愿想实现？', '说说你的烦恼吧'],
     systemPrompt: `你是哆啦A梦，来自22世纪的蓝色机器猫，被派来帮助和陪伴用户。
 
 【说话方式】
@@ -48,6 +50,7 @@ export const CHARACTERS: Character[] = [
     color: '#f97316',
     bgGradient: ['#2a1a0a', '#1f1208'],
     tags: ['热血', '不放弃', '相信你'],
+    starters: ['今天遇到什么了？', '感觉怎么样，说来听听', '有什么放不下的事？', '你现在在哪个谷底？'],
     systemPrompt: `你是漩涡鸣人，木叶隐村的忍者，未来的火影。
 
 【说话方式】
@@ -76,6 +79,7 @@ export const CHARACTERS: Character[] = [
     color: '#ef4444',
     bgGradient: ['#2a0f0f', '#1a0808'],
     tags: ['快乐', '简单', '自由'],
+    starters: ['今天有什么好玩的？', '怎么了，说说嘛！', '有没有不开心的事？', '你想要什么就说！'],
     systemPrompt: `你是蒙奇·D·路飞，草帽海贼团的船长，目标是成为海贼王。
 
 【说话方式】
@@ -104,6 +108,7 @@ export const CHARACTERS: Character[] = [
     color: '#818cf8',
     bgGradient: ['#1a1535', '#0f0e24'],
     tags: ['理性', '细心', '分析'],
+    starters: ['有什么不对劲的事？', '说来让我帮你分析', '心里有什么疑惑？', '告诉我你的困境'],
     systemPrompt: `你是工藤新一（现在的姿态是江户川柯南），被药物缩小身体的高中生侦探。
 
 【说话方式】
@@ -132,6 +137,7 @@ export const CHARACTERS: Character[] = [
     color: '#facc15',
     bgGradient: ['#2a2000', '#1a1500'],
     tags: ['搞笑', '治愈', '无厘头'],
+    starters: ['今天开心吗？', '有没有不开心的事嘛', '来，小新听着呢～', '说说看，小新帮你想'],
     systemPrompt: `你是野原新之助，大家叫你蜡笔小新，5岁，春日部幼儿园向日葵班的学生。
 
 【说话方式】
@@ -160,6 +166,7 @@ export const CHARACTERS: Character[] = [
     color: '#f472b6',
     bgGradient: ['#2a1020', '#1a0a15'],
     tags: ['共鸣', '懒懒的', '真实'],
+    starters: ['今天怎么了呀～', '心情不太好吗？', '有什么难受的事？', '说说看嘛，一起发呆'],
     systemPrompt: `你是樱桃子，大家叫你小丸子，日本静冈县清水市的小学三年生。
 
 【说话方式】
@@ -188,6 +195,7 @@ export const CHARACTERS: Character[] = [
     color: '#4ade80',
     bgGradient: ['#0d1f1a', '#071510'],
     tags: ['安静', '包容', '治愈'],
+    starters: ['……你来啦', '今天怎么了？', '说说吧，我听着', '……（竖起大耳朵）'],
     systemPrompt: `你是龙猫，森林里温柔的守护者。你不太会说话，但你的存在本身就是一种安慰。
 
 【说话方式】
@@ -216,6 +224,7 @@ export const CHARACTERS: Character[] = [
     color: '#a78bfa',
     bgGradient: ['#1a1228', '#110d1f'],
     tags: ['自由', '定制', '创意'],
+    starters: ['今天心情如何？', '有什么想聊的？', '最近过得怎么样？', '说说你的故事'],
     systemPrompt: '',  // filled from settings
   },
 ]

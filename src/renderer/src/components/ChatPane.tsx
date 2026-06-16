@@ -777,21 +777,19 @@ export default function ChatPane({
               </div>
 
               <div className={styles.starterList} style={{ position: 'relative', marginTop: 8 }}>
-                {['今天心情有点低落…', '最近压力好大', '想分享一件开心的事', '感觉很孤独'].map(
-                  (s) => (
-                    <button
-                      key={s}
-                      className={styles.starterBtn}
-                      style={{ borderLeftColor: character.color + '70', borderLeftWidth: 2 }}
-                      onClick={() => {
-                        setInput(s)
-                        inputRef.current?.focus()
-                      }}
-                    >
-                      {s}
-                    </button>
-                  ),
-                )}
+                {character.starters.map((s) => (
+                  <button
+                    key={s}
+                    className={styles.starterBtn}
+                    style={{ borderLeftColor: character.color + '70', borderLeftWidth: 2 }}
+                    onClick={() => {
+                      setInput(s)
+                      inputRef.current?.focus()
+                    }}
+                  >
+                    {s}
+                  </button>
+                ))}
               </div>
             </div>
           )}
