@@ -42,8 +42,8 @@ const useStyles = createStyles(({ token, css }) => ({
   `,
 
   charBtn: css`
-    width: 32px;
-    height: 32px;
+    width: 34px;
+    height: 34px;
     border-radius: 8px;
     display: flex;
     align-items: center;

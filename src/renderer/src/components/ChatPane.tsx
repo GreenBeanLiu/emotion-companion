@@ -167,7 +167,7 @@ const useStyles = createStyles(({ token, css }) => ({
     font-size: 13px;
     padding: 10px 14px;
     border-radius: ${token.borderRadius}px;
-    border: 1px solid ${token.colorBorderSecondary};
+    border: 1px solid ${token.colorBorder};
     background: ${token.colorFillTertiary};
     color: ${token.colorTextSecondary};
     cursor: pointer;

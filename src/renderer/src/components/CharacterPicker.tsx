@@ -64,7 +64,7 @@ const useStyles = createStyles(({ token, css }) => ({
   cardEmoji: css`
     width: 48px;
     height: 48px;
-    border-radius: ${token.borderRadius}px;
+    border-radius: ${token.borderRadiusLG}px;
     display: flex;
     align-items: center;
     justify-content: center;
