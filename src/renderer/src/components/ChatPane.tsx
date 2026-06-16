@@ -820,7 +820,7 @@ export default function ChatPane({
 
               <div style={{ display: 'flex', flexDirection: 'column', gap: 6, position: 'relative', alignItems: 'center' }}>
                 <p className={styles.charName}>{character.name}</p>
-                <p className={styles.charTitle} style={{ color: character.color + 'cc' }}>
+                <p className={styles.charTitle}>
                   {character.title}
                 </p>
                 <div className={styles.tagRow} style={{ marginTop: 2 }}>
