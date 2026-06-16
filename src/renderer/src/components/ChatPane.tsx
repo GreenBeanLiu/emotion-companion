@@ -1,7 +1,7 @@
 import { useEffect, useRef, useState, useCallback } from 'react'
 import { createStyles } from 'antd-style'
 import { Markdown } from '@lobehub/ui'
-import { SendHorizontal, User, Copy, Check, ArrowDown } from 'lucide-react'
+import { SendHorizontal, User, Copy, Check, ArrowDown, RotateCcw, Pencil } from 'lucide-react'
 import { api, type ConversationRow, type MessageRow, type BilibiliVideo } from '../lib/api'
 import type { Character } from '../lib/characters'
 
@@ -673,6 +673,46 @@ export default function ChatPane({
     }
   }
 
+  const handleRegenerate = useCallback(async (msgIndex: number) => {
+    if (sending || !conversation) return
+    const assistantMsg = messages[msgIndex]
+    if (!assistantMsg || assistantMsg.role !== 'assistant' || !('id' in assistantMsg)) return
+    let userMsgIdx = msgIndex - 1
+    while (userMsgIdx >= 0 && messages[userMsgIdx].role !== 'user') userMsgIdx--
+    if (userMsgIdx < 0) return
+    const userMsg = messages[userMsgIdx] as MessageRow
+    const userContent = userMsg.content
+    await api.msg.deleteFrom(conversation.id, userMsg.id)
+    const historySlice = messages.slice(0, userMsgIdx)
+    setMessages(historySlice)
+    setError(null)
+    setSending(true)
+    const history = historySlice
+      .filter((m): m is MessageRow => !('streaming' in m))
+      .map((m) => ({ role: m.role, content: m.content }))
+    const optimistic: DisplayMsg = {
+      id: -Date.now(), conversation_id: conversation.id, role: 'user',
+      content: userContent, created_at: new Date().toISOString(),
+    }
+    setMessages((prev) => [...prev, optimistic])
+    const result = await api.chat.send({ conversationId: conversation.id, content: userContent, history })
+    if (result.error) {
+      setMessages((prev) => prev.filter((m) => m !== optimistic))
+      setError(result.error)
+      setSending(false)
+    }
+  }, [sending, conversation, messages])
+
+  const handleEdit = useCallback(async (msgIndex: number) => {
+    if (sending || !conversation) return
+    const userMsg = messages[msgIndex]
+    if (!userMsg || userMsg.role !== 'user' || !('id' in userMsg)) return
+    await api.msg.deleteFrom(conversation.id, (userMsg as MessageRow).id)
+    setMessages((prev) => prev.slice(0, msgIndex))
+    setInput(userMsg.content)
+    requestAnimationFrame(() => inputRef.current?.focus())
+  }, [sending, conversation, messages])
+
   const isEmpty = messages.length === 0
 
   return (
@@ -813,7 +853,17 @@ export default function ChatPane({
                     </span>
                   </div>
                 )}
-                <MessageBubble msg={msg} character={character} avatarUrl={avatars[character.id]} styles={styles} cx={cx} tight={isTight && !showDate} />
+                <MessageBubble
+                  msg={msg}
+                  character={character}
+                  avatarUrl={avatars[character.id]}
+                  styles={styles}
+                  cx={cx}
+                  tight={isTight && !showDate}
+                  isLast={i === messages.length - 1}
+                  onRegenerate={msg.role === 'assistant' ? () => handleRegenerate(i) : undefined}
+                  onEdit={msg.role === 'user' ? () => handleEdit(i) : undefined}
+                />
                 {rec && (
                   <VideoStrip keyword={rec.keyword} videos={rec.videos} styles={styles} />
                 )}
@@ -934,6 +984,9 @@ function MessageBubble({
   styles,
   cx,
   tight,
+  isLast,
+  onRegenerate,
+  onEdit,
 }: {
   msg: DisplayMsg
   character: Character
@@ -941,6 +994,9 @@ function MessageBubble({
   styles: StylesType
   cx: CxType
   tight?: boolean
+  isLast?: boolean
+  onRegenerate?: () => void
+  onEdit?: () => void
 }) {
   const [copied, setCopied] = useState(false)
   const isUser = msg.role === 'user'
@@ -1023,6 +1079,16 @@ function MessageBubble({
             <button className={styles.msgActionBtn} onClick={handleCopy} title="复制">
               {copied ? <Check size={11} strokeWidth={2.5} /> : <Copy size={11} />}
             </button>
+            {onEdit && (
+              <button className={styles.msgActionBtn} onClick={onEdit} title="编辑">
+                <Pencil size={11} />
+              </button>
+            )}
+            {onRegenerate && isLast && (
+              <button className={styles.msgActionBtn} onClick={onRegenerate} title="重新生成">
+                <RotateCcw size={11} />
+              </button>
+            )}
           </div>
         )}
       </div>

@@ -32,6 +32,8 @@ const api = {
   // 消息
   msg: {
     list: (conversationId: number) => ipcRenderer.invoke('msg:list', conversationId),
+    deleteFrom: (conversationId: number, fromMessageId: number) =>
+      ipcRenderer.invoke('msg:deleteFrom', conversationId, fromMessageId),
   },
 
   // 长期记忆

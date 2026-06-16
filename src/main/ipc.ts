@@ -8,6 +8,7 @@ import {
   addMessage,
   listMessages,
   updateMessageEmotion,
+  deleteMessagesFrom,
   getUserProfile,
   clearUserProfile,
   getEmotionStats,
@@ -76,6 +77,10 @@ export function registerIpcHandlers(): void {
 
   // ── Messages ─────────────────────────────────────────────────────
   ipcMain.handle('msg:list', (_e, conversationId: number) => listMessages(conversationId))
+  ipcMain.handle('msg:deleteFrom', (_e, conversationId: number, fromMessageId: number) => {
+    deleteMessagesFrom(conversationId, fromMessageId)
+    return { ok: true }
+  })
 
   // ── Chat (streaming) ─────────────────────────────────────────────
   ipcMain.handle('chat:send', async (event, payload: {

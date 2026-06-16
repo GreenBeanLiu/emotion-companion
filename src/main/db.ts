@@ -126,6 +126,17 @@ export function addMessage(
   return msg
 }
 
+export function deleteMessagesFrom(conversationId: number, fromMessageId: number): void {
+  const msgs = store.get('messages', [])
+  const sorted = msgs
+    .filter((m) => m.conversation_id === conversationId)
+    .sort((a, b) => a.created_at.localeCompare(b.created_at))
+  const idx = sorted.findIndex((m) => m.id === fromMessageId)
+  if (idx < 0) return
+  const idsToDelete = new Set(sorted.slice(idx).map((m) => m.id))
+  store.set('messages', msgs.filter((m) => !idsToDelete.has(m.id)))
+}
+
 export function updateMessageEmotion(id: number, emotion: string): void {
   store.set(
     'messages',

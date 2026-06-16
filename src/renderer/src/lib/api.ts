@@ -42,6 +42,7 @@ declare global {
       }
       msg: {
         list: (conversationId: number) => Promise<MessageRow[]>
+        deleteFrom: (conversationId: number, fromMessageId: number) => Promise<{ ok: boolean }>
       }
       memory: {
         get: () => Promise<{ summary: string; updatedAt: string } | null>
