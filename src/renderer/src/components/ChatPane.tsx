@@ -123,11 +123,11 @@ const useStyles = createStyles(({ token, css }) => ({
   `,
 
   charName: css`
-    font-size: 20px;
+    font-size: 22px;
     font-weight: 600;
     color: ${token.colorText};
     margin: 0;
-    letter-spacing: -0.01em;
+    letter-spacing: -0.02em;
   `,
 
   charTitle: css`
@@ -141,17 +141,18 @@ const useStyles = createStyles(({ token, css }) => ({
 
   tagRow: css`
     display: flex;
-    gap: 6px;
+    gap: 5px;
     flex-wrap: wrap;
     justify-content: center;
-    max-width: 280px;
+    max-width: 300px;
   `,
 
   tag: css`
     font-size: 11px;
-    padding: 2px 10px;
+    padding: 3px 10px;
     border-radius: 20px;
     font-weight: 500;
+    letter-spacing: 0.01em;
   `,
 
   starterList: css`
