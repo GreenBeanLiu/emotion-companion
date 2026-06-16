@@ -194,7 +194,7 @@ export default function TitleBar({ character, avatars, convTitle, update, onInst
           className={styles.charAvatar}
           style={{
             background: avatarUrl ? 'transparent' : `linear-gradient(135deg, ${character.bgGradient[0]}, ${character.color}60)`,
-            border: `1px solid ${character.color}35`,
+            border: `1px solid ${character.color}40`,
           }}
         >
           {avatarUrl ? (

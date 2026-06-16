@@ -134,7 +134,7 @@ export default function NavRail({ character, avatars, appearance, view, onViewCh
             width: 32,
             height: 32,
             borderRadius: 8,
-            background: avatars[character.id] ? 'transparent' : `linear-gradient(135deg, ${character.bgGradient[0]}, ${character.color}70)`,
+            background: avatars[character.id] ? 'transparent' : `linear-gradient(135deg, ${character.bgGradient[0]}, ${character.color}60)`,
             border: `1px solid ${character.color}40`,
             display: 'flex',
             alignItems: 'center',

@@ -433,7 +433,7 @@ const useStyles = createStyles(({ token, css }) => ({
 
   inputArea: css`
     flex-shrink: 0;
-    padding: 12px 20px 20px;
+    padding: 16px 20px 20px;
     background: ${token.colorBgBase};
   `,
 
@@ -1015,7 +1015,7 @@ function CharAvatar({ character, avatarUrl }: { character: Character; avatarUrl?
         height: 36,
         borderRadius: 10,
         background: avatarUrl ? 'transparent' : `linear-gradient(135deg, ${character.bgGradient[0]}, ${character.color}60)`,
-        border: avatarUrl ? 'none' : `1px solid ${character.color}30`,
+        border: avatarUrl ? 'none' : `1px solid ${character.color}40`,
         display: 'flex',
         alignItems: 'center',
         justifyContent: 'center',
