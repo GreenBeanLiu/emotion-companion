@@ -195,6 +195,7 @@ const useStyles = createStyles(({ token, css }) => ({
 
     &:hover .msg-actions {
       opacity: 1;
+      transform: translateY(0);
     }
   `,
 
@@ -295,7 +296,8 @@ const useStyles = createStyles(({ token, css }) => ({
     gap: 2px;
     margin-top: 2px;
     opacity: 0;
-    transition: opacity ${token.motionDurationMid};
+    transform: translateY(3px);
+    transition: opacity ${token.motionDurationMid}, transform ${token.motionDurationMid};
   `,
 
   msgActionBtn: css`
