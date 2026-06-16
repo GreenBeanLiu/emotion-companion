@@ -986,22 +986,24 @@ function MessageBubble({
         >
           {isUser ? (
             msg.content
-          ) : isStreaming ? (
-            <>
-              {msg.content}
-              <span className="animate-pulse ml-0.5" style={{ color: character.color }}>▋</span>
-            </>
           ) : (
-            <Markdown
-              variant="chat"
-              fontSize={14}
-              style={{ margin: 0 }}
-              enableLatex={false}
-              enableMermaid={false}
-              enableImageGallery={false}
-            >
-              {msg.content || ' '}
-            </Markdown>
+            <>
+              {msg.content ? (
+                <Markdown
+                  variant="chat"
+                  fontSize={14}
+                  style={{ margin: 0 }}
+                  enableLatex={false}
+                  enableMermaid={false}
+                  enableImageGallery={false}
+                >
+                  {msg.content}
+                </Markdown>
+              ) : null}
+              {isStreaming && (
+                <span className="animate-pulse" style={{ color: character.color, marginLeft: 1 }}>▋</span>
+              )}
+            </>
           )}
         </div>
 

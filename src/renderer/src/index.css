@@ -1,5 +1,21 @@
 @import "tailwindcss";
 
+@font-face {
+  font-family: 'Geist Variable';
+  src: url('./assets/fonts/Geist-Variable.woff2') format('woff2');
+  font-weight: 100 900;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'Geist';
+  src: url('./assets/fonts/Geist-Variable.woff2') format('woff2');
+  font-weight: 100 900;
+  font-style: normal;
+  font-display: swap;
+}
+
 /* ============================================================
    Custom Tailwind tokens — LobeHub dark (gray scale)
    gray.dark: [#000,#0d0d0d,#1a1a1a,#202020,#2d2d2d,#444,#555,#666,#6f6f6f,#777,#aaa,#ddd,#fff]

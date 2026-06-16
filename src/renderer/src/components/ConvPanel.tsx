@@ -291,8 +291,7 @@ export default function ConvPanel({ activeId, refreshKey, character, onSelect, o
               >
                 <p className={cx(styles.itemTitle, 'item-title')}>{conv.title}</p>
                 <p className={styles.itemMeta}>
-                  {relativeTime(conv.updated_at)}
-                  {conv.message_count ? ` · ${conv.message_count} 条` : ''}
+                  {conv.summary ?? `${relativeTime(conv.updated_at)}${conv.message_count ? ` · ${conv.message_count} 条` : ''}`}
                 </p>
               </button>
 
