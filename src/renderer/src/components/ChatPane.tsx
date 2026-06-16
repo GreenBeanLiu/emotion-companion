@@ -761,48 +761,58 @@ export default function ChatPane({
                 }}
               />
 
-              {/* Breathing glow ring */}
+              {/* Avatar + glow ring wrapper */}
               <div
                 style={{
-                  position: 'absolute',
+                  position: 'relative',
                   width: 136,
                   height: 136,
-                  borderRadius: '50%',
-                  background: `radial-gradient(circle, ${character.color}28 0%, transparent 70%)`,
-                  animation: 'lobe-breathe 4s ease-in-out infinite',
-                  pointerEvents: 'none',
-                }}
-              />
-
-              {/* Floating character avatar */}
-              <div
-                style={{
-                  width: 88,
-                  height: 88,
-                  borderRadius: 28,
-                  background: avatars[character.id]
-                    ? 'transparent'
-                    : `linear-gradient(135deg, ${character.bgGradient[0]}, ${character.color}55)`,
-                  border: avatars[character.id] ? 'none' : `1px solid ${character.color}28`,
-                  boxShadow: `0 0 0 6px ${character.color}0a, 0 16px 48px ${character.color}20`,
                   display: 'flex',
                   alignItems: 'center',
                   justifyContent: 'center',
-                  fontSize: 34,
-                  position: 'relative',
                   animation: 'lobe-float 5s ease-in-out infinite',
-                  overflow: 'hidden',
                 }}
               >
-                {avatars[character.id] ? (
-                  <img
-                    src={avatars[character.id]}
-                    alt={character.name}
-                    style={{ width: '100%', height: '100%', objectFit: 'cover' }}
-                  />
-                ) : (
-                  character.emoji
-                )}
+                {/* Breathing glow ring */}
+                <div
+                  style={{
+                    position: 'absolute',
+                    inset: 0,
+                    borderRadius: '50%',
+                    background: `radial-gradient(circle, ${character.color}28 0%, transparent 70%)`,
+                    animation: 'lobe-breathe 4s ease-in-out infinite',
+                    pointerEvents: 'none',
+                  }}
+                />
+                {/* Floating character avatar */}
+                <div
+                  style={{
+                    width: 88,
+                    height: 88,
+                    borderRadius: 28,
+                    background: avatars[character.id]
+                      ? 'transparent'
+                      : `linear-gradient(135deg, ${character.bgGradient[0]}, ${character.color}55)`,
+                    border: avatars[character.id] ? 'none' : `1px solid ${character.color}28`,
+                    boxShadow: `0 0 0 6px ${character.color}0a, 0 16px 48px ${character.color}20`,
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                    fontSize: 34,
+                    position: 'relative',
+                    overflow: 'hidden',
+                  }}
+                >
+                  {avatars[character.id] ? (
+                    <img
+                      src={avatars[character.id]}
+                      alt={character.name}
+                      style={{ width: '100%', height: '100%', objectFit: 'cover' }}
+                    />
+                  ) : (
+                    character.emoji
+                  )}
+                </div>
               </div>
 
               <div style={{ display: 'flex', flexDirection: 'column', gap: 6, position: 'relative', alignItems: 'center' }}>
