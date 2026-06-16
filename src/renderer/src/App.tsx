@@ -71,11 +71,23 @@ export default function App({ appearance, onToggleTheme }: AppProps) {
       setActiveConv((prev) => prev?.id === conversationId ? { ...prev, title } : prev)
       setConvRefreshKey((k) => k + 1)
     })
+
+    function handleKeyDown(e: KeyboardEvent) {
+      const mod = e.ctrlKey || e.metaKey
+      if (mod && e.key === 'n') {
+        e.preventDefault()
+        setView('chat')
+        setActiveConv(null)
+      }
+    }
+    document.addEventListener('keydown', handleKeyDown)
+
     return () => {
       offAvail()
       offDone()
       offErr()
       offTitle()
+      document.removeEventListener('keydown', handleKeyDown)
     }
   }, [])
 
