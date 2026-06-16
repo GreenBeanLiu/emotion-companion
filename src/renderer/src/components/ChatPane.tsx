@@ -71,6 +71,7 @@ const useStyles = createStyles(({ token, css }) => ({
     background: ${token.colorErrorBg};
     border: 1px solid ${token.colorErrorBorder};
     color: ${token.colorError};
+    animation: slide-in-down 0.18s ease-out both;
   `,
 
   errorDismiss: css`
@@ -612,7 +613,9 @@ export default function ChatPane({
     })
     const offDone = api.chat.onDone(({ conversationId }) => {
       if (conversationId !== convIdRef.current) return
-      api.msg.list(conversationId).then(setMessages)
+      api.msg.list(conversationId).then((msgs) => {
+        if (conversationId === convIdRef.current) setMessages(msgs)
+      })
       setSending(false)
       onConversationUpdated()
     })
