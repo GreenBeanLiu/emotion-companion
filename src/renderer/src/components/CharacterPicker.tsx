@@ -11,7 +11,7 @@ const useStyles = createStyles(({ token, css }) => ({
   body: css`
     overflow-y: auto;
     max-height: 68vh;
-    padding: 20px 24px;
+    padding: 24px;
     display: flex;
     flex-direction: column;
     gap: 16px;
@@ -20,13 +20,13 @@ const useStyles = createStyles(({ token, css }) => ({
   grid: css`
     display: grid;
     grid-template-columns: repeat(3, 1fr);
-    gap: 10px;
+    gap: 12px;
   `,
 
   card: css`
     text-align: left;
     border-radius: ${token.borderRadiusLG}px;
-    padding: 14px;
+    padding: 16px;
     display: flex;
     flex-direction: column;
     gap: 10px;
