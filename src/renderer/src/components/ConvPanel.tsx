@@ -102,7 +102,7 @@ const useStyles = createStyles(({ token, css }) => ({
     display: flex;
     align-items: center;
     gap: 6px;
-    background: ${token.colorFillSecondary};
+    background: ${token.colorFillTertiary};
     border: 1px solid ${token.colorBorderSecondary};
     border-radius: ${token.borderRadiusSM}px;
     padding: 4px 8px;
@@ -110,7 +110,7 @@ const useStyles = createStyles(({ token, css }) => ({
 
     &:focus-within {
       border-color: ${token.colorBorder};
-      background: ${token.colorFillTertiary};
+      background: ${token.colorFillSecondary};
     }
   `,
 
