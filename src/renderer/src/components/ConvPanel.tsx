@@ -365,9 +365,9 @@ export default function ConvPanel({ activeId, refreshKey, character, onSelect, o
           </div>
         )}
         <div className={styles.list}>
-          {grouped.map(({ bucket, items }) => (
+          {grouped.map(({ bucket, items }, gi) => (
             <div key={bucket}>
-              {bucket && <div className={styles.groupLabel}>{bucket}</div>}
+              {bucket && <div className={styles.groupLabel} style={gi === 0 ? { paddingTop: 4 } : undefined}>{bucket}</div>}
               {items.map((conv) => (
                 <div key={conv.id} className={cx(styles.itemWrap, 'group')}>
                   {renamingId === conv.id ? (
@@ -393,7 +393,7 @@ export default function ConvPanel({ activeId, refreshKey, character, onSelect, o
                     >
                       <p className={cx(styles.itemTitle, 'item-title')}>{conv.title}</p>
                       <p className={styles.itemMeta}>
-                        {conv.summary ?? `${relativeTime(conv.updated_at)}${conv.message_count ? ` · ${conv.message_count} 条` : ''}`}
+                        {conv.summary ?? relativeTime(conv.updated_at)}
                       </p>
                     </button>
                   )}
