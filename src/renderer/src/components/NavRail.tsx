@@ -1,5 +1,6 @@
 import { createStyles } from 'antd-style'
 import { ActionIcon } from '@lobehub/ui'
+import { Tooltip } from 'antd'
 import { MessageSquare, BarChart2, Settings, Sun, Moon } from 'lucide-react'
 import type { Character } from '../lib/characters'
 
@@ -123,10 +124,10 @@ export default function NavRail({ character, avatars, appearance, view, onViewCh
 
       <div className={styles.spacer} />
 
+      <Tooltip title={`切换角色 · ${character.name}`} placement="right">
       <button
         className={styles.charBtn}
         onClick={onChangeCharacter}
-        title={`切换角色 · 当前：${character.name}`}
       >
         <div
           style={{
@@ -153,6 +154,7 @@ export default function NavRail({ character, avatars, appearance, view, onViewCh
           )}
         </div>
       </button>
+      </Tooltip>
 
       <ActionIcon
         icon={appearance === 'dark' ? <Sun size={15} /> : <Moon size={15} />}

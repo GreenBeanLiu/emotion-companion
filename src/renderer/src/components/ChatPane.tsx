@@ -104,7 +104,7 @@ const useStyles = createStyles(({ token, css }) => ({
     width: 100%;
     max-width: 800px;
     margin: 0 auto;
-    padding: 24px 0 24px;
+    padding: 16px 0 32px;
     display: flex;
     flex-direction: column;
     flex: 1;
@@ -837,7 +837,7 @@ export default function ChatPane({
                 </div>
               </div>
 
-              <div className={styles.starterList} style={{ position: 'relative' }}>
+              <div className={styles.starterList}>
                 {character.starters.map((s) => (
                   <button
                     key={s}
