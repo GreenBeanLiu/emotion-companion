@@ -61,9 +61,10 @@ const useStyles = createStyles(({ token, css }) => ({
   `,
 
   headerTitle: css`
-    font-size: 15px;
+    font-size: 14px;
     font-weight: 600;
     color: ${token.colorText};
+    letter-spacing: -0.01em;
   `,
 
   closeBtn: css`

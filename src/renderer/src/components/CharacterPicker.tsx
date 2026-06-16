@@ -121,7 +121,7 @@ const useStyles = createStyles(({ token, css }) => ({
 
   cardName: css`
     font-size: 14px;
-    font-weight: 700;
+    font-weight: 600;
     color: ${token.colorText};
   `,
 
