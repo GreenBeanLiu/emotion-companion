@@ -104,7 +104,7 @@ const useStyles = createStyles(({ token, css }) => ({
     width: 100%;
     max-width: 800px;
     margin: 0 auto;
-    padding: 16px 0 32px;
+    padding: 24px 0 36px;
     display: flex;
     flex-direction: column;
     flex: 1;
@@ -232,7 +232,7 @@ const useStyles = createStyles(({ token, css }) => ({
     font-weight: 500;
     line-height: 1;
     color: ${token.colorTextDescription};
-    margin-bottom: 4px;
+    margin-bottom: 3px;
   `,
 
   msgBubble: css`
@@ -248,7 +248,7 @@ const useStyles = createStyles(({ token, css }) => ({
   msgBubbleUser: css`
     background: ${token.colorFill};
     color: ${token.colorText};
-    padding: 8px 14px;
+    padding: 10px 14px;
   `,
 
   msgBubbleAssistant: css`
