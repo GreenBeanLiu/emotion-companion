@@ -169,8 +169,8 @@ const useStyles = createStyles(({ token, css }) => ({
 
   winBtnClose: css`
     &:hover {
-      background: ${token.colorErrorBg};
-      color: ${token.colorError};
+      background: rgba(232,17,35,0.9);
+      color: #ffffff;
     }
   `,
 }))

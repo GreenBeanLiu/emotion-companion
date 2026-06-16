@@ -132,6 +132,15 @@ html, body, #root {
   overflow: hidden;
 }
 
+#root {
+  animation: app-fade-in 0.25s ease-out both;
+}
+
+@keyframes app-fade-in {
+  from { opacity: 0; }
+  to   { opacity: 1; }
+}
+
 body {
   background: var(--ant-color-bg-layout, #000000);
   color: var(--ant-color-text, #ffffff);

@@ -431,6 +431,7 @@ const useStyles = createStyles(({ token, css }) => ({
     flex-shrink: 0;
     padding: 10px 20px 16px;
     background: ${token.colorBgBase};
+    border-top: 1px solid ${token.colorBorderSecondary};
   `,
 
   inputAreaInner: css`

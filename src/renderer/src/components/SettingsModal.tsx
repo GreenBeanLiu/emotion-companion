@@ -255,6 +255,15 @@ const useStyles = createStyles(({ token, css }) => ({
 
 export default function SettingsModal({ onClose }: { onClose: () => void }) {
   const { styles, cx } = useStyles()
+
+  useEffect(() => {
+    function handleKeyDown(e: KeyboardEvent) {
+      if (e.key === 'Escape') onClose()
+    }
+    document.addEventListener('keydown', handleKeyDown)
+    return () => document.removeEventListener('keydown', handleKeyDown)
+  }, [onClose])
+
   const [settings, setSettings] = useState<Settings>({
     provider: 'claude',
     apiKey: '',

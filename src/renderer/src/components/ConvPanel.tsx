@@ -307,7 +307,7 @@ export default function ConvPanel({ activeId, refreshKey, character, onSelect, o
     <aside className={styles.panel}>
       <div className={styles.header}>
         <span className={styles.headerLabel}>对话</span>
-        <Tooltip title="新对话" placement="right">
+        <Tooltip title="新对话 (Ctrl+N)" placement="bottom">
           <button className={styles.newBtn} onClick={onNew}>
             <SquarePen size={13} />
           </button>
