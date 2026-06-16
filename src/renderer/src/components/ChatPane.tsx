@@ -270,7 +270,7 @@ const useStyles = createStyles(({ token, css }) => ({
       content: '';
       flex: 1;
       height: 1px;
-      background: ${token.colorBorderSecondary};
+      background: ${token.colorBorder};
     }
   `,
 
@@ -443,7 +443,7 @@ const useStyles = createStyles(({ token, css }) => ({
     border-radius: ${token.borderRadiusLG}px;
     padding: 10px 14px;
     background: ${token.colorBgElevated};
-    border: 1px solid ${token.colorBorderSecondary};
+    border: 1px solid ${token.colorBorder};
     box-shadow: 0 1px 6px rgba(0,0,0,0.06), 0 4px 16px rgba(0,0,0,0.08);
     transition: border-color ${token.motionDurationFast},
       box-shadow ${token.motionDurationFast};
@@ -837,7 +837,7 @@ export default function ChatPane({
                 </div>
               </div>
 
-              <div className={styles.starterList} style={{ position: 'relative', marginTop: 8 }}>
+              <div className={styles.starterList} style={{ position: 'relative' }}>
                 {character.starters.map((s) => (
                   <button
                     key={s}
