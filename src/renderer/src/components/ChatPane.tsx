@@ -447,7 +447,7 @@ const useStyles = createStyles(({ token, css }) => ({
     display: flex;
     align-items: flex-end;
     gap: 8px;
-    border-radius: 16px;
+    border-radius: 20px;
     padding: 10px 14px;
     background: ${token.colorBgElevated};
     border: 1px solid ${token.colorBorder};
@@ -483,7 +483,7 @@ const useStyles = createStyles(({ token, css }) => ({
     flex-shrink: 0;
     width: 32px;
     height: 32px;
-    border-radius: 10px;
+    border-radius: 12px;
     border: none;
     display: flex;
     align-items: center;
@@ -765,7 +765,7 @@ export default function ChatPane({
                   position: 'absolute',
                   inset: 0,
                   pointerEvents: 'none',
-                  background: `radial-gradient(ellipse 60% 50% at 50% 44%, ${character.color}20 0%, ${character.color}08 40%, transparent 70%)`,
+                  background: `radial-gradient(ellipse 60% 50% at 50% 44%, ${character.color}28 0%, ${character.color}08 40%, transparent 70%)`,
                 }}
               />
 
