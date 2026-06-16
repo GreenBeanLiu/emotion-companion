@@ -19,6 +19,18 @@ function relativeTime(iso: string): string {
   return new Date(iso).toLocaleDateString('zh-CN', { month: 'short', day: 'numeric' })
 }
 
+function dateBucket(iso: string): string {
+  const diffMs = Date.now() - new Date(iso).getTime()
+  const days = Math.floor(diffMs / 86400000)
+  if (days < 1) return '今天'
+  if (days < 2) return '昨天'
+  if (days < 7) return '本周'
+  if (days < 30) return '本月'
+  return '更早'
+}
+
+const BUCKET_ORDER = ['今天', '昨天', '本周', '本月', '更早']
+
 const useStyles = createStyles(({ token, css }) => ({
   panel: css`
     width: 280px;
@@ -248,6 +260,15 @@ const useStyles = createStyles(({ token, css }) => ({
     outline: 2px solid ${token.colorPrimaryBorder};
     min-width: 0;
   `,
+
+  groupLabel: css`
+    font-size: 11px;
+    font-weight: 500;
+    color: ${token.colorTextTertiary};
+    padding: 10px 12px 4px;
+    user-select: none;
+    letter-spacing: 0.03em;
+  `,
 }))
 
 type Props = {
@@ -276,9 +297,18 @@ export default function ConvPanel({ activeId, refreshKey, character, onSelect, o
     return () => document.removeEventListener('click', handleClick)
   }, [])
 
-  const filteredConvs = search.trim()
+  const isSearching = search.trim() !== ''
+  const filteredConvs = isSearching
     ? convs.filter((c) => c.title.toLowerCase().includes(search.toLowerCase()))
     : convs
+
+  const grouped: { bucket: string; items: ConversationRow[] }[] = isSearching
+    ? [{ bucket: '', items: filteredConvs }]
+    : BUCKET_ORDER.reduce<{ bucket: string; items: ConversationRow[] }[]>((acc, bucket) => {
+        const items = filteredConvs.filter((c) => dateBucket(c.updated_at) === bucket)
+        if (items.length > 0) acc.push({ bucket, items })
+        return acc
+      }, [])
 
   async function handleDelete(e: React.MouseEvent, id: number) {
     e.stopPropagation()
@@ -335,64 +365,69 @@ export default function ConvPanel({ activeId, refreshKey, character, onSelect, o
           </div>
         )}
         <div className={styles.list}>
-          {filteredConvs.map((conv) => (
-            <div key={conv.id} className={cx(styles.itemWrap, 'group')}>
-              {renamingId === conv.id ? (
-                <div style={{ padding: '6px 12px' }}>
-                  <input
-                    autoFocus
-                    className={styles.renameInput}
-                    value={renameValue}
-                    onChange={(e) => setRenameValue(e.target.value)}
-                    onBlur={() => commitRename(conv.id)}
-                    onKeyDown={(e) => {
-                      if (e.key === 'Enter') commitRename(conv.id)
-                      if (e.key === 'Escape') setRenamingId(null)
+          {grouped.map(({ bucket, items }) => (
+            <div key={bucket}>
+              {bucket && <div className={styles.groupLabel}>{bucket}</div>}
+              {items.map((conv) => (
+                <div key={conv.id} className={cx(styles.itemWrap, 'group')}>
+                  {renamingId === conv.id ? (
+                    <div style={{ padding: '6px 12px' }}>
+                      <input
+                        autoFocus
+                        className={styles.renameInput}
+                        value={renameValue}
+                        onChange={(e) => setRenameValue(e.target.value)}
+                        onBlur={() => commitRename(conv.id)}
+                        onKeyDown={(e) => {
+                          if (e.key === 'Enter') commitRename(conv.id)
+                          if (e.key === 'Escape') setRenamingId(null)
+                        }}
+                      />
+                    </div>
+                  ) : (
+                    <button
+                      onClick={() => onSelect(conv)}
+                      onDoubleClick={(e) => startRename(e, conv)}
+                      className={cx(styles.item, activeId === conv.id && styles.itemActive)}
+                      style={activeId === conv.id ? { borderLeft: `2px solid ${character.color}80`, paddingLeft: 10 } : undefined}
+                    >
+                      <p className={cx(styles.itemTitle, 'item-title')}>{conv.title}</p>
+                      <p className={styles.itemMeta}>
+                        {conv.summary ?? `${relativeTime(conv.updated_at)}${conv.message_count ? ` · ${conv.message_count} 条` : ''}`}
+                      </p>
+                    </button>
+                  )}
+
+                  <button
+                    onClick={(e) => {
+                      e.stopPropagation()
+                      setMenuId(menuId === conv.id ? null : conv.id)
                     }}
-                  />
-                </div>
-              ) : (
-                <button
-                  onClick={() => onSelect(conv)}
-                  onDoubleClick={(e) => startRename(e, conv)}
-                  className={cx(styles.item, activeId === conv.id && styles.itemActive)}
-                  style={activeId === conv.id ? { borderLeft: `2px solid ${character.color}80`, paddingLeft: 10 } : undefined}
-                >
-                  <p className={cx(styles.itemTitle, 'item-title')}>{conv.title}</p>
-                  <p className={styles.itemMeta}>
-                    {conv.summary ?? `${relativeTime(conv.updated_at)}${conv.message_count ? ` · ${conv.message_count} 条` : ''}`}
-                  </p>
-                </button>
-              )}
-
-              <button
-                onClick={(e) => {
-                  e.stopPropagation()
-                  setMenuId(menuId === conv.id ? null : conv.id)
-                }}
-                className={cx(styles.moreBtn, 'hidden group-hover:flex')}
-              >
-                <MoreVertical size={11} />
-              </button>
-
-              {menuId === conv.id && (
-                <div className={styles.contextMenu}>
-                  <button
-                    onClick={(e) => startRename(e, conv)}
-                    className={styles.menuBtn}
+                    className={cx(styles.moreBtn, 'hidden group-hover:flex')}
                   >
-                    <Pencil size={11} />
-                    重命名
+                    <MoreVertical size={11} />
                   </button>
-                  <button
-                    onClick={(e) => handleDelete(e, conv.id)}
-                    className={styles.deleteBtn}
-                  >
-                    <Trash2 size={11} />
-                    删除对话
-                  </button>
+
+                  {menuId === conv.id && (
+                    <div className={styles.contextMenu}>
+                      <button
+                        onClick={(e) => startRename(e, conv)}
+                        className={styles.menuBtn}
+                      >
+                        <Pencil size={11} />
+                        重命名
+                      </button>
+                      <button
+                        onClick={(e) => handleDelete(e, conv.id)}
+                        className={styles.deleteBtn}
+                      >
+                        <Trash2 size={11} />
+                        删除对话
+                      </button>
+                    </div>
+                  )}
                 </div>
-              )}
+              ))}
             </div>
           ))}
         </div>
