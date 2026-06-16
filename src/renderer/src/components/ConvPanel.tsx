@@ -83,7 +83,7 @@ const useStyles = createStyles(({ token, css }) => ({
     display: flex;
     flex-direction: column;
     gap: 1px;
-    padding: 6px;
+    padding: 4px;
   `,
 
   searchWrap: css`
@@ -144,7 +144,7 @@ const useStyles = createStyles(({ token, css }) => ({
   `,
 
   itemActive: css`
-    background: ${token.colorFillSecondary} !important;
+    background: ${token.colorFill} !important;
 
     .item-title {
       color: ${token.colorText} !important;
