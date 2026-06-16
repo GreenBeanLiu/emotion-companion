@@ -22,6 +22,11 @@ const api = {
     create: (title?: string) => ipcRenderer.invoke('conv:create', title),
     rename: (id: number, title: string) => ipcRenderer.invoke('conv:rename', id, title),
     delete: (id: number) => ipcRenderer.invoke('conv:delete', id),
+    onTitleUpdated: (cb: (data: { conversationId: number; title: string }) => void) => {
+      const handler = (_e: Electron.IpcRendererEvent, data: unknown) => cb(data as never)
+      ipcRenderer.on('conv:title-updated', handler)
+      return () => ipcRenderer.off('conv:title-updated', handler)
+    },
   },
 
   // 消息

@@ -16,7 +16,7 @@ import { streamChat } from './ai'
 import { loadSettings, saveSettings } from './settings'
 import { rescheduleReminder, testNotification } from './notification'
 import { getAvatars, setAvatar, clearAvatar } from './avatar'
-import { extractAndUpdateProfile, summarizeConversation } from './memory'
+import { extractAndUpdateProfile, summarizeConversation, generateTitle } from './memory'
 import { detectEmotion } from './emotion'
 import { shouldRecommend, generateKeyword, searchVideos } from './bilibili'
 
@@ -146,9 +146,23 @@ export function registerIpcHandlers(): void {
     ]
     extractAndUpdateProfile(fullHistory, settings).catch(() => {})
 
-    // Generate/update conversation summary once there are enough exchanges
     const allMsgs = listMessages(conversationId)
-    if (allMsgs.filter((m) => m.role === 'user').length >= 2) {
+    const userMsgCount = allMsgs.filter((m) => m.role === 'user').length
+
+    // Auto-generate title from first exchange
+    if (userMsgCount === 1) {
+      generateTitle(fullHistory, settings)
+        .then((title) => {
+          if (title) {
+            updateConversationTitle(conversationId, title)
+            win?.webContents.send('conv:title-updated', { conversationId, title })
+          }
+        })
+        .catch(() => {})
+    }
+
+    // Generate/update conversation summary once there are enough exchanges
+    if (userMsgCount >= 2) {
       summarizeConversation(fullHistory, settings)
         .then((summary) => { if (summary) updateConversationSummary(conversationId, summary) })
         .catch(() => {})

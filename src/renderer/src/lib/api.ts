@@ -38,6 +38,7 @@ declare global {
         create: (title?: string) => Promise<ConversationRow>
         rename: (id: number, title: string) => Promise<{ ok: boolean }>
         delete: (id: number) => Promise<{ ok: boolean }>
+        onTitleUpdated: (cb: (data: { conversationId: number; title: string }) => void) => () => void
       }
       msg: {
         list: (conversationId: number) => Promise<MessageRow[]>

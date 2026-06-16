@@ -67,10 +67,15 @@ export default function App({ appearance, onToggleTheme }: AppProps) {
     const offErr = api.update.onError(({ message }) =>
       setUpdate({ status: 'error', message }),
     )
+    const offTitle = api.conv.onTitleUpdated(({ conversationId, title }) => {
+      setActiveConv((prev) => prev?.id === conversationId ? { ...prev, title } : prev)
+      setConvRefreshKey((k) => k + 1)
+    })
     return () => {
       offAvail()
       offDone()
       offErr()
+      offTitle()
     }
   }, [])
 

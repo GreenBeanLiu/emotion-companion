@@ -23,6 +23,24 @@ ${dialog}`
   return result.trim().slice(0, 80)
 }
 
+export async function generateTitle(
+  messages: ChatMessage[],
+  settings: AiSettings,
+): Promise<string> {
+  const dialog = messages
+    .map((m) => `${m.role === 'user' ? '用户' : 'AI'}：${m.content.slice(0, 200)}`)
+    .join('\n')
+    .slice(0, 1000)
+
+  const prompt = `请为以下对话生成一个简短的标题（不超过10个字），直接输出标题，不要任何引号或前缀。
+
+对话：
+${dialog}`
+
+  const result = await callSimple(settings, prompt)
+  return result.trim().replace(/^["'「『]|["'」』]$/g, '').slice(0, 20)
+}
+
 export async function extractAndUpdateProfile(
   messages: ChatMessage[],
   settings: AiSettings,
