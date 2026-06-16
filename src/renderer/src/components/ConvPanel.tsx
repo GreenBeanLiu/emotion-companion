@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react'
 import { createStyles } from 'antd-style'
 import { Tooltip } from 'antd'
-import { SquarePen, Trash2, MoreVertical, MessageSquarePlus, Search, Pencil } from 'lucide-react'
+import { SquarePen, Trash2, MoreVertical, MessageSquarePlus, Search, Pencil, X } from 'lucide-react'
 import { api, type ConversationRow } from '../lib/api'
 import type { Character } from '../lib/characters'
 import { ScrollArea } from '@/components/ui/scroll-area'
@@ -346,13 +346,21 @@ export default function ConvPanel({ activeId, refreshKey, character, onSelect, o
 
       {convs.length > 0 && (
         <div className={styles.searchWrap}>
-          <Search size={12} />
+          <Search size={12} style={{ flexShrink: 0 }} />
           <input
             className={styles.searchInput}
             value={search}
             onChange={(e) => setSearch(e.target.value)}
             placeholder="搜索对话"
           />
+          {search && (
+            <button
+              onClick={() => setSearch('')}
+              style={{ flexShrink: 0, background: 'none', border: 'none', cursor: 'pointer', display: 'flex', alignItems: 'center', padding: 0 }}
+            >
+              <X size={12} style={{ color: 'var(--ant-color-text-tertiary)' }} />
+            </button>
+          )}
         </div>
       )}
 
