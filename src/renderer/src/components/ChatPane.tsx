@@ -1,7 +1,7 @@
 import { useEffect, useRef, useState, useCallback } from 'react'
 import { createStyles } from 'antd-style'
 import { Markdown } from '@lobehub/ui'
-import { SendHorizontal, User, Copy, Check, ArrowDown, RotateCcw, Pencil, Square } from 'lucide-react'
+import { SendHorizontal, Copy, Check, ArrowDown, RotateCcw, Pencil, Square } from 'lucide-react'
 import { api, type ConversationRow, type MessageRow, type BilibiliVideo } from '../lib/api'
 import type { Character } from '../lib/characters'
 
@@ -337,9 +337,12 @@ const useStyles = createStyles(({ token, css }) => ({
     width: 32px;
     height: 32px;
     border-radius: 50%;
-    background: ${token.colorFillSecondary};
-    border: 1px solid ${token.colorBorderSecondary};
-    color: ${token.colorTextTertiary};
+    background: linear-gradient(135deg, #6366f1 0%, #8b5cf6 100%);
+    color: #ffffff;
+    font-size: 13px;
+    font-weight: 600;
+    user-select: none;
+    letter-spacing: 0;
   `,
 
   /* Typing indicator */
@@ -609,6 +612,7 @@ export default function ChatPane({
     })
     const offDone = api.chat.onDone(({ conversationId }) => {
       if (conversationId !== convIdRef.current) return
+      api.msg.list(conversationId).then(setMessages)
       setSending(false)
       onConversationUpdated()
     })
@@ -664,7 +668,7 @@ export default function ChatPane({
       setError(result.error)
       setSending(false)
     } else if (result.aborted) {
-      setMessages((prev) => prev.filter((m) => !('streaming' in m)))
+      api.msg.list(convId).then(setMessages)
       setSending(false)
     }
   }, [input, sending, conversation, messages, onConversationCreated])
@@ -704,7 +708,7 @@ export default function ChatPane({
       setError(result.error)
       setSending(false)
     } else if (result.aborted) {
-      setMessages((prev) => prev.filter((m) => !('streaming' in m)))
+      api.msg.list(conversation.id).then(setMessages)
       setSending(false)
     }
   }, [sending, conversation, messages])
@@ -879,7 +883,7 @@ export default function ChatPane({
 
           {sending && !messages.some((m) => 'streaming' in m) && (
             <div className={styles.msgRow}>
-              <CharAvatar character={character} />
+              <CharAvatar character={character} avatarUrl={avatars[character.id]} />
               <div className={styles.typingBubble}>
                 {[0, 120, 240].map((delay) => (
                   <span
@@ -1032,9 +1036,7 @@ function MessageBubble({
     <div className={cx(styles.msgRow, isUser && styles.msgRowUser, tight && styles.msgRowTight)}>
       {isUser ? (
         tight ? <div className={styles.avatarSpacer} /> : (
-          <div className={styles.userAvatar}>
-            <User size={12} strokeWidth={2.5} />
-          </div>
+          <div className={styles.userAvatar}>我</div>
         )
       ) : (
         tight ? <div className={styles.avatarSpacer} /> : (
