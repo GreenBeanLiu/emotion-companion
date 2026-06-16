@@ -117,17 +117,17 @@ const useStyles = createStyles(({ token, css }) => ({
     flex-direction: column;
     align-items: center;
     justify-content: center;
-    gap: 16px;
+    gap: 14px;
     text-align: center;
     position: relative;
   `,
 
   charName: css`
     font-size: 20px;
-    font-weight: 700;
+    font-weight: 600;
     color: ${token.colorText};
     margin: 0;
-    letter-spacing: -0.02em;
+    letter-spacing: -0.01em;
   `,
 
   charTitle: css`
@@ -200,7 +200,7 @@ const useStyles = createStyles(({ token, css }) => ({
   `,
 
   msgRowTight: css`
-    padding-top: 4px;
+    padding-top: 2px;
     animation: none;
   `,
 
@@ -354,7 +354,7 @@ const useStyles = createStyles(({ token, css }) => ({
   /* Bilibili video strip */
   videoStrip: css`
     margin-top: 8px;
-    margin-left: 44px;
+    margin-left: 46px;
     padding: 0 20px;
   `,
 
