@@ -31,7 +31,7 @@ const useStyles = createStyles(({ token, css }) => ({
     flex-direction: column;
     gap: 10px;
     cursor: pointer;
-    border: 1px solid ${token.colorBorderSecondary};
+    border: 1px solid ${token.colorBorder};
     background: ${token.colorFillTertiary};
     transition: border-color ${token.motionDurationFast}, background ${token.motionDurationFast};
     position: relative;
@@ -140,8 +140,8 @@ const useStyles = createStyles(({ token, css }) => ({
 
   tag: css`
     font-size: 10px;
-    padding: 1px 6px;
-    border-radius: 4px;
+    padding: 2px 8px;
+    border-radius: 6px;
   `,
 
   customCard: css`

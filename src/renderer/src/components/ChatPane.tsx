@@ -953,7 +953,7 @@ export default function ChatPane({
         <div className={styles.inputAreaInner}>
           <div
             className={styles.inputBox}
-            style={inputFocused ? { borderColor: character.color + '60', boxShadow: `0 2px 8px rgba(0,0,0,0.08), 0 8px 24px rgba(0,0,0,0.06), 0 0 0 3px ${character.color}1c` } : undefined}
+            style={inputFocused ? { borderColor: character.color + '80', boxShadow: `0 2px 8px rgba(0,0,0,0.08), 0 8px 24px rgba(0,0,0,0.06), 0 0 0 3px ${character.color}1c` } : undefined}
           >
             <textarea
               ref={inputRef}
