@@ -34,18 +34,6 @@ const useStyles = createStyles(({ token, css }) => ({
     display: flex;
     align-items: center;
     justify-content: center;
-
-    &::before {
-      content: '';
-      position: absolute;
-      left: 0;
-      top: 50%;
-      transform: translateY(-50%);
-      width: 3px;
-      height: 16px;
-      border-radius: 0 2px 2px 0;
-      background: ${token.colorPrimary};
-    }
   `,
 
   spacer: css`
@@ -100,7 +88,14 @@ export default function NavRail({ character, avatars, appearance, view, onViewCh
         </svg>
       </div>
 
-      <div className={view === 'chat' ? styles.activeWrap : undefined}>
+      <div className={styles.activeWrap}>
+        {view === 'chat' && (
+          <span style={{
+            position: 'absolute', left: 0, top: '50%', transform: 'translateY(-50%)',
+            width: 3, height: 16, borderRadius: '0 2px 2px 0',
+            background: character.color,
+          }} />
+        )}
         <ActionIcon
           icon={<MessageSquare size={16} />}
           title="对话"
@@ -110,7 +105,14 @@ export default function NavRail({ character, avatars, appearance, view, onViewCh
         />
       </div>
 
-      <div className={view === 'diary' ? styles.activeWrap : undefined}>
+      <div className={styles.activeWrap}>
+        {view === 'diary' && (
+          <span style={{
+            position: 'absolute', left: 0, top: '50%', transform: 'translateY(-50%)',
+            width: 3, height: 16, borderRadius: '0 2px 2px 0',
+            background: character.color,
+          }} />
+        )}
         <ActionIcon
           icon={<BarChart2 size={16} />}
           title="情绪日记"
