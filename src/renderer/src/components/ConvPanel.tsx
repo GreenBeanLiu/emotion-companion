@@ -132,12 +132,13 @@ const useStyles = createStyles(({ token, css }) => ({
     font-size: 13px;
     color: ${token.colorTextTertiary};
     text-align: center;
-    margin-top: 48px;
+    margin-top: 56px;
     padding: 0 20px;
     user-select: none;
     display: flex;
     flex-direction: column;
     align-items: center;
+    gap: 4px;
   `,
 
   itemWrap: css`

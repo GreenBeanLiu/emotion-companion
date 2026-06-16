@@ -502,7 +502,7 @@ const useStyles = createStyles(({ token, css }) => ({
 
   scrollBottomBtn: css`
     position: absolute;
-    bottom: 12px;
+    bottom: 16px;
     left: 50%;
     transform: translateX(-50%);
     width: 32px;
@@ -515,10 +515,11 @@ const useStyles = createStyles(({ token, css }) => ({
     align-items: center;
     justify-content: center;
     cursor: pointer;
-    box-shadow: 0 2px 8px rgba(0,0,0,0.15);
-    transition: opacity ${token.motionDurationFast}, background ${token.motionDurationFast};
+    box-shadow: 0 2px 12px rgba(0,0,0,0.18);
+    transition: background ${token.motionDurationFast}, color ${token.motionDurationFast};
     outline: none;
     z-index: 10;
+    animation: slide-in-down 0.15s ease-out both;
 
     &:hover {
       background: ${token.colorFill};
