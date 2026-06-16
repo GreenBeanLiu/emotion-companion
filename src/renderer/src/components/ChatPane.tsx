@@ -1,7 +1,7 @@
 import { useEffect, useRef, useState, useCallback } from 'react'
 import { createStyles } from 'antd-style'
 import { Markdown } from '@lobehub/ui'
-import { SendHorizontal, User, Copy, Check, ArrowDown, RotateCcw, Pencil } from 'lucide-react'
+import { SendHorizontal, User, Copy, Check, ArrowDown, RotateCcw, Pencil, Square } from 'lucide-react'
 import { api, type ConversationRow, type MessageRow, type BilibiliVideo } from '../lib/api'
 import type { Character } from '../lib/characters'
 
@@ -663,6 +663,9 @@ export default function ChatPane({
       setMessages((prev) => prev.filter((m) => m !== optimisticUser))
       setError(result.error)
       setSending(false)
+    } else if (result.aborted) {
+      setMessages((prev) => prev.filter((m) => !('streaming' in m)))
+      setSending(false)
     }
   }, [input, sending, conversation, messages, onConversationCreated])
 
@@ -699,6 +702,9 @@ export default function ChatPane({
     if (result.error) {
       setMessages((prev) => prev.filter((m) => m !== optimistic))
       setError(result.error)
+      setSending(false)
+    } else if (result.aborted) {
+      setMessages((prev) => prev.filter((m) => !('streaming' in m)))
       setSending(false)
     }
   }, [sending, conversation, messages])
@@ -921,17 +927,28 @@ export default function ChatPane({
               className={styles.inputTextarea}
               disabled={sending}
             />
-            <button
-              onClick={sendMessage}
-              disabled={!input.trim() || sending}
-              className={styles.sendBtn}
-              style={{
-                background: input.trim() && !sending ? character.color : token.colorFillSecondary,
-                color: input.trim() && !sending ? '#ffffff' : token.colorTextTertiary,
-              }}
-            >
-              <SendHorizontal size={14} />
-            </button>
+            {sending ? (
+              <button
+                onClick={() => conversation && api.chat.abort(conversation.id)}
+                className={styles.sendBtn}
+                style={{ background: token.colorFill, color: token.colorTextSecondary }}
+                title="停止生成"
+              >
+                <Square size={12} fill="currentColor" />
+              </button>
+            ) : (
+              <button
+                onClick={sendMessage}
+                disabled={!input.trim()}
+                className={styles.sendBtn}
+                style={{
+                  background: input.trim() ? character.color : token.colorFillSecondary,
+                  color: input.trim() ? '#ffffff' : token.colorTextTertiary,
+                }}
+              >
+                <SendHorizontal size={14} />
+              </button>
+            )}
           </div>
           <p className={styles.inputHint}>
             <span className={styles.kbdKey}>Enter</span>
@@ -1055,7 +1072,7 @@ function MessageBubble({
                 </Markdown>
               ) : null}
               {isStreaming && (
-                <span className="animate-pulse" style={{ color: character.color, marginLeft: 1 }}>▋</span>
+                <span style={{ color: character.color, marginLeft: 1, animation: 'cursor-blink 1s step-start infinite', display: 'inline-block', lineHeight: 1 }}>▋</span>
               )}
             </>
           )}

@@ -127,12 +127,12 @@ const useStyles = createStyles(({ token, css }) => ({
     outline: none;
 
     &:hover {
-      background: ${token.colorFillTertiary};
+      background: ${token.colorFillSecondary};
     }
   `,
 
   itemActive: css`
-    background: ${token.colorFillSecondary} !important;
+    background: ${token.colorFill} !important;
 
     .item-title {
       color: ${token.colorText} !important;

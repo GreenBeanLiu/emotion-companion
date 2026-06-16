@@ -133,6 +133,10 @@ export function registerIpcHandlers(): void {
     } catch (err: unknown) {
       activeAbortControllers.delete(conversationId)
       if ((err as Error).name === 'AbortError') {
+        if (fullReply.trim()) {
+          addMessage(conversationId, 'assistant', fullReply.trim())
+          win?.webContents.send('chat:done', { conversationId })
+        }
         return { userMessageId: userMsg.id, aborted: true }
       }
       return { error: (err as Error).message ?? '请求失败' }
