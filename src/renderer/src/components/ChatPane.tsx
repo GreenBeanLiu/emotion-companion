@@ -104,7 +104,7 @@ const useStyles = createStyles(({ token, css }) => ({
     width: 100%;
     max-width: 800px;
     margin: 0 auto;
-    padding: 12px 0 40px;
+    padding: 24px 0 24px;
     display: flex;
     flex-direction: column;
     flex: 1;
@@ -119,7 +119,6 @@ const useStyles = createStyles(({ token, css }) => ({
     justify-content: center;
     gap: 16px;
     text-align: center;
-    min-height: 58vh;
     position: relative;
   `,
 
@@ -190,7 +189,7 @@ const useStyles = createStyles(({ token, css }) => ({
     display: flex;
     gap: 12px;
     align-items: flex-start;
-    padding: 16px 20px 4px;
+    padding: 10px 20px 4px;
     animation: msg-in 0.2s ease-out both;
 
     &:hover .msg-actions {
@@ -232,9 +231,10 @@ const useStyles = createStyles(({ token, css }) => ({
 
   msgSenderLabel: css`
     font-size: 12px;
+    font-weight: 500;
     line-height: 1;
     color: ${token.colorTextDescription};
-    margin-bottom: 6px;
+    margin-bottom: 4px;
   `,
 
   msgBubble: css`
