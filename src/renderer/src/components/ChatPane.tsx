@@ -281,7 +281,6 @@ const useStyles = createStyles(({ token, css }) => ({
     color: ${token.colorTextTertiary};
     white-space: nowrap;
     font-weight: 500;
-    letter-spacing: 0.03em;
   `,
 
   msgTimestamp: css`

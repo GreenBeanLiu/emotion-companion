@@ -282,7 +282,7 @@ const useStyles = createStyles(({ token, css }) => ({
 
   groupLabel: css`
     font-size: 10px;
-    font-weight: 500;
+    font-weight: 600;
     color: ${token.colorTextTertiary};
     padding: 10px 12px 3px;
     user-select: none;
