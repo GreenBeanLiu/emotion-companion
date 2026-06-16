@@ -190,7 +190,7 @@ const useStyles = createStyles(({ token, css }) => ({
     display: flex;
     gap: 14px;
     align-items: flex-start;
-    padding: 10px 16px 4px;
+    padding: 10px 20px 4px;
     animation: msg-in 0.2s ease-out both;
 
     &:hover .msg-actions {
@@ -219,7 +219,7 @@ const useStyles = createStyles(({ token, css }) => ({
 
   msgContentUser: css`
     align-items: flex-end;
-    max-width: 72%;
+    max-width: 68%;
   `,
 
   avatarSpacer: css`
@@ -247,7 +247,6 @@ const useStyles = createStyles(({ token, css }) => ({
 
   msgBubbleUser: css`
     background: ${token.colorFill};
-    border: 1px solid ${token.colorBorder};
     color: ${token.colorText};
     padding: 8px 14px;
   `,
