@@ -93,7 +93,7 @@
    ============================================================ */
 html[data-appearance="light"] {
   --color-background: #f3f4f6;
-  --color-surface: #ffffff;
+  --color-surface: #fafafa;
   --color-surface-2: #f0f0f0;
   --color-surface-3: #e8e8e8;
   --color-border: #e0e0e0;

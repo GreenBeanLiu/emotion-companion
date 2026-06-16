@@ -32,8 +32,8 @@ export const emotionLightTheme = {
   token: {
     ...sharedTokens,
     colorBgLayout: '#f3f4f6',
-    colorBgBase: '#ffffff',
-    colorBgContainer: '#ffffff',
+    colorBgBase: '#fafafa',
+    colorBgContainer: '#fafafa',
     colorBgElevated: '#ffffff',
     colorBgSpotlight: '#1f2937',
     colorBgMask: 'rgba(0,0,0,0.25)',
