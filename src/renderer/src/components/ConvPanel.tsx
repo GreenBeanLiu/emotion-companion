@@ -60,8 +60,8 @@ const useStyles = createStyles(({ token, css }) => ({
   `,
 
   newBtn: css`
-    width: 28px;
-    height: 28px;
+    width: 30px;
+    height: 30px;
     border-radius: ${token.borderRadiusSM}px;
     border: none;
     background: transparent;
@@ -88,14 +88,12 @@ const useStyles = createStyles(({ token, css }) => ({
   `,
 
   searchWrap: css`
-    padding: 8px 10px;
+    padding: 7px 8px;
     border-bottom: 1px solid ${token.colorBorderSecondary};
     flex-shrink: 0;
     display: flex;
     align-items: center;
     gap: 6px;
-    background: ${token.colorFillTertiary};
-    margin: 0;
     color: ${token.colorTextTertiary};
   `,
 
@@ -104,10 +102,16 @@ const useStyles = createStyles(({ token, css }) => ({
     display: flex;
     align-items: center;
     gap: 6px;
-    background: ${token.colorBgContainer};
+    background: ${token.colorFillSecondary};
     border: 1px solid ${token.colorBorderSecondary};
-    border-radius: ${token.borderRadius}px;
+    border-radius: ${token.borderRadiusSM}px;
     padding: 4px 8px;
+    transition: border-color ${token.motionDurationFast}, background ${token.motionDurationFast};
+
+    &:focus-within {
+      border-color: ${token.colorBorder};
+      background: ${token.colorFillTertiary};
+    }
   `,
 
   searchInput: css`
