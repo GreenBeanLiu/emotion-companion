@@ -4,7 +4,7 @@ const { darkAlgorithm, defaultAlgorithm } = theme
 
 const sharedTokens = {
   borderRadius: 8,
-  borderRadiusLG: 10,
+  borderRadiusLG: 12,
   borderRadiusSM: 6,
   borderRadiusXS: 4,
   fontSize: 14,
@@ -13,7 +13,7 @@ const sharedTokens = {
   lineHeight: 1.6,
   fontFamily:
     '"Geist Variable", Geist, -apple-system, BlinkMacSystemFont, "Segoe UI Variable Display", "Segoe UI", Roboto, "Helvetica Neue", Arial, "HarmonyOS Sans SC", "PingFang SC", "Microsoft YaHei UI", sans-serif',
-  controlHeight: 34,
+  controlHeight: 36,
   controlHeightSM: 28,
   controlHeightLG: 40,
   motionDurationFast: '0.1s',
