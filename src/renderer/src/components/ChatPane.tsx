@@ -440,11 +440,11 @@ const useStyles = createStyles(({ token, css }) => ({
     display: flex;
     align-items: flex-end;
     gap: 8px;
-    border-radius: ${token.borderRadiusLG}px;
+    border-radius: 16px;
     padding: 10px 14px;
     background: ${token.colorBgElevated};
     border: 1px solid ${token.colorBorder};
-    box-shadow: 0 1px 6px rgba(0,0,0,0.06), 0 4px 16px rgba(0,0,0,0.08);
+    box-shadow: 0 2px 8px rgba(0,0,0,0.08), 0 8px 24px rgba(0,0,0,0.06);
     transition: border-color ${token.motionDurationFast},
       box-shadow ${token.motionDurationFast};
   `,
@@ -476,7 +476,7 @@ const useStyles = createStyles(({ token, css }) => ({
     flex-shrink: 0;
     width: 32px;
     height: 32px;
-    border-radius: ${token.borderRadius}px;
+    border-radius: 10px;
     border: none;
     display: flex;
     align-items: center;
@@ -532,8 +532,8 @@ const useStyles = createStyles(({ token, css }) => ({
     align-items: center;
     padding: 0 5px;
     border-radius: 4px;
-    border: 1px solid ${token.colorBorderSecondary};
-    background: ${token.colorFillQuaternary};
+    border: 1px solid ${token.colorBorder};
+    background: ${token.colorFillTertiary};
     font-size: 10px;
     height: 16px;
     font-family: ${token.fontFamily};
@@ -946,7 +946,7 @@ export default function ChatPane({
         <div className={styles.inputAreaInner}>
           <div
             className={styles.inputBox}
-            style={inputFocused ? { borderColor: character.color + '60', boxShadow: `0 4px 20px rgba(0,0,0,0.12), 0 0 0 3px ${character.color}1c` } : undefined}
+            style={inputFocused ? { borderColor: character.color + '60', boxShadow: `0 2px 8px rgba(0,0,0,0.08), 0 8px 24px rgba(0,0,0,0.06), 0 0 0 3px ${character.color}1c` } : undefined}
           >
             <textarea
               ref={inputRef}
@@ -1006,7 +1006,7 @@ function CharAvatar({ character, avatarUrl }: { character: Character; avatarUrl?
         flexShrink: 0,
         width: 36,
         height: 36,
-        borderRadius: '50%',
+        borderRadius: 10,
         background: avatarUrl ? 'transparent' : `linear-gradient(135deg, ${character.bgGradient[0]}, ${character.color}60)`,
         border: avatarUrl ? 'none' : `1px solid ${character.color}30`,
         display: 'flex',
