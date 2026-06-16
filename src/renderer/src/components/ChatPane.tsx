@@ -188,16 +188,12 @@ const useStyles = createStyles(({ token, css }) => ({
 
   msgRow: css`
     display: flex;
-    gap: 12px;
+    gap: 14px;
     align-items: flex-start;
     padding: 10px 16px 4px;
     animation: msg-in 0.2s ease-out both;
 
     &:hover .msg-actions {
-      opacity: 1;
-    }
-
-    &:hover .msg-timestamp {
       opacity: 1;
     }
   `,
@@ -289,18 +285,17 @@ const useStyles = createStyles(({ token, css }) => ({
   msgTimestamp: css`
     font-size: 10px;
     color: ${token.colorTextQuaternary};
-    margin-bottom: 4px;
-    opacity: 0;
-    transition: opacity ${token.motionDurationFast};
     user-select: none;
+    line-height: 24px;
   `,
 
   msgActions: css`
     display: flex;
+    align-items: center;
     gap: 2px;
     margin-top: 2px;
     opacity: 0;
-    transition: opacity ${token.motionDurationFast};
+    transition: opacity ${token.motionDurationMid};
   `,
 
   msgActionBtn: css`
@@ -1101,12 +1096,6 @@ function MessageBubble({
           ) : null}
         </div>
 
-        {'created_at' in msg && (
-          <span className={`${styles.msgTimestamp} msg-timestamp`}>
-            {formatTime((msg as MessageRow).created_at)}
-          </span>
-        )}
-
         {emotionMeta && (
           <span className={styles.emotionTag} style={{ color: emotionMeta.color }}>
             <span>{emotionMeta.emoji}</span>
@@ -1116,6 +1105,11 @@ function MessageBubble({
 
         {!isStreaming && (
           <div className={`${styles.msgActions} msg-actions`}>
+            {'created_at' in msg && (
+              <span className={styles.msgTimestamp} style={{ opacity: 'inherit', marginRight: 2 }}>
+                {formatTime((msg as MessageRow).created_at)}
+              </span>
+            )}
             <button className={styles.msgActionBtn} onClick={handleCopy} title="复制">
               {copied ? <Check size={12} strokeWidth={2.5} /> : <Copy size={12} />}
             </button>
