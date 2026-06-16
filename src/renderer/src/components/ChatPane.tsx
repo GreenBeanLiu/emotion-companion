@@ -117,7 +117,7 @@ const useStyles = createStyles(({ token, css }) => ({
     flex-direction: column;
     align-items: center;
     justify-content: center;
-    gap: 14px;
+    gap: 20px;
     text-align: center;
     position: relative;
   `,
@@ -131,11 +131,11 @@ const useStyles = createStyles(({ token, css }) => ({
   `,
 
   charTitle: css`
-    font-size: 14px;
-    line-height: 1.5;
+    font-size: 13px;
+    line-height: 1.6;
     margin: 0;
     text-align: center;
-    max-width: 260px;
+    max-width: 300px;
     color: ${token.colorTextSecondary};
   `,
 
@@ -183,6 +183,7 @@ const useStyles = createStyles(({ token, css }) => ({
       border-color: ${token.colorBorder};
       background: ${token.colorFillSecondary};
       color: ${token.colorText};
+      box-shadow: 0 2px 8px rgba(0,0,0,0.06);
     }
   `,
 
