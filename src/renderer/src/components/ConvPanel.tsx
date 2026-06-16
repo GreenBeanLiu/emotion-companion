@@ -52,10 +52,11 @@ const useStyles = createStyles(({ token, css }) => ({
   `,
 
   headerLabel: css`
-    font-size: 14px;
-    font-weight: 600;
-    color: ${token.colorText};
+    font-size: 13px;
+    font-weight: 500;
+    color: ${token.colorTextSecondary};
     user-select: none;
+    letter-spacing: 0.01em;
   `,
 
   newBtn: css`
@@ -165,11 +166,11 @@ const useStyles = createStyles(({ token, css }) => ({
   itemMeta: css`
     font-size: 11px;
     color: ${token.colorTextTertiary};
-    margin-top: 2px;
+    margin-top: 1px;
     overflow: hidden;
     text-overflow: ellipsis;
     white-space: nowrap;
-    line-height: 1.4;
+    line-height: 1.5;
   `,
 
   moreBtn: css`
