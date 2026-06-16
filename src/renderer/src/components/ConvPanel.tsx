@@ -53,10 +53,10 @@ const useStyles = createStyles(({ token, css }) => ({
 
   headerLabel: css`
     font-size: 13px;
-    font-weight: 500;
-    color: ${token.colorTextSecondary};
+    font-weight: 600;
+    color: ${token.colorText};
     user-select: none;
-    letter-spacing: 0.01em;
+    letter-spacing: -0.01em;
   `,
 
   newBtn: css`

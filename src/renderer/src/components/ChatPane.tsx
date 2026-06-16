@@ -102,7 +102,7 @@ const useStyles = createStyles(({ token, css }) => ({
 
   messagesInner: css`
     width: 100%;
-    max-width: 800px;
+    max-width: 760px;
     margin: 0 auto;
     padding: 24px 0 36px;
     display: flex;
@@ -433,7 +433,7 @@ const useStyles = createStyles(({ token, css }) => ({
 
   inputAreaInner: css`
     width: 100%;
-    max-width: 800px;
+    max-width: 760px;
     margin: 0 auto;
   `,
 
