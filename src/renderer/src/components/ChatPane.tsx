@@ -1066,7 +1066,7 @@ function MessageBubble({
       <div className={cx(styles.msgContent, isUser && styles.msgContentUser)}>
         {!isUser && !tight && (
           <span className={styles.msgSenderLabel} style={{ color: character.color + 'bb' }}>
-            {avatarUrl ? '' : character.emoji + ' '}{character.name}
+            {character.name}
           </span>
         )}
 
