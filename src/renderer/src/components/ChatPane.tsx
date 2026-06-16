@@ -486,8 +486,7 @@ const useStyles = createStyles(({ token, css }) => ({
     align-items: center;
     justify-content: center;
     cursor: pointer;
-    transition: opacity ${token.motionDurationFast};
-    color: white;
+    transition: background ${token.motionDurationFast}, color ${token.motionDurationFast}, opacity ${token.motionDurationFast};
     outline: none;
 
     &:disabled {
@@ -532,16 +531,18 @@ const useStyles = createStyles(({ token, css }) => ({
   `,
 
   kbdKey: css`
-    display: inline-block;
-    padding: 0 4px;
-    border-radius: 3px;
+    display: inline-flex;
+    align-items: center;
+    padding: 0 5px;
+    border-radius: 4px;
     border: 1px solid ${token.colorBorderSecondary};
-    background: ${token.colorFillTertiary};
+    background: ${token.colorFillQuaternary};
     font-size: 10px;
-    line-height: 16px;
+    height: 16px;
     font-family: ${token.fontFamily};
-    color: ${token.colorTextSecondary};
+    color: ${token.colorTextTertiary};
     vertical-align: middle;
+    letter-spacing: 0.01em;
   `,
 }))
 
@@ -972,7 +973,7 @@ export default function ChatPane({
           <p className={styles.inputHint}>
             <span className={styles.kbdKey}>Enter</span>
             {' '}发送
-            {'  ·  '}
+            <span style={{ margin: '0 6px', opacity: 0.4 }}>·</span>
             <span className={styles.kbdKey}>Shift+Enter</span>
             {' '}换行
           </p>
