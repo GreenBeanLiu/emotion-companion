@@ -429,9 +429,8 @@ const useStyles = createStyles(({ token, css }) => ({
 
   inputArea: css`
     flex-shrink: 0;
-    padding: 10px 20px 16px;
+    padding: 12px 20px 20px;
     background: ${token.colorBgBase};
-    border-top: 1px solid ${token.colorBorderSecondary};
   `,
 
   inputAreaInner: css`
@@ -447,8 +446,8 @@ const useStyles = createStyles(({ token, css }) => ({
     border-radius: ${token.borderRadiusLG}px;
     padding: 10px 14px;
     background: ${token.colorBgElevated};
-    border: 1px solid ${token.colorBorder};
-    box-shadow: 0 2px 12px rgba(0,0,0,0.12), 0 1px 3px rgba(0,0,0,0.08);
+    border: 1px solid ${token.colorBorderSecondary};
+    box-shadow: 0 1px 6px rgba(0,0,0,0.06), 0 4px 16px rgba(0,0,0,0.08);
     transition: border-color ${token.motionDurationFast},
       box-shadow ${token.motionDurationFast};
   `,
@@ -903,6 +902,17 @@ export default function ChatPane({
           <div ref={bottomRef} />
         </div>
       </div>
+
+      {/* Bottom gradient fade */}
+      <div style={{
+        position: 'absolute',
+        bottom: 0,
+        left: 0,
+        right: 0,
+        height: 48,
+        pointerEvents: 'none',
+        background: `linear-gradient(to bottom, transparent, ${token.colorBgBase})`,
+      }} />
 
       {showScrollBtn && (
         <button
