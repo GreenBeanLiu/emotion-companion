@@ -144,7 +144,7 @@ const useStyles = createStyles(({ token, css }) => ({
   `,
 
   itemActive: css`
-    background: ${token.colorFill} !important;
+    background: ${token.colorFillSecondary} !important;
 
     .item-title {
       color: ${token.colorText} !important;
@@ -389,7 +389,7 @@ export default function ConvPanel({ activeId, refreshKey, character, onSelect, o
                       onClick={() => onSelect(conv)}
                       onDoubleClick={(e) => startRename(e, conv)}
                       className={cx(styles.item, activeId === conv.id && styles.itemActive)}
-                      style={activeId === conv.id ? { borderLeft: `2px solid ${character.color}80`, paddingLeft: 10 } : undefined}
+                      style={activeId === conv.id ? { borderLeft: `3px solid ${character.color}`, paddingLeft: 9 } : undefined}
                     >
                       <p className={cx(styles.itemTitle, 'item-title')}>{conv.title}</p>
                       <p className={styles.itemMeta}>
