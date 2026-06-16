@@ -62,7 +62,7 @@ const useStyles = createStyles(({ token, css }) => ({
 
   charName: css`
     font-size: 13px;
-    font-weight: 600;
+    font-weight: 500;
     color: ${token.colorText};
     overflow: hidden;
     text-overflow: ellipsis;

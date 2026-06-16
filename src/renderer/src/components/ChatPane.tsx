@@ -190,7 +190,7 @@ const useStyles = createStyles(({ token, css }) => ({
     display: flex;
     gap: 12px;
     align-items: flex-start;
-    padding: 10px 20px 4px;
+    padding: 10px 16px 4px;
     animation: msg-in 0.2s ease-out both;
 
     &:hover .msg-actions {
@@ -267,7 +267,7 @@ const useStyles = createStyles(({ token, css }) => ({
     display: flex;
     align-items: center;
     gap: 10px;
-    padding: 12px 20px 4px;
+    padding: 12px 16px 4px;
     user-select: none;
 
     &::before, &::after {
