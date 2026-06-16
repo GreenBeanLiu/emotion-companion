@@ -155,10 +155,10 @@ const useStyles = createStyles(({ token, css }) => ({
 
   starterList: css`
     display: grid;
-    grid-template-columns: 1fr 1fr;
+    grid-template-columns: repeat(auto-fill, minmax(170px, 1fr));
     gap: 8px;
     width: 100%;
-    max-width: 380px;
+    max-width: 400px;
   `,
 
   starterBtn: css`
@@ -296,8 +296,8 @@ const useStyles = createStyles(({ token, css }) => ({
 
   msgActions: css`
     display: flex;
-    gap: 4px;
-    margin-top: 4px;
+    gap: 2px;
+    margin-top: 2px;
     opacity: 0;
     transition: opacity ${token.motionDurationFast};
   `,
@@ -306,8 +306,8 @@ const useStyles = createStyles(({ token, css }) => ({
     width: 24px;
     height: 24px;
     border-radius: ${token.borderRadiusSM}px;
-    border: 1px solid ${token.colorBorderSecondary};
-    background: ${token.colorBgElevated};
+    border: none;
+    background: transparent;
     color: ${token.colorTextTertiary};
     display: flex;
     align-items: center;
@@ -318,7 +318,7 @@ const useStyles = createStyles(({ token, css }) => ({
 
     &:hover {
       color: ${token.colorText};
-      background: ${token.colorFill};
+      background: ${token.colorFillSecondary};
     }
   `,
 
