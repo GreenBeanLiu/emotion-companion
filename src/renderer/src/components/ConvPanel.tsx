@@ -88,13 +88,26 @@ const useStyles = createStyles(({ token, css }) => ({
   `,
 
   searchWrap: css`
-    padding: 6px 8px;
+    padding: 8px 10px;
     border-bottom: 1px solid ${token.colorBorderSecondary};
     flex-shrink: 0;
     display: flex;
     align-items: center;
     gap: 6px;
+    background: ${token.colorFillTertiary};
+    margin: 0;
     color: ${token.colorTextTertiary};
+  `,
+
+  searchInner: css`
+    flex: 1;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    background: ${token.colorBgContainer};
+    border: 1px solid ${token.colorBorderSecondary};
+    border-radius: ${token.borderRadius}px;
+    padding: 4px 8px;
   `,
 
   searchInput: css`
@@ -347,21 +360,23 @@ export default function ConvPanel({ activeId, refreshKey, character, onSelect, o
 
       {convs.length > 0 && (
         <div className={styles.searchWrap}>
-          <Search size={12} style={{ flexShrink: 0 }} />
-          <input
-            className={styles.searchInput}
-            value={search}
-            onChange={(e) => setSearch(e.target.value)}
-            placeholder="搜索对话"
-          />
-          {search && (
-            <button
-              onClick={() => setSearch('')}
-              style={{ flexShrink: 0, background: 'none', border: 'none', cursor: 'pointer', display: 'flex', alignItems: 'center', padding: 0 }}
-            >
-              <X size={12} style={{ color: 'var(--ant-color-text-tertiary)' }} />
-            </button>
-          )}
+          <div className={styles.searchInner}>
+            <Search size={11} style={{ flexShrink: 0 }} />
+            <input
+              className={styles.searchInput}
+              value={search}
+              onChange={(e) => setSearch(e.target.value)}
+              placeholder="搜索对话"
+            />
+            {search && (
+              <button
+                onClick={() => setSearch('')}
+                style={{ flexShrink: 0, background: 'none', border: 'none', cursor: 'pointer', display: 'flex', alignItems: 'center', padding: 0 }}
+              >
+                <X size={11} style={{ color: 'var(--ant-color-text-tertiary)' }} />
+              </button>
+            )}
+          </div>
         </div>
       )}
 

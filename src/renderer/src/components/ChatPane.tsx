@@ -890,8 +890,8 @@ export default function ChatPane({
                   <span
                     key={delay}
                     style={{
-                      width: 7,
-                      height: 7,
+                      width: 6,
+                      height: 6,
                       borderRadius: '50%',
                       display: 'inline-block',
                       backgroundColor: character.color,

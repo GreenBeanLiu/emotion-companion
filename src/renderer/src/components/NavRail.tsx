@@ -58,8 +58,7 @@ const useStyles = createStyles(({ token, css }) => ({
     background: transparent;
 
     &:hover {
-      filter: brightness(1.15);
-      transform: scale(1.08);
+      filter: brightness(1.1);
     }
   `,
 }))
