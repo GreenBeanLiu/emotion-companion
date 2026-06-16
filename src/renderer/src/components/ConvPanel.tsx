@@ -129,7 +129,7 @@ const useStyles = createStyles(({ token, css }) => ({
   item: css`
     width: 100%;
     text-align: left;
-    padding: 8px 36px 8px 12px;
+    padding: 8px 28px 8px 12px;
     border-radius: ${token.borderRadius}px;
     border: none;
     background: transparent;
