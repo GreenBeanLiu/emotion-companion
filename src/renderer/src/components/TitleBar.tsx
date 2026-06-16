@@ -49,13 +49,13 @@ const useStyles = createStyles(({ token, css }) => ({
   `,
 
   charAvatar: css`
-    width: 24px;
-    height: 24px;
-    border-radius: 6px;
+    width: 26px;
+    height: 26px;
+    border-radius: 7px;
     display: flex;
     align-items: center;
     justify-content: center;
-    font-size: 13px;
+    font-size: 14px;
     flex-shrink: 0;
     overflow: hidden;
   `,
@@ -82,8 +82,8 @@ const useStyles = createStyles(({ token, css }) => ({
 
   convTitle: css`
     font-size: 13px;
-    font-weight: 500;
-    color: ${token.colorTextSecondary};
+    font-weight: 400;
+    color: ${token.colorText};
     max-width: 360px;
     overflow: hidden;
     text-overflow: ellipsis;
@@ -92,8 +92,8 @@ const useStyles = createStyles(({ token, css }) => ({
 
   appLabel: css`
     font-size: 13px;
-    font-weight: 500;
-    color: ${token.colorTextTertiary};
+    font-weight: 400;
+    color: ${token.colorTextSecondary};
     letter-spacing: 0.01em;
   `,
 
