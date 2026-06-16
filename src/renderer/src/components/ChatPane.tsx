@@ -295,7 +295,7 @@ const useStyles = createStyles(({ token, css }) => ({
 
   msgActions: css`
     display: flex;
-    gap: 2px;
+    gap: 4px;
     margin-top: 4px;
     opacity: 0;
     transition: opacity ${token.motionDurationFast};
@@ -885,10 +885,10 @@ export default function ChatPane({
             <div className={styles.msgRow}>
               <CharAvatar character={character} avatarUrl={avatars[character.id]} />
               <div className={styles.typingBubble}>
-                {[0, 120, 240].map((delay) => (
+                {[0, 150, 300].map((delay) => (
                   <span
                     key={delay}
-                    className="w-1.5 h-1.5 rounded-full animate-bounce"
+                    className="w-2 h-2 rounded-full animate-bounce"
                     style={{ backgroundColor: character.color + 'cc', animationDelay: `${delay}ms` }}
                   />
                 ))}
@@ -1059,25 +1059,23 @@ function MessageBubble({
         >
           {isUser ? (
             msg.content
-          ) : (
-            <>
-              {msg.content ? (
-                <Markdown
-                  variant="chat"
-                  fontSize={14}
-                  style={{ margin: 0 }}
-                  enableLatex={false}
-                  enableMermaid={false}
-                  enableImageGallery={false}
-                >
-                  {msg.content}
-                </Markdown>
-              ) : null}
-              {isStreaming && (
-                <span style={{ color: character.color, marginLeft: 1, animation: 'cursor-blink 1s step-start infinite', display: 'inline-block', lineHeight: 1 }}>▋</span>
-              )}
-            </>
-          )}
+          ) : isStreaming ? (
+            <span style={{ fontSize: 14, lineHeight: '1.6', whiteSpace: 'pre-wrap', wordBreak: 'break-word' }}>
+              {msg.content}
+              <span style={{ color: character.color, marginLeft: 1, animation: 'cursor-blink 1s step-start infinite', display: 'inline-block', lineHeight: 1 }}>▋</span>
+            </span>
+          ) : msg.content ? (
+            <Markdown
+              variant="chat"
+              fontSize={14}
+              style={{ margin: 0 }}
+              enableLatex={false}
+              enableMermaid={false}
+              enableImageGallery={false}
+            >
+              {msg.content}
+            </Markdown>
+          ) : null}
         </div>
 
         {'created_at' in msg && (
@@ -1096,16 +1094,16 @@ function MessageBubble({
         {!isStreaming && (
           <div className={`${styles.msgActions} msg-actions`}>
             <button className={styles.msgActionBtn} onClick={handleCopy} title="复制">
-              {copied ? <Check size={11} strokeWidth={2.5} /> : <Copy size={11} />}
+              {copied ? <Check size={12} strokeWidth={2.5} /> : <Copy size={12} />}
             </button>
             {onEdit && (
               <button className={styles.msgActionBtn} onClick={onEdit} title="编辑">
-                <Pencil size={11} />
+                <Pencil size={12} />
               </button>
             )}
             {onRegenerate && isLast && (
               <button className={styles.msgActionBtn} onClick={onRegenerate} title="重新生成">
-                <RotateCcw size={11} />
+                <RotateCcw size={12} />
               </button>
             )}
           </div>
