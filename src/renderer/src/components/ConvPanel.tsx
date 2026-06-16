@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react'
 import { createStyles } from 'antd-style'
 import { Tooltip } from 'antd'
-import { SquarePen, Trash2, MoreVertical, MessageSquarePlus, Search } from 'lucide-react'
+import { SquarePen, Trash2, MoreVertical, MessageSquarePlus, Search, Pencil } from 'lucide-react'
 import { api, type ConversationRow } from '../lib/api'
 import type { Character } from '../lib/characters'
 import { ScrollArea } from '@/components/ui/scroll-area'
@@ -194,11 +194,32 @@ const useStyles = createStyles(({ token, css }) => ({
     background: ${token.colorBgElevated};
   `,
 
+  menuBtn: css`
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 7px 14px;
+    font-size: 12px;
+    width: 100%;
+    border: none;
+    background: transparent;
+    color: ${token.colorTextSecondary};
+    cursor: pointer;
+    white-space: nowrap;
+    transition: background ${token.motionDurationFast};
+    outline: none;
+    font-family: ${token.fontFamily};
+
+    &:hover {
+      background: ${token.colorFillTertiary};
+    }
+  `,
+
   deleteBtn: css`
     display: flex;
     align-items: center;
     gap: 8px;
-    padding: 8px 14px;
+    padding: 7px 14px;
     font-size: 12px;
     width: 100%;
     border: none;
@@ -208,10 +229,24 @@ const useStyles = createStyles(({ token, css }) => ({
     white-space: nowrap;
     transition: background ${token.motionDurationFast};
     outline: none;
+    font-family: ${token.fontFamily};
 
     &:hover {
       background: ${token.colorErrorBg};
     }
+  `,
+
+  renameInput: css`
+    flex: 1;
+    border: none;
+    background: ${token.colorFillTertiary};
+    border-radius: ${token.borderRadiusSM}px;
+    padding: 2px 6px;
+    font-size: 13px;
+    color: ${token.colorText};
+    font-family: ${token.fontFamily};
+    outline: 2px solid ${token.colorPrimaryBorder};
+    min-width: 0;
   `,
 }))
 
@@ -228,6 +263,8 @@ export default function ConvPanel({ activeId, refreshKey, character, onSelect, o
   const [convs, setConvs] = useState<ConversationRow[]>([])
   const [menuId, setMenuId] = useState<number | null>(null)
   const [search, setSearch] = useState('')
+  const [renamingId, setRenamingId] = useState<number | null>(null)
+  const [renameValue, setRenameValue] = useState('')
 
   useEffect(() => {
     api.conv.list().then(setConvs)
@@ -248,6 +285,22 @@ export default function ConvPanel({ activeId, refreshKey, character, onSelect, o
     await api.conv.delete(id)
     setConvs((list) => list.filter((c) => c.id !== id))
     setMenuId(null)
+  }
+
+  function startRename(e: React.MouseEvent, conv: ConversationRow) {
+    e.stopPropagation()
+    setMenuId(null)
+    setRenamingId(conv.id)
+    setRenameValue(conv.title)
+  }
+
+  async function commitRename(id: number) {
+    const title = renameValue.trim()
+    if (title && title !== convs.find((c) => c.id === id)?.title) {
+      await api.conv.rename(id, title)
+      setConvs((list) => list.map((c) => c.id === id ? { ...c, title } : c))
+    }
+    setRenamingId(null)
   }
 
   return (
@@ -284,16 +337,33 @@ export default function ConvPanel({ activeId, refreshKey, character, onSelect, o
         <div className={styles.list}>
           {filteredConvs.map((conv) => (
             <div key={conv.id} className={cx(styles.itemWrap, 'group')}>
-              <button
-                onClick={() => onSelect(conv)}
-                className={cx(styles.item, activeId === conv.id && styles.itemActive)}
-                style={activeId === conv.id ? { borderLeft: `2px solid ${character.color}80`, paddingLeft: 10 } : undefined}
-              >
-                <p className={cx(styles.itemTitle, 'item-title')}>{conv.title}</p>
-                <p className={styles.itemMeta}>
-                  {conv.summary ?? `${relativeTime(conv.updated_at)}${conv.message_count ? ` · ${conv.message_count} 条` : ''}`}
-                </p>
-              </button>
+              {renamingId === conv.id ? (
+                <div style={{ padding: '6px 12px' }}>
+                  <input
+                    autoFocus
+                    className={styles.renameInput}
+                    value={renameValue}
+                    onChange={(e) => setRenameValue(e.target.value)}
+                    onBlur={() => commitRename(conv.id)}
+                    onKeyDown={(e) => {
+                      if (e.key === 'Enter') commitRename(conv.id)
+                      if (e.key === 'Escape') setRenamingId(null)
+                    }}
+                  />
+                </div>
+              ) : (
+                <button
+                  onClick={() => onSelect(conv)}
+                  onDoubleClick={(e) => startRename(e, conv)}
+                  className={cx(styles.item, activeId === conv.id && styles.itemActive)}
+                  style={activeId === conv.id ? { borderLeft: `2px solid ${character.color}80`, paddingLeft: 10 } : undefined}
+                >
+                  <p className={cx(styles.itemTitle, 'item-title')}>{conv.title}</p>
+                  <p className={styles.itemMeta}>
+                    {conv.summary ?? `${relativeTime(conv.updated_at)}${conv.message_count ? ` · ${conv.message_count} 条` : ''}`}
+                  </p>
+                </button>
+              )}
 
               <button
                 onClick={(e) => {
@@ -307,6 +377,13 @@ export default function ConvPanel({ activeId, refreshKey, character, onSelect, o
 
               {menuId === conv.id && (
                 <div className={styles.contextMenu}>
+                  <button
+                    onClick={(e) => startRename(e, conv)}
+                    className={styles.menuBtn}
+                  >
+                    <Pencil size={11} />
+                    重命名
+                  </button>
                   <button
                     onClick={(e) => handleDelete(e, conv.id)}
                     className={styles.deleteBtn}
