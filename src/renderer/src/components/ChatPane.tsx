@@ -382,10 +382,10 @@ const useStyles = createStyles(({ token, css }) => ({
     flex-shrink: 0;
     width: 160px;
     text-align: left;
-    border-radius: ${token.borderRadius}px;
+    border-radius: ${token.borderRadiusLG}px;
     overflow: hidden;
     border: 1px solid ${token.colorBorder};
-    background: ${token.colorBgContainer};
+    background: ${token.colorBgElevated};
     cursor: pointer;
     transition: border-color ${token.motionDurationFast},
       background ${token.motionDurationFast};
@@ -398,7 +398,7 @@ const useStyles = createStyles(({ token, css }) => ({
   `,
 
   videoInfo: css`
-    padding: 6px 8px 8px;
+    padding: 8px 10px 10px;
   `,
 
   videoTitle: css`

@@ -150,19 +150,19 @@ export const emotionTheme = {
   },
   components: {
     Modal: {
-      contentBg: '#0d0d0d',
-      headerBg: '#0d0d0d',
-      footerBg: '#0d0d0d',
+      contentBg: '#141414',
+      headerBg: '#141414',
+      footerBg: '#141414',
       titleFontSize: 14,
     },
     Input: {
       activeBorderColor: '#666666',
       hoverBorderColor: '#444444',
-      colorBgContainer: '#0d0d0d',
+      colorBgContainer: '#141414',
       colorBorder: '#202020',
     },
     Select: {
-      colorBgContainer: '#0d0d0d',
+      colorBgContainer: '#141414',
       colorBorder: '#202020',
     },
     Button: {
