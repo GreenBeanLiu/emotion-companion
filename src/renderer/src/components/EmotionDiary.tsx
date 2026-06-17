@@ -89,7 +89,7 @@ const useStyles = createStyles(({ token, css }) => ({
     font-weight: 600;
     color: ${token.colorText};
     margin: 0;
-    letter-spacing: -0.02em;
+    letter-spacing: -0.025em;
   `,
 
   subtext: css`
@@ -105,11 +105,11 @@ const useStyles = createStyles(({ token, css }) => ({
   `,
 
   sectionTitle: css`
-    font-size: 11px;
+    font-size: 10px;
     font-weight: 600;
-    letter-spacing: 0.06em;
+    letter-spacing: 0.07em;
     text-transform: uppercase;
-    color: ${token.colorTextTertiary};
+    color: ${token.colorTextQuaternary};
   `,
 
   calendarWrap: css`
@@ -245,7 +245,7 @@ const useStyles = createStyles(({ token, css }) => ({
     font-weight: 600;
     color: ${token.colorText};
     line-height: 1.2;
-    letter-spacing: -0.02em;
+    letter-spacing: -0.03em;
   `,
 
   statLabel: css`
