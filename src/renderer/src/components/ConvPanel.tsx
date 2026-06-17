@@ -219,7 +219,7 @@ const useStyles = createStyles(({ token, css }) => ({
     right: 4px;
     top: calc(100% - 4px);
     z-index: 50;
-    border-radius: ${token.borderRadius}px;
+    border-radius: ${token.borderRadiusLG}px;
     overflow: hidden;
     box-shadow: ${token.boxShadow}, 0 0 0 1px ${token.colorBorder};
     background: ${token.colorBgElevated};
@@ -229,7 +229,7 @@ const useStyles = createStyles(({ token, css }) => ({
     display: flex;
     align-items: center;
     gap: 8px;
-    padding: 7px 14px;
+    padding: 8px 14px;
     font-size: 12px;
     width: 100%;
     border: none;
@@ -250,7 +250,7 @@ const useStyles = createStyles(({ token, css }) => ({
     display: flex;
     align-items: center;
     gap: 8px;
-    padding: 7px 14px;
+    padding: 8px 14px;
     font-size: 12px;
     width: 100%;
     border: none;
@@ -442,7 +442,7 @@ export default function ConvPanel({ activeId, refreshKey, character, onSelect, o
                     }}
                     className={cx(styles.moreBtn, 'hidden group-hover:flex')}
                   >
-                    <MoreVertical size={11} />
+                    <MoreVertical size={12} />
                   </button>
 
                   {menuId === conv.id && (
