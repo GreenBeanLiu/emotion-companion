@@ -450,7 +450,7 @@ const useStyles = createStyles(({ token, css }) => ({
     display: flex;
     align-items: flex-end;
     gap: 8px;
-    border-radius: 20px;
+    border-radius: 16px;
     padding: 12px 14px;
     background: ${token.colorBgElevated};
     border: 1px solid ${token.colorBorder};
@@ -486,7 +486,7 @@ const useStyles = createStyles(({ token, css }) => ({
     flex-shrink: 0;
     width: 32px;
     height: 32px;
-    border-radius: 12px;
+    border-radius: 10px;
     border: none;
     display: flex;
     align-items: center;
@@ -503,7 +503,7 @@ const useStyles = createStyles(({ token, css }) => ({
 
   inputHint: css`
     text-align: center;
-    font-size: 11px;
+    font-size: 12px;
     color: ${token.colorTextTertiary};
     margin-top: 6px;
     user-select: none;
