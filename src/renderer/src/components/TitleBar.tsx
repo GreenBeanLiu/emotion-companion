@@ -81,7 +81,7 @@ const useStyles = createStyles(({ token, css }) => ({
   `,
 
   convTitle: css`
-    font-size: 13px;
+    font-size: 14px;
     font-weight: 500;
     color: ${token.colorText};
     max-width: 360px;
