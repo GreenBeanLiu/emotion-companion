@@ -196,7 +196,7 @@ const useStyles = createStyles(({ token, css }) => ({
     align-items: flex-start;
     padding: 8px 24px 6px;
     animation: msg-in 0.2s ease-out both;
-    border-radius: ${token.borderRadius}px;
+    border-radius: ${token.borderRadiusLG}px;
     transition: background ${token.motionDurationFast};
 
     &:hover {

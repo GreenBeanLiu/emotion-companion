@@ -234,7 +234,7 @@ const useStyles = createStyles(({ token, css }) => ({
     border-radius: ${token.borderRadiusLG}px;
     padding: 16px 20px;
     background: ${token.colorBgElevated};
-    border: 1px solid ${token.colorBorderSecondary};
+    border: 1px solid ${token.colorBorder};
     display: flex;
     flex-direction: column;
     gap: 4px;
