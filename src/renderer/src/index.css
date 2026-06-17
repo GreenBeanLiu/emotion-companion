@@ -133,7 +133,7 @@ html, body, #root {
 }
 
 #root {
-  animation: app-fade-in 0.25s ease-out both;
+  animation: app-fade-in 0.2s ease-out both;
 }
 
 @keyframes app-fade-in {

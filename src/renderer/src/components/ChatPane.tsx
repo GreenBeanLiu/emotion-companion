@@ -94,6 +94,7 @@ const useStyles = createStyles(({ token, css }) => ({
     display: flex;
     flex-direction: column;
     min-height: 0;
+    scrollbar-gutter: stable;
   `,
 
   messagesTransition: css`
@@ -120,6 +121,7 @@ const useStyles = createStyles(({ token, css }) => ({
     gap: 24px;
     text-align: center;
     position: relative;
+    padding-bottom: 60px;
   `,
 
   charName: css`
@@ -207,7 +209,7 @@ const useStyles = createStyles(({ token, css }) => ({
   `,
 
   msgRowTight: css`
-    padding-top: 2px;
+    padding-top: 1px;
     animation: none;
   `,
 
