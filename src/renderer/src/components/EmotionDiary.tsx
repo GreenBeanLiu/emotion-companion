@@ -73,7 +73,7 @@ const useStyles = createStyles(({ token, css }) => ({
     display: flex;
     flex-direction: column;
     align-items: center;
-    padding: 40px 32px 60px;
+    padding: 32px 32px 48px;
   `,
 
   inner: css`

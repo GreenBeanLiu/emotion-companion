@@ -50,8 +50,7 @@ const useStyles = createStyles(({ token, css }) => ({
     justify-content: center;
     font-size: 18px;
     cursor: pointer;
-    transition: filter ${token.motionDurationFast} ${token.motionEaseOut},
-      transform ${token.motionDurationFast} ${token.motionEaseOut};
+    transition: background ${token.motionDurationFast} ${token.motionEaseOut};
     flex-shrink: 0;
     margin-bottom: 4px;
     outline: none;
@@ -59,7 +58,7 @@ const useStyles = createStyles(({ token, css }) => ({
     background: transparent;
 
     &:hover {
-      filter: brightness(1.1);
+      background: ${token.colorFillSecondary};
     }
   `,
 }))

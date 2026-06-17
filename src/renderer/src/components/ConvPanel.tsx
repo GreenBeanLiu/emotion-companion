@@ -56,7 +56,7 @@ const useStyles = createStyles(({ token, css }) => ({
     font-weight: 600;
     color: ${token.colorText};
     user-select: none;
-    letter-spacing: -0.01em;
+    letter-spacing: -0.015em;
   `,
 
   newBtn: css`
