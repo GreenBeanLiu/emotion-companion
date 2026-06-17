@@ -426,7 +426,7 @@ export default function ConvPanel({ activeId, refreshKey, character, onSelect, o
                       onClick={() => onSelect(conv)}
                       onDoubleClick={(e) => startRename(e, conv)}
                       className={cx(styles.item, activeId === conv.id && styles.itemActive)}
-                      style={activeId === conv.id ? { borderLeft: `3px solid ${character.color}`, paddingLeft: 9 } : undefined}
+                      style={activeId === conv.id ? { boxShadow: `inset 3px 0 0 ${character.color}` } : undefined}
                     >
                       <p className={cx(styles.itemTitle, 'item-title')}>{conv.title}</p>
                       <p className={styles.itemMeta}>
