@@ -111,8 +111,8 @@ export const emotionTheme = {
     colorFillQuaternary: 'rgba(255,255,255,0.02)',
 
     // ── Borders — gray.dark[2..3] ────────────────────────────────────────────
-    colorBorder: '#202020',
-    colorBorderSecondary: '#1a1a1a',
+    colorBorder: '#252525',
+    colorBorderSecondary: '#1e1e1e',
 
     // ── Text — gray.dark[6..12] ──────────────────────────────────────────────
     colorText: '#ffffff',
@@ -159,14 +159,14 @@ export const emotionTheme = {
       activeBorderColor: '#666666',
       hoverBorderColor: '#444444',
       colorBgContainer: '#141414',
-      colorBorder: '#202020',
+      colorBorder: '#252525',
     },
     Select: {
       colorBgContainer: '#141414',
-      colorBorder: '#202020',
+      colorBorder: '#252525',
     },
     Button: {
-      defaultBorderColor: '#202020',
+      defaultBorderColor: '#252525',
       defaultBg: '#0d0d0d',
       defaultColor: '#aaaaaa',
     },
