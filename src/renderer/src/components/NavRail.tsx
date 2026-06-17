@@ -6,7 +6,7 @@ import type { Character } from '../lib/characters'
 
 const useStyles = createStyles(({ token, css }) => ({
   rail: css`
-    width: 56px;
+    width: 64px;
     flex-shrink: 0;
     display: flex;
     flex-direction: column;
@@ -18,8 +18,8 @@ const useStyles = createStyles(({ token, css }) => ({
   `,
 
   logo: css`
-    width: 30px;
-    height: 30px;
+    width: 32px;
+    height: 32px;
     border-radius: 8px;
     background: ${token.colorPrimary};
     flex-shrink: 0;
@@ -31,7 +31,7 @@ const useStyles = createStyles(({ token, css }) => ({
 
   activeWrap: css`
     position: relative;
-    width: 56px;
+    width: 64px;
     display: flex;
     align-items: center;
     justify-content: center;
@@ -42,8 +42,8 @@ const useStyles = createStyles(({ token, css }) => ({
   `,
 
   charBtn: css`
-    width: 34px;
-    height: 34px;
+    width: 36px;
+    height: 36px;
     border-radius: 8px;
     display: flex;
     align-items: center;
@@ -100,7 +100,7 @@ export default function NavRail({ character, avatars, appearance, view, onViewCh
           title="对话"
           active={view === 'chat'}
           onClick={() => onViewChange('chat')}
-          size={{ blockSize: 34, borderRadius: 8 }}
+          size={{ blockSize: 36, borderRadius: 8 }}
         />
       </div>
 
@@ -117,7 +117,7 @@ export default function NavRail({ character, avatars, appearance, view, onViewCh
           title="情绪日记"
           active={view === 'diary'}
           onClick={() => onViewChange('diary')}
-          size={{ blockSize: 34, borderRadius: 8 }}
+          size={{ blockSize: 36, borderRadius: 8 }}
         />
       </div>
 
@@ -159,14 +159,14 @@ export default function NavRail({ character, avatars, appearance, view, onViewCh
         icon={appearance === 'dark' ? <Sun size={15} /> : <Moon size={15} />}
         title={appearance === 'dark' ? '切换亮色' : '切换暗色'}
         onClick={onToggleTheme}
-        size={{ blockSize: 34, borderRadius: 8 }}
+        size={{ blockSize: 36, borderRadius: 8 }}
       />
 
       <ActionIcon
         icon={<Settings size={15} />}
         title="设置"
         onClick={onSettings}
-        size={{ blockSize: 34, borderRadius: 8 }}
+        size={{ blockSize: 36, borderRadius: 8 }}
       />
     </nav>
   )

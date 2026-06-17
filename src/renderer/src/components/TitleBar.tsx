@@ -32,7 +32,7 @@ const useStyles = createStyles(({ token, css }) => ({
 
   /* Matches NavRail width exactly */
   railOffset: css`
-    width: 56px;
+    width: 64px;
     flex-shrink: 0;
   `,
 
