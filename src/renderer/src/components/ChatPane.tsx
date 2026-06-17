@@ -344,9 +344,10 @@ const useStyles = createStyles(({ token, css }) => ({
     width: 36px;
     height: 36px;
     border-radius: 10px;
-    background: ${token.colorFillSecondary};
+    background: ${token.colorFill};
+    border: 1px solid ${token.colorBorderSecondary};
     color: ${token.colorTextSecondary};
-    font-size: 13px;
+    font-size: 12px;
     font-weight: 600;
     user-select: none;
     letter-spacing: 0;
