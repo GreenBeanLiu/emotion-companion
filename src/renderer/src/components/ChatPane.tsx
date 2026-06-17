@@ -1106,7 +1106,7 @@ function MessageBubble({
           ) : isStreaming ? (
             <span style={{ fontSize: 14, lineHeight: '1.6', whiteSpace: 'pre-wrap', wordBreak: 'break-word' }}>
               {msg.content}
-              <span style={{ color: character.color, marginLeft: 1, animation: 'cursor-blink 1s step-start infinite', display: 'inline-block', lineHeight: 1 }}>▋</span>
+              <span style={{ color: character.color, marginLeft: 2, animation: 'cursor-blink 0.8s step-start infinite', display: 'inline-block', lineHeight: 1, fontWeight: 300 }}>|</span>
             </span>
           ) : msg.content ? (
             <Markdown
