@@ -109,7 +109,7 @@ const useStyles = createStyles(({ token, css }) => ({
     transition: border-color ${token.motionDurationFast}, background ${token.motionDurationFast};
 
     &:focus-within {
-      border-color: ${token.colorBorder};
+      border-color: ${token.colorPrimaryBorder};
       background: ${token.colorFillSecondary};
     }
   `,

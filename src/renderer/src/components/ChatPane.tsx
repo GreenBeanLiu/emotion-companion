@@ -191,7 +191,7 @@ const useStyles = createStyles(({ token, css }) => ({
     display: flex;
     gap: 12px;
     align-items: flex-start;
-    padding: 10px 20px 4px;
+    padding: 10px 24px 6px;
     animation: msg-in 0.2s ease-out both;
     border-radius: ${token.borderRadius}px;
     transition: background ${token.motionDurationFast};
@@ -361,7 +361,7 @@ const useStyles = createStyles(({ token, css }) => ({
   videoStrip: css`
     margin-top: 8px;
     margin-left: 48px;
-    padding: 0 20px;
+    padding: 0 24px;
   `,
 
   videoHint: css`
@@ -449,7 +449,7 @@ const useStyles = createStyles(({ token, css }) => ({
     align-items: flex-end;
     gap: 8px;
     border-radius: 20px;
-    padding: 10px 14px;
+    padding: 12px 14px;
     background: ${token.colorBgElevated};
     border: 1px solid ${token.colorBorder};
     box-shadow: 0 2px 8px rgba(0,0,0,0.08), 0 8px 24px rgba(0,0,0,0.06);
