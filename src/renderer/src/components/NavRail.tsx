@@ -18,8 +18,8 @@ const useStyles = createStyles(({ token, css }) => ({
   `,
 
   logo: css`
-    width: 28px;
-    height: 28px;
+    width: 30px;
+    height: 30px;
     border-radius: 8px;
     background: ${token.colorPrimary};
     flex-shrink: 0;

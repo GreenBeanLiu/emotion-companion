@@ -367,7 +367,7 @@ export default function ConvPanel({ activeId, refreshKey, character, onSelect, o
       {convs.length > 0 && (
         <div className={styles.searchWrap}>
           <div className={styles.searchInner}>
-            <Search size={11} style={{ flexShrink: 0 }} />
+            <Search size={12} style={{ flexShrink: 0 }} />
             <input
               className={styles.searchInput}
               value={search}
@@ -389,7 +389,7 @@ export default function ConvPanel({ activeId, refreshKey, character, onSelect, o
       <ScrollArea className="flex-1 min-h-0">
         {convs.length === 0 && (
           <div className={styles.emptyHint}>
-            <MessageSquarePlus size={22} strokeWidth={1.5} style={{ marginBottom: 10, opacity: 0.4 }} />
+            <MessageSquarePlus size={22} strokeWidth={1.5} style={{ marginBottom: 10, opacity: 0.45 }} />
             <div>还没有对话</div>
             <div style={{ fontSize: 12, marginTop: 4 }}>点击右上角开始</div>
           </div>

@@ -198,7 +198,7 @@ const useStyles = createStyles(({ token, css }) => ({
     transition: background ${token.motionDurationFast};
 
     &:hover {
-      background: ${token.colorFillQuaternary};
+      background: ${token.colorFillTertiary};
     }
 
     &:hover .msg-actions {
