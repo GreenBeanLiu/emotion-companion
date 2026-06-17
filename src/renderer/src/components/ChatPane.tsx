@@ -103,7 +103,7 @@ const useStyles = createStyles(({ token, css }) => ({
 
   messagesInner: css`
     width: 100%;
-    max-width: 760px;
+    max-width: 780px;
     margin: 0 auto;
     padding: 24px 0 88px;
     display: flex;
@@ -169,14 +169,15 @@ const useStyles = createStyles(({ token, css }) => ({
     text-align: left;
     font-size: 13px;
     padding: 10px 14px;
-    border-radius: 10px;
+    border-radius: ${token.borderRadius}px;
     border: 1px solid ${token.colorBorder};
     background: ${token.colorFillTertiary};
     color: ${token.colorTextSecondary};
     cursor: pointer;
     transition: border-color ${token.motionDurationFast},
       color ${token.motionDurationFast},
-      background ${token.motionDurationFast};
+      background ${token.motionDurationFast},
+      box-shadow ${token.motionDurationFast};
     width: 100%;
     outline: none;
     font-family: ${token.fontFamily};
@@ -444,7 +445,7 @@ const useStyles = createStyles(({ token, css }) => ({
 
   inputAreaInner: css`
     width: 100%;
-    max-width: 760px;
+    max-width: 780px;
     margin: 0 auto;
   `,
 
@@ -857,7 +858,7 @@ export default function ChatPane({
                   <button
                     key={s}
                     className={styles.starterBtn}
-                    style={{ borderLeftColor: character.color + '70', borderLeftWidth: 2 }}
+                    style={{ boxShadow: `inset 2px 0 0 ${character.color}70` }}
                     onClick={() => {
                       setInput(s)
                       inputRef.current?.focus()
