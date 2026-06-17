@@ -4,10 +4,6 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>pulomi</title>
-    <!-- Noto Sans SC for reliable CJK rendering -->
-    <link rel="preconnect" href="https://fonts.googleapis.com" />
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+SC:wght@300;400;500;600&family=Lora:ital,wght@0,500;1,400&display=swap" rel="stylesheet" />
   </head>
   <body>
     <div id="root"></div>
@@ -28,9 +24,10 @@
             ]),
             create: (t) => Promise.resolve({ id: Date.now(), title: t || '新对话', created_at: new Date().toISOString(), updated_at: new Date().toISOString() }),
             rename: () => Promise.resolve({ ok: true }),
-            delete: () => Promise.resolve({ ok: true })
+            delete: () => Promise.resolve({ ok: true }),
+            onTitleUpdated: () => () => {},
           },
-          msg: { list: () => Promise.resolve([]) },
+          msg: { list: () => Promise.resolve([]), deleteFrom: () => Promise.resolve({ ok: true }) },
           memory: { get: () => Promise.resolve(null), clear: () => Promise.resolve({ ok: true }) },
           avatar: {
             getAll: () => Promise.resolve({}),
