@@ -105,7 +105,7 @@ const useStyles = createStyles(({ token, css }) => ({
     width: 100%;
     max-width: 760px;
     margin: 0 auto;
-    padding: 24px 0 72px;
+    padding: 24px 0 88px;
     display: flex;
     flex-direction: column;
     flex: 1;
@@ -772,7 +772,7 @@ export default function ChatPane({
                   position: 'absolute',
                   inset: 0,
                   pointerEvents: 'none',
-                  background: `radial-gradient(ellipse 60% 50% at 50% 44%, ${character.color}28 0%, ${character.color}08 40%, transparent 70%)`,
+                  background: `radial-gradient(ellipse 60% 50% at 50% 38%, ${character.color}28 0%, ${character.color}08 40%, transparent 70%)`,
                 }}
               />
 
@@ -939,7 +939,7 @@ export default function ChatPane({
         bottom: 0,
         left: 0,
         right: 0,
-        height: 64,
+        height: 80,
         pointerEvents: 'none',
         background: `linear-gradient(to bottom, transparent, ${token.colorBgBase})`,
       }} />
