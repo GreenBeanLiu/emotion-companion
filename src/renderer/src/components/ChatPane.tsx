@@ -98,7 +98,7 @@ const useStyles = createStyles(({ token, css }) => ({
   `,
 
   messagesTransition: css`
-    animation: msg-in 0.18s ease-out both;
+    animation: app-fade-in 0.15s ease-out both;
   `,
 
   messagesInner: css`
@@ -396,7 +396,7 @@ const useStyles = createStyles(({ token, css }) => ({
 
     &:hover {
       border-color: ${token.colorPrimaryBorder};
-      background: ${token.colorBgElevated};
+      background: ${token.colorFillTertiary};
     }
   `,
 
