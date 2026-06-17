@@ -1102,6 +1102,7 @@ function MessageBubble({
             styles.msgBubble,
             isUser ? styles.msgBubbleUser : styles.msgBubbleAssistant,
           )}
+          style={isUser && tight ? { borderTopRightRadius: 4 } : undefined}
         >
           {isUser ? (
             msg.content
