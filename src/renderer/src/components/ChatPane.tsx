@@ -160,14 +160,14 @@ const useStyles = createStyles(({ token, css }) => ({
     grid-template-columns: repeat(auto-fill, minmax(170px, 1fr));
     gap: 8px;
     width: 100%;
-    max-width: 400px;
+    max-width: 420px;
   `,
 
   starterBtn: css`
     text-align: left;
     font-size: 13px;
     padding: 10px 14px;
-    border-radius: ${token.borderRadius}px;
+    border-radius: 10px;
     border: 1px solid ${token.colorBorder};
     background: ${token.colorFillTertiary};
     color: ${token.colorTextSecondary};
