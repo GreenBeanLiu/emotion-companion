@@ -227,7 +227,7 @@ const useStyles = createStyles(({ token, css }) => ({
 
   msgContentUser: css`
     align-items: flex-end;
-    max-width: 68%;
+    max-width: 70%;
   `,
 
   avatarSpacer: css`
@@ -507,6 +507,8 @@ const useStyles = createStyles(({ token, css }) => ({
     margin-top: 6px;
     user-select: none;
     letter-spacing: 0.01em;
+    opacity: 0;
+    transition: opacity ${token.motionDurationMid};
   `,
 
   scrollBottomBtn: css`
@@ -993,7 +995,7 @@ export default function ChatPane({
               </button>
             )}
           </div>
-          <p className={styles.inputHint}>
+          <p className={styles.inputHint} style={{ opacity: inputFocused ? 1 : 0 }}>
             <span className={styles.kbdKey}>Enter</span>
             {' '}发送
             <span style={{ margin: '0 6px', opacity: 0.4 }}>·</span>
