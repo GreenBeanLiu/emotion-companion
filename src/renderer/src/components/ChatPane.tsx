@@ -241,7 +241,7 @@ const useStyles = createStyles(({ token, css }) => ({
     font-weight: 600;
     line-height: 1;
     color: ${token.colorTextDescription};
-    margin-bottom: 3px;
+    margin-bottom: 2px;
   `,
 
   msgBubble: css`
@@ -255,9 +255,9 @@ const useStyles = createStyles(({ token, css }) => ({
   `,
 
   msgBubbleUser: css`
-    background: ${token.colorFill};
+    background: ${token.colorFillSecondary};
     color: ${token.colorText};
-    padding: 10px 14px;
+    padding: 9px 13px;
   `,
 
   msgBubbleAssistant: css`
@@ -342,8 +342,8 @@ const useStyles = createStyles(({ token, css }) => ({
     justify-content: center;
     width: 36px;
     height: 36px;
-    border-radius: 50%;
-    background: ${token.colorFill};
+    border-radius: 10px;
+    background: ${token.colorFillSecondary};
     color: ${token.colorTextSecondary};
     font-size: 13px;
     font-weight: 600;
