@@ -437,7 +437,9 @@ const useStyles = createStyles(({ token, css }) => ({
   inputArea: css`
     flex-shrink: 0;
     padding: 16px 20px 20px;
-    background: ${token.colorBgBase};
+    background: color-mix(in srgb, ${token.colorBgBase} 88%, transparent);
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
   `,
 
   inputAreaInner: css`
@@ -969,7 +971,7 @@ export default function ChatPane({
               onBlur={() => setInputFocused(false)}
               placeholder={`和${character.name}说说你的心情…`}
               rows={1}
-              style={{ fieldSizing: 'content' } as React.CSSProperties}
+              style={{ fieldSizing: 'content', caretColor: character.color } as React.CSSProperties}
               className={styles.inputTextarea}
               disabled={sending}
             />
