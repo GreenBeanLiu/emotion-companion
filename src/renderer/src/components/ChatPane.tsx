@@ -94,7 +94,6 @@ const useStyles = createStyles(({ token, css }) => ({
     display: flex;
     flex-direction: column;
     min-height: 0;
-    scrollbar-gutter: stable;
   `,
 
   messagesTransition: css`
@@ -510,7 +509,7 @@ const useStyles = createStyles(({ token, css }) => ({
     text-align: center;
     font-size: 12px;
     color: ${token.colorTextTertiary};
-    margin-top: 6px;
+    margin-top: 8px;
     user-select: none;
     letter-spacing: 0.01em;
     opacity: 0;
@@ -963,7 +962,7 @@ export default function ChatPane({
         <div className={styles.inputAreaInner}>
           <div
             className={styles.inputBox}
-            style={inputFocused ? { borderColor: character.color + '80', boxShadow: `${token.boxShadowSecondary}, 0 0 0 3px ${character.color}1c` } : undefined}
+            style={inputFocused ? { borderColor: character.color + '66', boxShadow: `${token.boxShadowSecondary}, 0 0 0 2px ${character.color}18` } : undefined}
           >
             <textarea
               ref={inputRef}
