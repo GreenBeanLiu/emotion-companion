@@ -181,7 +181,7 @@ const useStyles = createStyles(({ token, css }) => ({
     line-height: 1.4;
 
     &:hover {
-      border-color: ${token.colorBorder};
+      border-color: ${token.colorPrimaryBorder};
       background: ${token.colorFillSecondary};
       color: ${token.colorText};
     }
@@ -826,12 +826,12 @@ export default function ChatPane({
                 </div>
               </div>
 
-              <div style={{ display: 'flex', flexDirection: 'column', gap: 6, position: 'relative', alignItems: 'center' }}>
+              <div style={{ display: 'flex', flexDirection: 'column', gap: 8, position: 'relative', alignItems: 'center' }}>
                 <p className={styles.charName}>{character.name}</p>
                 <p className={styles.charTitle}>
                   {character.title}
                 </p>
-                <div className={styles.tagRow} style={{ marginTop: 2 }}>
+                <div className={styles.tagRow} style={{ marginTop: 4 }}>
                   {character.tags.map((tag) => (
                     <span
                       key={tag}
