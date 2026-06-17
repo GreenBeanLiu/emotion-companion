@@ -376,6 +376,8 @@ const useStyles = createStyles(({ token, css }) => ({
     gap: 8px;
     overflow-x: auto;
     padding-bottom: 4px;
+    scrollbar-width: none;
+    &::-webkit-scrollbar { display: none; }
   `,
 
   videoCard: css`

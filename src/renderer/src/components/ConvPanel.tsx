@@ -394,6 +394,13 @@ export default function ConvPanel({ activeId, refreshKey, character, onSelect, o
             <div style={{ fontSize: 12, marginTop: 4 }}>点击右上角开始</div>
           </div>
         )}
+        {isSearching && filteredConvs.length === 0 && convs.length > 0 && (
+          <div className={styles.emptyHint}>
+            <div style={{ opacity: 0.4, marginBottom: 8, fontSize: 18 }}>🔍</div>
+            <div>没有找到相关对话</div>
+            <div style={{ fontSize: 12, marginTop: 4 }}>换个关键词试试</div>
+          </div>
+        )}
         <div className={styles.list}>
           {grouped.map(({ bucket, items }, gi) => (
             <div key={bucket}>
