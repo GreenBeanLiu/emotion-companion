@@ -83,12 +83,12 @@ const useStyles = createStyles(({ token, css }) => ({
   list: css`
     display: flex;
     flex-direction: column;
-    gap: 1px;
+    gap: 2px;
     padding: 4px;
   `,
 
   searchWrap: css`
-    padding: 7px 8px;
+    padding: 8px 8px;
     border-bottom: 1px solid ${token.colorBorderSecondary};
     flex-shrink: 0;
     display: flex;
@@ -396,7 +396,7 @@ export default function ConvPanel({ activeId, refreshKey, character, onSelect, o
         )}
         {isSearching && filteredConvs.length === 0 && convs.length > 0 && (
           <div className={styles.emptyHint}>
-            <div style={{ opacity: 0.4, marginBottom: 8, fontSize: 18 }}>🔍</div>
+            <Search size={18} strokeWidth={1.5} style={{ opacity: 0.35, marginBottom: 8 }} />
             <div>没有找到相关对话</div>
             <div style={{ fontSize: 12, marginTop: 4 }}>换个关键词试试</div>
           </div>

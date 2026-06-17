@@ -51,7 +51,7 @@ const useStyles = createStyles(({ token, css }) => ({
   charAvatar: css`
     width: 26px;
     height: 26px;
-    border-radius: 7px;
+    border-radius: 8px;
     display: flex;
     align-items: center;
     justify-content: center;
