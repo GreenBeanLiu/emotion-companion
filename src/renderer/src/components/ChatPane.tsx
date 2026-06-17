@@ -194,7 +194,7 @@ const useStyles = createStyles(({ token, css }) => ({
     display: flex;
     gap: 12px;
     align-items: flex-start;
-    padding: 10px 24px 6px;
+    padding: 8px 24px 6px;
     animation: msg-in 0.2s ease-out both;
     border-radius: ${token.borderRadius}px;
     transition: background ${token.motionDurationFast};
@@ -210,7 +210,7 @@ const useStyles = createStyles(({ token, css }) => ({
   `,
 
   msgRowTight: css`
-    padding-top: 1px;
+    padding-top: 2px;
     animation: none;
   `,
 
@@ -273,7 +273,7 @@ const useStyles = createStyles(({ token, css }) => ({
     display: flex;
     align-items: center;
     gap: 12px;
-    padding: 16px 20px 8px;
+    padding: 20px 20px 10px;
     user-select: none;
 
     &::before, &::after {
@@ -288,7 +288,8 @@ const useStyles = createStyles(({ token, css }) => ({
     font-size: 11px;
     color: ${token.colorTextTertiary};
     white-space: nowrap;
-    font-weight: 400;
+    font-weight: 500;
+    letter-spacing: 0.01em;
   `,
 
   msgTimestamp: css`
