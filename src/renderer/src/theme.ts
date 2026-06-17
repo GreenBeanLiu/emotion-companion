@@ -17,8 +17,8 @@ const sharedTokens = {
   controlHeightSM: 28,
   controlHeightLG: 40,
   motionDurationFast: '0.1s',
-  motionDurationMid: '0.18s',
-  motionDurationSlow: '0.26s',
+  motionDurationMid: '0.2s',
+  motionDurationSlow: '0.3s',
   motionEaseOut: 'cubic-bezier(0.23, 1, 0.32, 1)',
 }
 

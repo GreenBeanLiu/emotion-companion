@@ -132,11 +132,11 @@ const useStyles = createStyles(({ token, css }) => ({
   `,
 
   charTitle: css`
-    font-size: 13px;
-    line-height: 1.5;
+    font-size: 14px;
+    line-height: 1.55;
     margin: 0;
     text-align: center;
-    max-width: 300px;
+    max-width: 320px;
     color: ${token.colorTextSecondary};
   `,
 
