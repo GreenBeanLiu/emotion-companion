@@ -105,7 +105,7 @@ const useStyles = createStyles(({ token, css }) => ({
     width: 100%;
     max-width: 780px;
     margin: 0 auto;
-    padding: 24px 0 88px;
+    padding: 16px 0 88px;
     display: flex;
     flex-direction: column;
     flex: 1;
@@ -797,7 +797,7 @@ export default function ChatPane({
                     position: 'absolute',
                     inset: 0,
                     borderRadius: '50%',
-                    background: `radial-gradient(circle, ${character.color}28 0%, transparent 70%)`,
+                    background: `radial-gradient(circle, ${character.color}38 0%, transparent 70%)`,
                     animation: 'lobe-breathe 4s ease-in-out infinite',
                     pointerEvents: 'none',
                   }}
@@ -844,9 +844,9 @@ export default function ChatPane({
                       key={tag}
                       className={styles.tag}
                       style={{
-                        background: `${character.color}15`,
+                        background: `${character.color}18`,
                         color: character.color,
-                        border: `1px solid ${character.color}30`,
+                        border: `1px solid ${character.color}35`,
                       }}
                     >
                       {tag}
