@@ -163,10 +163,9 @@ const useStyles = createStyles(({ token, css }) => ({
   `,
 
   itemActive: css`
-    background: ${token.colorFill} !important;
+    background: ${token.colorFillTertiary} !important;
 
     .item-title {
-      color: ${token.colorText} !important;
       font-weight: 500;
     }
   `,
@@ -174,7 +173,7 @@ const useStyles = createStyles(({ token, css }) => ({
   itemTitle: css`
     font-size: 13px;
     font-weight: 400;
-    color: ${token.colorTextSecondary};
+    color: ${token.colorText};
     overflow: hidden;
     text-overflow: ellipsis;
     white-space: nowrap;
@@ -184,11 +183,11 @@ const useStyles = createStyles(({ token, css }) => ({
   itemMeta: css`
     font-size: 11px;
     color: ${token.colorTextTertiary};
-    margin-top: 1px;
+    margin-top: 2px;
     overflow: hidden;
     text-overflow: ellipsis;
     white-space: nowrap;
-    line-height: 1.5;
+    line-height: 1.4;
   `,
 
   moreBtn: css`
@@ -283,10 +282,10 @@ const useStyles = createStyles(({ token, css }) => ({
   groupLabel: css`
     font-size: 10px;
     font-weight: 600;
-    color: ${token.colorTextTertiary};
-    padding: 10px 12px 3px;
+    color: ${token.colorTextQuaternary};
+    padding: 10px 12px 2px;
     user-select: none;
-    letter-spacing: 0.06em;
+    letter-spacing: 0.07em;
     text-transform: uppercase;
   `,
 }))
