@@ -129,7 +129,7 @@ const useStyles = createStyles(({ token, css }) => ({
     font-weight: 600;
     color: ${token.colorText};
     margin: 0;
-    letter-spacing: -0.02em;
+    letter-spacing: -0.025em;
   `,
 
   charTitle: css`
@@ -529,7 +529,7 @@ const useStyles = createStyles(({ token, css }) => ({
     align-items: center;
     justify-content: center;
     cursor: pointer;
-    box-shadow: 0 2px 12px rgba(0,0,0,0.18);
+    box-shadow: ${token.boxShadow};
     transition: background ${token.motionDurationFast}, color ${token.motionDurationFast};
     outline: none;
     z-index: 10;
