@@ -92,7 +92,7 @@ export default function NavRail({ character, avatars, appearance, view, onViewCh
         {view === 'chat' && (
           <span style={{
             position: 'absolute', left: 0, top: '50%', transform: 'translateY(-50%)',
-            width: 3, height: 16, borderRadius: '0 2px 2px 0',
+            width: 3, height: 20, borderRadius: '0 2px 2px 0',
             background: character.color,
           }} />
         )}
@@ -109,7 +109,7 @@ export default function NavRail({ character, avatars, appearance, view, onViewCh
         {view === 'diary' && (
           <span style={{
             position: 'absolute', left: 0, top: '50%', transform: 'translateY(-50%)',
-            width: 3, height: 16, borderRadius: '0 2px 2px 0',
+            width: 3, height: 20, borderRadius: '0 2px 2px 0',
             background: character.color,
           }} />
         )}

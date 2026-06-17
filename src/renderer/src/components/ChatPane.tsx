@@ -132,7 +132,7 @@ const useStyles = createStyles(({ token, css }) => ({
 
   charTitle: css`
     font-size: 13px;
-    line-height: 1.6;
+    line-height: 1.5;
     margin: 0;
     text-align: center;
     max-width: 300px;
@@ -289,16 +289,16 @@ const useStyles = createStyles(({ token, css }) => ({
   `,
 
   msgTimestamp: css`
-    font-size: 10px;
+    font-size: 11px;
     color: ${token.colorTextQuaternary};
     user-select: none;
-    line-height: 24px;
+    line-height: 26px;
   `,
 
   msgActions: css`
     display: flex;
     align-items: center;
-    gap: 2px;
+    gap: 4px;
     margin-top: 2px;
     opacity: 0;
     transform: translateY(3px);
@@ -306,8 +306,8 @@ const useStyles = createStyles(({ token, css }) => ({
   `,
 
   msgActionBtn: css`
-    width: 24px;
-    height: 24px;
+    width: 26px;
+    height: 26px;
     border-radius: ${token.borderRadiusSM}px;
     border: none;
     background: transparent;
