@@ -143,7 +143,7 @@ export default function App({ appearance, onToggleTheme }: AppProps) {
           </>
         )}
         {view === 'diary' && (
-          <div key="diary" style={{ flex: 1, minWidth: 0, animation: 'msg-in 0.2s ease-out both' }}>
+          <div key="diary" style={{ flex: 1, minWidth: 0, animation: 'slide-in-right 0.2s ease-out both' }}>
             <EmotionDiary />
           </div>
         )}

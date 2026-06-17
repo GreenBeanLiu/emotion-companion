@@ -104,7 +104,7 @@ const useStyles = createStyles(({ token, css }) => ({
     width: 100%;
     max-width: 760px;
     margin: 0 auto;
-    padding: 24px 0 36px;
+    padding: 24px 0 72px;
     display: flex;
     flex-direction: column;
     flex: 1;
@@ -932,7 +932,7 @@ export default function ChatPane({
         bottom: 0,
         left: 0,
         right: 0,
-        height: 48,
+        height: 64,
         pointerEvents: 'none',
         background: `linear-gradient(to bottom, transparent, ${token.colorBgBase})`,
       }} />
