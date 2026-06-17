@@ -117,7 +117,7 @@ const useStyles = createStyles(({ token, css }) => ({
     flex-direction: column;
     align-items: center;
     justify-content: center;
-    gap: 20px;
+    gap: 24px;
     text-align: center;
     position: relative;
   `,
@@ -540,12 +540,12 @@ const useStyles = createStyles(({ token, css }) => ({
   kbdKey: css`
     display: inline-flex;
     align-items: center;
-    padding: 0 5px;
+    padding: 0 6px;
     border-radius: 4px;
     border: 1px solid ${token.colorBorder};
     background: ${token.colorFillTertiary};
     font-size: 10px;
-    height: 16px;
+    height: 18px;
     font-family: ${token.fontFamily};
     color: ${token.colorTextTertiary};
     vertical-align: middle;
