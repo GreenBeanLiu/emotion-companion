@@ -285,7 +285,7 @@ const useStyles = createStyles(({ token, css }) => ({
     font-size: 11px;
     color: ${token.colorTextTertiary};
     white-space: nowrap;
-    font-weight: 500;
+    font-weight: 400;
   `,
 
   msgTimestamp: css`
@@ -512,7 +512,7 @@ const useStyles = createStyles(({ token, css }) => ({
 
   scrollBottomBtn: css`
     position: absolute;
-    bottom: 16px;
+    bottom: 20px;
     left: 50%;
     transform: translateX(-50%);
     width: 32px;
