@@ -184,7 +184,6 @@ const useStyles = createStyles(({ token, css }) => ({
       border-color: ${token.colorBorder};
       background: ${token.colorFillSecondary};
       color: ${token.colorText};
-      box-shadow: 0 2px 8px rgba(0,0,0,0.06);
     }
   `,
 
@@ -237,7 +236,7 @@ const useStyles = createStyles(({ token, css }) => ({
 
   msgSenderLabel: css`
     font-size: 12px;
-    font-weight: 500;
+    font-weight: 600;
     line-height: 1;
     color: ${token.colorTextDescription};
     margin-bottom: 3px;
@@ -271,14 +270,14 @@ const useStyles = createStyles(({ token, css }) => ({
     display: flex;
     align-items: center;
     gap: 12px;
-    padding: 12px 20px 4px;
+    padding: 16px 20px 8px;
     user-select: none;
 
     &::before, &::after {
       content: '';
       flex: 1;
       height: 1px;
-      background: ${token.colorBorder};
+      background: ${token.colorBorderSecondary};
     }
   `,
 
@@ -342,8 +341,8 @@ const useStyles = createStyles(({ token, css }) => ({
     width: 36px;
     height: 36px;
     border-radius: 50%;
-    background: linear-gradient(135deg, #6366f1 0%, #8b5cf6 100%);
-    color: #ffffff;
+    background: ${token.colorFill};
+    color: ${token.colorTextSecondary};
     font-size: 13px;
     font-weight: 600;
     user-select: none;
