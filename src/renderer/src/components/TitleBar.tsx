@@ -2,6 +2,7 @@ import { createStyles } from 'antd-style'
 import { Tooltip } from 'antd'
 import { api } from '../lib/api'
 import type { Character } from '../lib/characters'
+import { EMOTION_META } from '../lib/emotion'
 
 type UpdateState =
   | { status: 'idle' }
@@ -16,6 +17,8 @@ type Props = {
   update: UpdateState
   onInstall: () => void
   onDismissUpdate: () => void
+  todayMood: { emotion: string; count: number } | null
+  onOpenDiary: () => void
 }
 
 const useStyles = createStyles(({ token, css }) => ({
@@ -49,13 +52,13 @@ const useStyles = createStyles(({ token, css }) => ({
   `,
 
   charAvatar: css`
-    width: 26px;
-    height: 26px;
-    border-radius: 8px;
+    width: 32px;
+    height: 32px;
+    border-radius: 9px;
     display: flex;
     align-items: center;
     justify-content: center;
-    font-size: 14px;
+    font-size: 16px;
     flex-shrink: 0;
     overflow: hidden;
   `,
@@ -103,6 +106,26 @@ const useStyles = createStyles(({ token, css }) => ({
     gap: 2px;
     padding: 0 6px;
     -webkit-app-region: no-drag;
+  `,
+
+  moodPill: css`
+    display: flex;
+    align-items: center;
+    gap: 5px;
+    padding: 3px 10px 3px 8px;
+    border-radius: ${token.borderRadiusSM}px;
+    font-size: 12px;
+    margin-right: 4px;
+    cursor: pointer;
+    background: ${token.colorFillTertiary};
+    border: 1px solid ${token.colorBorderSecondary};
+    color: ${token.colorTextSecondary};
+    transition: background ${token.motionDurationFast};
+    -webkit-app-region: no-drag;
+
+    &:hover {
+      background: ${token.colorFillSecondary};
+    }
   `,
 
   updateBadge: css`
@@ -175,9 +198,10 @@ const useStyles = createStyles(({ token, css }) => ({
   `,
 }))
 
-export default function TitleBar({ character, avatars, convTitle, update, onInstall, onDismissUpdate }: Props) {
+export default function TitleBar({ character, avatars, convTitle, update, onInstall, onDismissUpdate, todayMood, onOpenDiary }: Props) {
   const { styles, cx, theme: token } = useStyles()
   const avatarUrl = avatars[character.id]
+  const moodMeta = todayMood ? EMOTION_META[todayMood.emotion] : undefined
 
   const isDownloaded = update.status === 'downloaded'
   const isAvailable = update.status === 'available'
@@ -194,7 +218,8 @@ export default function TitleBar({ character, avatars, convTitle, update, onInst
           className={styles.charAvatar}
           style={{
             background: avatarUrl ? 'transparent' : `linear-gradient(135deg, ${character.bgGradient[0]}, ${character.color}60)`,
-            border: `1px solid ${character.color}40`,
+            border: `1px solid ${character.color}45`,
+            boxShadow: `0 0 0 3px ${character.color}12`,
           }}
         >
           {avatarUrl ? (
@@ -217,6 +242,15 @@ export default function TitleBar({ character, avatars, convTitle, update, onInst
 
       {/* Right: update badge + window controls */}
       <div className={styles.rightZone}>
+        {moodMeta && (
+          <Tooltip title="今日心情 · 点击查看情绪日记" placement="bottom">
+            <div className={styles.moodPill} onClick={onOpenDiary}>
+              <span>{moodMeta.emoji}</span>
+              <span>{moodMeta.label}</span>
+            </div>
+          </Tooltip>
+        )}
+
         {update.status !== 'idle' && (
           <div
             className={styles.updateBadge}

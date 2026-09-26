@@ -1,7 +1,9 @@
-import React, { useState } from 'react'
+import React, { useEffect, useMemo, useState } from 'react'
 import ReactDOM from 'react-dom/client'
 import { ThemeProvider } from 'antd-style'
-import { emotionTheme, emotionLightTheme } from './theme'
+import { buildEmotionTheme } from './theme'
+import { getCharacter, DEFAULT_CHARACTER_ID, type Character } from './lib/characters'
+import { api } from './lib/api'
 import App from './App'
 import './index.css'
 
@@ -16,6 +18,13 @@ function Root() {
     applyAppearance(saved)
     return saved
   })
+  const [character, setCharacter] = useState<Character>(getCharacter(DEFAULT_CHARACTER_ID))
+
+  useEffect(() => {
+    api.settings.load().then((s) => {
+      setCharacter(getCharacter(s.characterId || DEFAULT_CHARACTER_ID))
+    })
+  }, [])
 
   function toggleAppearance() {
     setAppearance((prev) => {
@@ -26,12 +35,19 @@ function Root() {
     })
   }
 
+  const theme = useMemo(
+    () => buildEmotionTheme(appearance, character.color),
+    [appearance, character.color],
+  )
+
   return (
-    <ThemeProvider
-      appearance={appearance}
-      theme={appearance === 'dark' ? emotionTheme : emotionLightTheme}
-    >
-      <App appearance={appearance} onToggleTheme={toggleAppearance} />
+    <ThemeProvider appearance={appearance} theme={theme}>
+      <App
+        appearance={appearance}
+        onToggleTheme={toggleAppearance}
+        character={character}
+        onCharacterChange={setCharacter}
+      />
     </ThemeProvider>
   )
 }

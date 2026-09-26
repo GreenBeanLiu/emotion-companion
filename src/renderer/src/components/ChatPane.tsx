@@ -4,6 +4,7 @@ import { Markdown } from '@lobehub/ui'
 import { SendHorizontal, Copy, Check, ArrowDown, RotateCcw, Pencil, Square } from 'lucide-react'
 import { api, type ConversationRow, type MessageRow, type BilibiliVideo } from '../lib/api'
 import type { Character } from '../lib/characters'
+import { EMOTION_META } from '../lib/emotion'
 
 function formatTime(iso: string): string {
   const d = new Date(iso)
@@ -24,16 +25,6 @@ function formatDateSeparator(iso: string): string {
 
 function isSameDay(a: string, b: string): boolean {
   return new Date(a).toDateString() === new Date(b).toDateString()
-}
-
-const EMOTION_META: Record<string, { emoji: string; color: string }> = {
-  开心: { emoji: '😊', color: '#4ade80' },
-  平静: { emoji: '😌', color: '#60a5fa' },
-  焦虑: { emoji: '😰', color: '#fb923c' },
-  悲伤: { emoji: '😢', color: '#818cf8' },
-  愤怒: { emoji: '😤', color: '#f87171' },
-  疲惫: { emoji: '😩', color: '#94a3b8' },
-  孤独: { emoji: '🥺', color: '#c084fc' },
 }
 
 type StreamingMsg = { role: 'assistant'; content: string; streaming: true }
@@ -158,16 +149,19 @@ const useStyles = createStyles(({ token, css }) => ({
 
   starterList: css`
     display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(170px, 1fr));
+    grid-template-columns: repeat(2, 1fr);
     gap: 8px;
     width: 100%;
     max-width: 420px;
   `,
 
   starterBtn: css`
+    display: flex;
+    align-items: center;
     text-align: left;
     font-size: 13px;
     padding: 10px 14px;
+    min-height: 40px;
     border-radius: ${token.borderRadius}px;
     border: 1px solid ${token.colorBorder};
     background: ${token.colorFillTertiary};
@@ -178,6 +172,7 @@ const useStyles = createStyles(({ token, css }) => ({
       background ${token.motionDurationFast},
       box-shadow ${token.motionDurationFast};
     width: 100%;
+    box-sizing: border-box;
     outline: none;
     font-family: ${token.fontFamily};
     line-height: 1.4;
@@ -187,6 +182,58 @@ const useStyles = createStyles(({ token, css }) => ({
       background: ${token.colorFillSecondary};
       color: ${token.colorText};
     }
+  `,
+
+  companionHeader: css`
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 8px 24px 18px;
+    margin-bottom: 6px;
+    border-bottom: 1px solid ${token.colorBorderSecondary};
+  `,
+
+  companionAvatarWrap: css`
+    position: relative;
+    width: 48px;
+    height: 48px;
+    flex-shrink: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  `,
+
+  companionGlow: css`
+    position: absolute;
+    inset: -8px;
+    border-radius: 18px;
+    pointer-events: none;
+  `,
+
+  companionAvatar: css`
+    position: relative;
+    width: 48px;
+    height: 48px;
+    border-radius: 14px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 22px;
+    overflow: hidden;
+  `,
+
+  companionName: css`
+    font-size: 15px;
+    font-weight: 600;
+    color: ${token.colorText};
+    margin: 0;
+    letter-spacing: -0.015em;
+  `,
+
+  companionTitle: css`
+    font-size: 12px;
+    color: ${token.colorTextTertiary};
+    margin: 2px 0 0;
   `,
 
   msgRow: css`
@@ -766,6 +813,34 @@ export default function ChatPane({
         }}
       >
         <div className={cx(styles.messagesInner, styles.messagesTransition)} key={conversation?.id ?? 'empty'}>
+          {!isEmpty && (
+            <div className={styles.companionHeader}>
+              <div className={styles.companionAvatarWrap}>
+                <div
+                  className={styles.companionGlow}
+                  style={{ background: `radial-gradient(circle, ${character.color}28 0%, transparent 72%)` }}
+                />
+                <div
+                  className={styles.companionAvatar}
+                  style={{
+                    background: avatars[character.id] ? 'transparent' : `linear-gradient(135deg, ${character.bgGradient[0]}, ${character.color}60)`,
+                    border: avatars[character.id] ? 'none' : `1px solid ${character.color}30`,
+                  }}
+                >
+                  {avatars[character.id] ? (
+                    <img src={avatars[character.id]} alt={character.name} style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
+                  ) : (
+                    character.emoji
+                  )}
+                </div>
+              </div>
+              <div>
+                <p className={styles.companionName}>{character.name}</p>
+                <p className={styles.companionTitle}>{character.title}</p>
+              </div>
+            </div>
+          )}
+
           {isEmpty && (
             <div className={styles.emptyState}>
               {/* Deep ambient glow */}

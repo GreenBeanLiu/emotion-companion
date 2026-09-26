@@ -8,9 +8,10 @@ import EmotionDiary from './components/EmotionDiary'
 import DesktopLayoutContainer from './components/DesktopLayoutContainer'
 import SettingsModal from './components/SettingsModal'
 import CharacterPicker from './components/CharacterPicker'
-import { getCharacter, DEFAULT_CHARACTER_ID, type Character } from './lib/characters'
+import type { Character } from './lib/characters'
 import { api } from './lib/api'
 import type { ConversationRow } from './lib/api'
+import { getTodayMood, type EmotionStat } from './lib/emotion'
 
 type UpdateState =
   | { status: 'idle' }
@@ -38,25 +39,29 @@ const useStyles = createStyles(({ token, css }) => ({
 type AppProps = {
   appearance: 'dark' | 'light'
   onToggleTheme: () => void
+  character: Character
+  onCharacterChange: (character: Character) => void
 }
 
-export default function App({ appearance, onToggleTheme }: AppProps) {
+export default function App({ appearance, onToggleTheme, character, onCharacterChange }: AppProps) {
   const { styles } = useStyles()
 
   const [view, setView] = useState<'chat' | 'diary'>('chat')
   const [activeConv, setActiveConv] = useState<ConversationRow | null>(null)
   const [showSettings, setShowSettings] = useState(false)
   const [showCharacterPicker, setShowCharacterPicker] = useState(false)
-  const [character, setCharacter] = useState<Character>(getCharacter(DEFAULT_CHARACTER_ID))
   const [convRefreshKey, setConvRefreshKey] = useState(0)
   const [update, setUpdate] = useState<UpdateState>({ status: 'idle' })
   const [avatars, setAvatars] = useState<Record<string, string>>({})
+  const [emotionStats, setEmotionStats] = useState<EmotionStat[]>([])
+
+  function refreshMood() {
+    api.stats.emotions().then(setEmotionStats)
+  }
 
   useEffect(() => {
-    api.settings.load().then((s) => {
-      setCharacter(getCharacter(s.characterId || DEFAULT_CHARACTER_ID))
-    })
     api.avatar.getAll().then(setAvatars)
+    refreshMood()
 
     const offAvail = api.update.onAvailable(({ version }) =>
       setUpdate({ status: 'available', version }),
@@ -71,6 +76,7 @@ export default function App({ appearance, onToggleTheme }: AppProps) {
       setActiveConv((prev) => prev?.id === conversationId ? { ...prev, title } : prev)
       setConvRefreshKey((k) => k + 1)
     })
+    const offEmotion = api.chat.onEmotionUpdate(() => refreshMood())
 
     function handleKeyDown(e: KeyboardEvent) {
       const mod = e.ctrlKey || e.metaKey
@@ -87,9 +93,12 @@ export default function App({ appearance, onToggleTheme }: AppProps) {
       offDone()
       offErr()
       offTitle()
+      offEmotion()
       document.removeEventListener('keydown', handleKeyDown)
     }
   }, [])
+
+  const todayMood = getTodayMood(emotionStats)
 
   function refreshConvs() {
     setConvRefreshKey((k) => k + 1)
@@ -105,6 +114,8 @@ export default function App({ appearance, onToggleTheme }: AppProps) {
         update={update}
         onInstall={() => api.update.install()}
         onDismissUpdate={() => setUpdate({ status: 'idle' })}
+        todayMood={view === 'chat' ? todayMood : null}
+        onOpenDiary={() => setView('diary')}
       />
 
       {/* Content row: NavRail | ConvPanel | ChatPane (container-within-container) */}
@@ -118,6 +129,7 @@ export default function App({ appearance, onToggleTheme }: AppProps) {
           onSettings={() => setShowSettings(true)}
           onChangeCharacter={() => setShowCharacterPicker(true)}
           onToggleTheme={onToggleTheme}
+          hasMoodData={emotionStats.length > 0}
         />
         {view === 'chat' && (
           <>
@@ -154,7 +166,7 @@ export default function App({ appearance, onToggleTheme }: AppProps) {
         <CharacterPicker
           currentId={character.id}
           avatars={avatars}
-          onSelect={setCharacter}
+          onSelect={onCharacterChange}
           onAvatarsChange={setAvatars}
           onClose={() => setShowCharacterPicker(false)}
         />

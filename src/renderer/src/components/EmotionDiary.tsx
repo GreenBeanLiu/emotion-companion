@@ -1,18 +1,7 @@
 import { useEffect, useMemo, useState } from 'react'
 import { createStyles, cx } from 'antd-style'
 import { api } from '../lib/api'
-
-type EmotionStat = { date: string; emotion: string; count: number }
-
-const EMOTION_META: Record<string, { emoji: string; color: string; label: string }> = {
-  开心: { emoji: '😊', color: '#4ade80', label: '开心' },
-  平静: { emoji: '😌', color: '#60a5fa', label: '平静' },
-  焦虑: { emoji: '😰', color: '#fb923c', label: '焦虑' },
-  悲伤: { emoji: '😢', color: '#818cf8', label: '悲伤' },
-  愤怒: { emoji: '😤', color: '#f87171', label: '愤怒' },
-  疲惫: { emoji: '😩', color: '#94a3b8', label: '疲惫' },
-  孤独: { emoji: '🥺', color: '#c084fc', label: '孤独' },
-}
+import { EMOTION_META, type EmotionStat } from '../lib/emotion'
 
 const WEEKDAYS = ['日', '一', '二', '三', '四', '五', '六']
 const WEEKS = 13 // ~3 months
